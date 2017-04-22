@@ -1,0 +1,19 @@
+{
+  "name": "fillitup",
+  "version": "1.0.0",
+  "description": "A Form management application that supports user groups",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neorou73/fillitup.git"
+  },
+  "author": "Kris Poedjosoedarmo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neorou73/fillitup/issues"
+  },
+  "homepage": "https://github.com/neorou73/fillitup#readme"
+}
