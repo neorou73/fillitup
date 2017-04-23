@@ -23,3 +23,19 @@ group:
     * add group to form_group
     * remove group from form_group
 
+form_group:
+    * create form_group
+    * delete form_group
+    * update form_group
+    * read form_group
+    * activate form_group
+    * deactivate form_group
+    * add group to form_group
+    * remove group from form_group
+
+form:
+    * create form 
+    * delete form
+    * update form
+    * read form
+
