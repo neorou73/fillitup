@@ -3,13 +3,8 @@
 var getUsers = function(dbQuery, dbqArgs, cb) {
 		
 	  const pg = require('pg');
-		var config = {
-				user: 'fillitup',
-				database: 'fillitup',
-				password: 'fillitup',
-				host: 'localhost',
-				port: 5432
-		};
+	  var appConfig = require('./appConfig.json');
+		var config = appConfig['database'];
 		var conString = 'postgres://' + config.user + ':' + config.password;
 		conString += ':@' + config.host + ':' + config.port + '/' + config.database;
 		pg.connect(conString, function(err, client, done) {
