@@ -2,7 +2,7 @@
 
 var getUsers = function(dbQuery, dbqArgs, cb) {
 		
-	  // const pg = require('pg');
+	  const pg = require('pg');
 		var config = {
 				user: 'fillitup',
 				database: 'fillitup',
@@ -12,15 +12,18 @@ var getUsers = function(dbQuery, dbqArgs, cb) {
 		};
 		var conString = 'postgres://' + config.user + ':' + config.password;
 		conString += ':@' + config.host + ':' + config.port + '/' + config.database;
-		var query = require('pg-query');
-		query.connectionParameters = query;
-
-		query(dbQuery, dbqArgs, function(err, rows, result) {
-				if (err) { 
-						cb(err);
+		pg.connect(conString, function(err, client, done) {
+		    if (err) {
+				    cb(err);
 				}
 
-				cb(null, { 'rows': rows, 'result': result });
+				client.query(dbQuery, dbqArgs, function(err, result) {
+						if (err) { 
+								cb(err);
+						}
+
+						cb(null, { 'result': result });
+				});
 		});
 };
 
@@ -32,5 +35,6 @@ getUsers(dbQuery, dbqArgs, function(err, results) {
 		if (err) { 
 				console.log(err); 
 		}
-		console.log(results);
+		console.log(JSON.stringify(results));
+		process.exit(0);
 });
