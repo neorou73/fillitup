@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/neorou73/fillitup/issues"
   },
-  "homepage": "https://github.com/neorou73/fillitup#readme"
+  "homepage": "https://github.com/neorou73/fillitup#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "jsontoxml": "0.0.11",
+    "pg": "^6.1.5"
+  }
 }
