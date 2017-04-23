@@ -1,0 +1,25 @@
+
+user:
+    * create user
+    * delete user
+    * update user
+    * read user
+    * update password
+    * update email
+    * activate user
+    * deactivate user
+    * add user to group
+    * remove user from group
+
+group:
+    * create group
+    * delete group
+    * update group
+    * read group
+    * activate group
+    * deactivate group
+    * add group to group
+    * remove group from group
+    * add group to form_group
+    * remove group from form_group
+
