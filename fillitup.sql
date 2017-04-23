@@ -30,7 +30,7 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 SET search_path = public, pg_catalog;
 
 --
--- Name: form_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: form_group_id_seq; Type: SEQUENCE; Schema: public; Owner: fillitup
 --
 
 CREATE SEQUENCE form_group_id_seq
@@ -41,10 +41,10 @@ CREATE SEQUENCE form_group_id_seq
     CACHE 1;
 
 
-ALTER TABLE form_group_id_seq OWNER TO postgres;
+ALTER TABLE form_group_id_seq OWNER TO fillitup;
 
 --
--- Name: form_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: form_id_seq; Type: SEQUENCE; Schema: public; Owner: fillitup
 --
 
 CREATE SEQUENCE form_id_seq
@@ -55,10 +55,10 @@ CREATE SEQUENCE form_id_seq
     CACHE 1;
 
 
-ALTER TABLE form_id_seq OWNER TO postgres;
+ALTER TABLE form_id_seq OWNER TO fillitup;
 
 --
--- Name: form_instance_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: form_instance_id_seq; Type: SEQUENCE; Schema: public; Owner: fillitup
 --
 
 CREATE SEQUENCE form_instance_id_seq
@@ -69,10 +69,10 @@ CREATE SEQUENCE form_instance_id_seq
     CACHE 1;
 
 
-ALTER TABLE form_instance_id_seq OWNER TO postgres;
+ALTER TABLE form_instance_id_seq OWNER TO fillitup;
 
 --
--- Name: group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: group_id_seq; Type: SEQUENCE; Schema: public; Owner: fillitup
 --
 
 CREATE SEQUENCE group_id_seq
@@ -83,7 +83,7 @@ CREATE SEQUENCE group_id_seq
     CACHE 1;
 
 
-ALTER TABLE group_id_seq OWNER TO postgres;
+ALTER TABLE group_id_seq OWNER TO fillitup;
 
 SET default_tablespace = '';
 
@@ -94,13 +94,13 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE t_form (
-    id integer DEFAULT nextval('form_group_id_seq'::regclass) NOT NULL,
     name text,
     description text,
     owner integer,
     created timestamp with time zone DEFAULT now(),
     status text,
-    document_object text
+    json_object json,
+    id integer DEFAULT nextval('form_id_seq'::regclass) NOT NULL
 );
 
 
@@ -129,11 +129,11 @@ ALTER TABLE t_form_group OWNER TO fillitup;
 
 CREATE TABLE t_form_instance (
     id integer DEFAULT nextval('form_instance_id_seq'::regclass) NOT NULL,
-    formid integer,
     owner integer,
     created timestamp with time zone DEFAULT now(),
     submitted date,
-    document_object text
+    json_object json,
+    formid integer
 );
 
 
@@ -155,7 +155,7 @@ CREATE TABLE t_group (
 ALTER TABLE t_group OWNER TO fillitup;
 
 --
--- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: fillitup
 --
 
 CREATE SEQUENCE user_id_seq
@@ -166,7 +166,7 @@ CREATE SEQUENCE user_id_seq
     CACHE 1;
 
 
-ALTER TABLE user_id_seq OWNER TO postgres;
+ALTER TABLE user_id_seq OWNER TO fillitup;
 
 --
 -- Name: t_user; Type: TABLE; Schema: public; Owner: fillitup
@@ -213,6 +213,34 @@ CREATE TABLE t_user_group (
 
 
 ALTER TABLE t_user_group OWNER TO fillitup;
+
+--
+-- Name: u_form_type_id_seq; Type: SEQUENCE; Schema: public; Owner: fillitup
+--
+
+CREATE SEQUENCE u_form_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE u_form_type_id_seq OWNER TO fillitup;
+
+--
+-- Name: u_form_type; Type: TABLE; Schema: public; Owner: fillitup
+--
+
+CREATE TABLE u_form_type (
+    id integer DEFAULT 'u_form_type_id_seq'::regclass NOT NULL,
+    name text,
+    description text,
+    json_object json
+);
+
+
+ALTER TABLE u_form_type OWNER TO fillitup;
 
 --
 -- Name: user_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -266,6 +294,14 @@ ALTER TABLE ONLY t_group
 
 ALTER TABLE ONLY t_user
     ADD CONSTRAINT t_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: u_form_type_pkey; Type: CONSTRAINT; Schema: public; Owner: fillitup
+--
+
+ALTER TABLE ONLY u_form_type
+    ADD CONSTRAINT u_form_type_pkey PRIMARY KEY (id);
 
 
 --
