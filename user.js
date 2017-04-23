@@ -2,7 +2,7 @@
 
 var getUsers = function(dbQuery, dbqArgs, cb) {
 		
-		const pg = require('pg');
+	  // const pg = require('pg');
 		var config = {
 				user: 'fillitup',
 				database: 'fillitup',
@@ -10,28 +10,27 @@ var getUsers = function(dbQuery, dbqArgs, cb) {
 				host: 'localhost',
 				port: 5432
 		};
+		var conString = 'postgres://' + config.user + ':' + config.password;
+		conString += ':@' + config.host + ':' + config.port + '/' + config.database;
+		var query = require('pg-query');
+		query.connectionParameters = query;
 
-		var client = new pg.Client();
-		client.connect(function (err) {
-				if (err) throw err;
+		query(dbQuery, dbqArgs, function(err, rows, result) {
+				if (err) { 
+						cb(err);
+				}
 
-				// one query just to show it works
-				client.query(dbQuery, dbqArgs, function (err, result) {
-						if (err) throw err;
-						// console.log(result.rows[0]);
-						client.end(function (err) {
-								if (err) throw err;
-								cb(null, result);
-						});
-				});
+				cb(null, { 'rows': rows, 'result': result });
 		});
 };
 
 console.log('test');
 
-var dbQuery = 'select * from t_user';
-var dbqArgs = {};
+var dbQuery = 'select NOW()';
+var dbqArgs = [];
 getUsers(dbQuery, dbqArgs, function(err, results) {
-		if (err) { console.log(err); }
-		console.log(null, results);
+		if (err) { 
+				console.log(err); 
+		}
+		console.log(results);
 });
