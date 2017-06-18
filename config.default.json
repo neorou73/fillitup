@@ -7,7 +7,9 @@
     "file-format-allowed": ["pdf","jpeg","png","gif"],
     "application-root": "/srv/apps/fillitup",
     "storage-root": "/var/apps/fillitup/uploads",
-    "data-root": "/srv/apps/fillitup/db"
+    "data-root": "/srv/apps/fillitup/db",
+    "application-port": 8000,
+    "application-host": "localhost"
   }
 }
 
