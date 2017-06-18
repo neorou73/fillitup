@@ -1,0 +1,13 @@
+{
+  "fillitup": {
+    "hash-salt": "fillitup",
+    "hash-mechanism": "sha512",
+    "access-token-life-span": 86400,
+    "file-size-limit": 10,
+    "file-format-allowed": ["pdf","jpeg","png","gif"],
+    "application-root": "/srv/apps/fillitup",
+    "storage-root": "/var/apps/fillitup/uploads",
+    "data-root": "/srv/apps/fillitup/db"
+  }
+}
+
