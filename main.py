@@ -2,8 +2,11 @@ from bottle import route, run, template
 import json
 
 def readConfig():
-    with open('config.default.json', 'r') as cf:
-        return json.load(cf)
+    sourceFile = 'config.default.json'
+    with open(sourceFile, 'r') as cf:
+        output = json.load(cf)
+        print(output)
+        return output
 
 configuration = readConfig()
 
@@ -11,4 +14,4 @@ configuration = readConfig()
 def index(name):
     return template('<b>Hello {{name}}</b>!', name=name)
 
-run(host='0.0.0.0', port=8080)
+run(host=configuration['fillitup']['application-host'], port=configuration['fillitup']['application-port'], debug=True)

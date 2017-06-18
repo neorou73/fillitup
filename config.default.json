@@ -9,7 +9,7 @@
     "storage-root": "/var/apps/fillitup/uploads",
     "data-root": "/srv/apps/fillitup/db",
     "application-port": 8000,
-    "application-host": "localhost"
+    "application-host": "0.0.0.0"
   }
 }
 
