@@ -37,20 +37,27 @@ def login():
     error = None
     if request.method == 'POST':
         if validate_user_authentication(request.form['username'], request.form['password']):
-            error = 'Invalid username or password'
-        else:
+            # error = 'Invalid username or password'
             session['logged_in'] = True
             flash('You were logged in')
             return redirect(url_for('testing'))
+        else:
+            error = 'Invalid username or password'
     return render_template('login.html', error=error)
 
 @app.route('/logout')
 def logout():
-    return 'Logging Out from Application'
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('login'))
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return 'Signup For a New Account'
+    error = None
+    if request.method == 'POST':
+        newuser = create_new_user(request.form['firstname'], request.form['lastname'], request.form['email'], request.form['timezone'], request.form['password1'], request.form['password2'])
+        return redirect(url_for('login'))
+    return render_template('signup.html')
 
 @app.route('/testing')
 def testing():
@@ -101,7 +108,7 @@ def validate_user_authentication(username, password):
         dbQuery = """SELECT firstname, lastname FROM appuser WHERE email = %s AND password = md5(%s)"""
         result = query_database(dbQuery, connect_str, (username, password))
         print(result)
-        if (len(result[0]) == 1):
+        if (len(result[1]) == 1):
             return True
         else:
             return False
@@ -109,4 +116,20 @@ def validate_user_authentication(username, password):
         errorObject = { "message": "problem querying database" }
         errorObject["exception"] = e
         return errorObject
-        
+
+def create_new_user(firstname, lastname, email, timezone, password1, password2):
+    try:
+        if password1 == password2:
+            password = password1
+            print('same password')
+            dbQuery = """SELECT * FROM newappuser(%s, %s, %s, %s, %s)"""
+            result = query_database(dbQuery, connect_str, (timezone, email, password, lastname, firstname))
+            print(result)
+            return True
+        else:
+            return False
+    except Exception as e:
+        errorObject = { "message": "problem creating a new user account" }
+        errorObject["exception"] = e
+        return errorObject
+
