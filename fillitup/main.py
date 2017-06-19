@@ -15,7 +15,7 @@ dbConfig = configuration["fillitup"]["database"]
 
 app = Flask(__name__)
 
-app.secret_key = 'th1$_$@6006_k33'
+app.secret_key = configuration["fillitup"]["application-secret-key"] # the secret key for the app sessions
 
 # connect_str = "dbname='fillitup' user='fillitup' host='localhost' password='fillitup'" # reuse this
 connect_str = "dbname='" + dbConfig['name'] + "' "
@@ -63,7 +63,8 @@ def testing():
     print("actual results: ")
     print(result[1])
     """
-    return 'There are ' + str(len(result[1])) + ' results'
+    # return 'There are ' + str(len(result[1])) + ' results'
+    return render_template('testing.html', users=result[1])
 
 ################## REUSABLE FUNCTIONS SECTION ####################
 
@@ -78,11 +79,11 @@ def query_database(dbQuery, connect_str, queryParam):
     connect_str example 
     connect_str = "dbname='fillitup' user='fillitup' host='localhost' password='fillitup'"
     """
-    import psycopg2
+    import psycopg2, psycopg2.extras
     try:
         # use connection values to connect
         conn = psycopg2.connect(connect_str)
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         if (queryParam):
             cursor.execute(dbQuery, queryParam)
         else:
