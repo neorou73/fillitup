@@ -3,7 +3,8 @@ import json
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
 def readConfig():
-    sourceFile = 'config.default.json'
+    import os
+    sourceFile = os.path.dirname(__file__) + '/config.default.json'
     with open(sourceFile, 'r') as cf:
         output = json.load(cf)
         print(output)
@@ -13,6 +14,8 @@ configuration = readConfig()
 dbConfig = configuration["fillitup"]["database"]
 
 app = Flask(__name__)
+
+app.secret_key = 'th1$_$@6006_k33'
 
 # connect_str = "dbname='fillitup' user='fillitup' host='localhost' password='fillitup'" # reuse this
 connect_str = "dbname='" + dbConfig['name'] + "' "
@@ -28,23 +31,31 @@ print('test connection string: ' + connect_str)
 def hello_world():
     return 'Hello, World!'
 
-
-@app.route('/login')
-def app_login():
-    return 'Login Page'
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # return 'Login Page'
+    error = None
+    if request.method == 'POST':
+        if validate_user_authentication(request.form['username'], request.form['password']):
+            error = 'Invalid username or password'
+        else:
+            session['logged_in'] = True
+            flash('You were logged in')
+            return redirect(url_for('testing'))
+    return render_template('login.html', error=error)
 
 @app.route('/logout')
-def app_logout():
+def logout():
     return 'Logging Out from Application'
 
 @app.route('/signup')
-def app_signup():
+def signup():
     return 'Signup For a New Account'
 
 @app.route('/testing')
-def app_testing():
+def testing():
     dbQuery = """SELECT * FROM appuser"""
-    result = query_database(dbQuery, connect_str)
+    result = query_database(dbQuery, connect_str, None)
     """
     testing the output with the following:
     print("column names: ")
@@ -60,7 +71,7 @@ def generate_uuid():
     import uuid
     return uuid.uuid4()
 
-def query_database(dbQuery, connect_str):
+def query_database(dbQuery, connect_str, queryParam):
     """
     the value of dbQuery needs to be encapsulated between 3 double quotes 
     just like this comment
@@ -72,7 +83,10 @@ def query_database(dbQuery, connect_str):
         # use connection values to connect
         conn = psycopg2.connect(connect_str)
         cursor = conn.cursor()
-        cursor.execute(dbQuery)
+        if (queryParam):
+            cursor.execute(dbQuery, queryParam)
+        else:
+            cursor.execute(dbQuery)
         rows = cursor.fetchall()
         column_names = [rows[0] for rows in cursor.description]
         return [column_names, rows]
@@ -80,3 +94,18 @@ def query_database(dbQuery, connect_str):
         errorObject = { "message": "connection issue, unable to connect" }
         errorObject["exception"] = e
         return errorObject
+
+def validate_user_authentication(username, password):
+    try:
+        dbQuery = """SELECT firstname, lastname FROM appuser WHERE email = %s AND password = md5(%s)"""
+        result = query_database(dbQuery, connect_str, (username, password))
+        print(result)
+        if (len(result[0]) == 1):
+            return True
+        else:
+            return False
+    except Exception as e:
+        errorObject = { "message": "problem querying database" }
+        errorObject["exception"] = e
+        return errorObject
+        
