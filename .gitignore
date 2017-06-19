@@ -1,2 +1,4 @@
 node_modules
 .gitignore
+fillitup/__pycache__/*
+.DS_Store
