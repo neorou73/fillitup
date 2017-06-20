@@ -38,6 +38,7 @@ def login():
     if request.method == 'POST':
         if validate_user_authentication(request.form['username'], request.form['password']):
             # error = 'Invalid username or password'
+            session['accesstoken'] = create_access_token(userid)
             session['logged_in'] = True
             flash('You were logged in')
             return redirect(url_for('testing'))
@@ -120,16 +121,32 @@ def validate_user_authentication(username, password):
 def create_new_user(firstname, lastname, email, timezone, password1, password2):
     try:
         if password1 == password2:
-            password = password1
-            print('same password')
+            print('passwords match')
+            import psycopg2
+            conn = psycopg2.connect(connect_str)
+            cursor = conn.cursor()
             dbQuery = """SELECT * FROM newappuser(%s, %s, %s, %s, %s)"""
-            result = query_database(dbQuery, connect_str, (timezone, email, password, lastname, firstname))
-            print(result)
-            return True
+            result = cursor.execute(dbQuery, (timezone, email, password1, lastname, firstname))
+            dbQuery2 = """SELECT firstname, lastname FROM appuser WHERE email = %s"""
+            result2 = cursor.execute(dbQuery2, (email))
+            print(result2)
+            return email 
         else:
-            return False
+            errorObject = { "message": "problem creating a new user account" }
+            return errorObject 
     except Exception as e:
         errorObject = { "message": "problem creating a new user account" }
+        errorObject["exception"] = e
+        return errorObject
+
+def create_access_token(userid):
+    try:
+        accesstoken = generate_uuid()
+        dbQuery = """INSERT INTO accesstoken (token, created, appuser) VALUES (%s, now(), %s)"""
+        result = query_database(dbQuery, connect_str, (accesstoken, userid))
+        return accesstoken
+    except Exception as e:
+        errorObject = { "message": "problem generating or storing accesstoken" }
         errorObject["exception"] = e
         return errorObject
 
