@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Create a New User Account</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <form action="{{ url_for('signup') }}" method=post>
+    <dl>
+      <dt>Valid Email Address:
+      <dd><input type=text name=email>
+      <dt>First Name:
+      <dd><input type=text name=firstname>
+      <dt>Last Name:
+      <dd><input type=text name=lastname>
+      <dt>Password:
+      <dd><input type=password name=password1>
+      <dt>Same Password Again:
+      <dd><input type=password name=password2>
+      <dd><input type=hidden name=timezone value=US/Eastern>
+      <dd><input type=submit value=Create>
+    </dl>
+  </form>
+{% endblock %}
+

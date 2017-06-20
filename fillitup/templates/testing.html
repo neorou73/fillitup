@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block body %}
+  <table>
+    <thead>
+      <tr>
+        <th>first name</th>
+        <th>last name</th>
+        <th>created</th>
+        <th>timezone</th>
+        <th>email</th>
+      </tr>
+    </thead>
+    <tbody>
+  {% for user in users %}
+    <tr>
+      <td>{{ user.firstname }}</td>
+      <td>{{ user.lastname }}</td>
+      <td>{{ user.created }}</td>
+      <td>{{ user.timezone }}</td>
+      <td>{{ user.email }}</td>
+    </tr>
+  {% else %}
+    </tbody>
+  </table>
+  <ul class=testingresults>
+    <li><em>No users found on record</em></li>
+  </ul>
+  {% endfor %}
+{% endblock %}
+
