@@ -3,3 +3,7 @@ node_modules
 fillitup/__pycache__/*
 .DS_Store
 *.swp
+*.pyc
+fiu/__pycache__
+fiu/can_create_file.json
+fiu/*.pyc
