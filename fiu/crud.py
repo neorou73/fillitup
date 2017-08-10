@@ -26,4 +26,26 @@ class Crud:
                 return json.load(fp)
         except:
             return { "error": "invalid file path" }
-            
+
+    def update(self, newData, filePath):
+        """requires a valid filepath
+        reads file if exists
+        returns data"""
+        try:
+            import json
+            with open(filePath, 'w') as fp:
+                json.dump(newData, fp)
+            return True
+        except:
+            return False
+
+    def delete(self, filePath):
+        """requires a valid filepath
+        reads file if exists
+        returns data"""
+        try:
+            import os
+            os.remove(filePath)
+            return True
+        except:
+            return False
