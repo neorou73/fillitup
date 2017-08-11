@@ -2,6 +2,14 @@ class Crud:
 
     def __init__(self):
         self.created = True
+        # import from pymongo
+        from pymongo import MongoClient
+
+        client = MongoClient()
+        # client = MongoClient("mongodb://mongodb0.example.net:27017")
+
+        self.mdb = client.fillitup
+        self.coll = self.mdb.dataset
 
     def create(self, data, filePath):
         """requires a valid python object and a filepath
