@@ -8,8 +8,8 @@ class Crud:
         client = MongoClient()
         # client = MongoClient("mongodb://mongodb0.example.net:27017")
 
-        self.mdb = client.fillitup
-        self.coll = self.mdb.dataset
+        self.mdb = client.fillitup # database is called fillitup
+        #self.coll = self.mdb.dataset
 
     def create(self, data, filePath):
         """requires a valid python object and a filepath

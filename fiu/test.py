@@ -54,11 +54,54 @@ class TestCrud(unittest.TestCase):
         self.assertEqual(readData["was_updated"], "yes")
 
     def test_delete_file(self):
+        """
+        tests the delete function for flat files"""
         from crud import Crud
         c = Crud()
         data = makeObject()
         c.create(data, testFile)
         self.assertTrue(c.delete(testFile))
+
+    def test_mdb_create_collection(self):
+        from crud import Crud
+        c = Crud()
+        collection = c.mdb.testcollection
+        result = collection.insert_one({ "test": "success" })
+        # print("inserted id: ", result.inserted_id)
+        self.assertFalse(result.inserted_id == None)
+
+    def test_mdb_create_record(self):
+        from crud import Crud
+        c = Crud()
+        collection = c.mdb.testcollection
+        result = collection.insert_one({ "test": "success", "testing insert": "success" })
+        # print("inserted id: ", result.inserted_id)
+        self.assertFalse(result.inserted_id == None)
+
+    def test_mdb_search_for_one(self):
+        pass
+
+    def test_mdb_search_for_many(self):
+        pass
+
+    def test_mdb_update_one(self):
+        pass
+
+    def test_mdb_update_many(self):
+        pass
+
+    def test_mdb_replace_one(self):
+        pass
+
+    def test_mdb_delete_one(self):
+        pass
+
+    def test_mdb_delete_many(self):
+        pass
+
+    # def test_mdb_drop_collection(self):
+        # pass
+
         
 if __name__ == '__main__':
     unittest.main()
