@@ -62,6 +62,7 @@ class TestCrud(unittest.TestCase):
         c.create(data, testFile)
         self.assertTrue(c.delete(testFile))
 
+    """"
     def test_mdb_create_collection(self):
         from crud import Crud
         c = Crud()
@@ -69,6 +70,7 @@ class TestCrud(unittest.TestCase):
         result = collection.insert_one({ "test": "success" })
         # print("inserted id: ", result.inserted_id)
         self.assertFalse(result.inserted_id == None)
+    """
 
     def test_mdb_create_record(self):
         from crud import Crud

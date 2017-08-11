@@ -11,6 +11,19 @@ class Crud:
         self.mdb = client.fillitup # database is called fillitup
         #self.coll = self.mdb.dataset
 
+    # below lists all mongodb methods
+    def mdb_create(self, data, collection):
+        """
+        requires valid json data and valid collection in self.mdb
+        returns object id"""
+        try:
+            result = self.mdb[collection].insert_one(data)
+            return result.inserted_id
+        except:
+            import sys
+            return { "error": "unable to insert", "exception": sys.exc.info()[0] }
+
+    # below lists all basic flat file methods
     def create(self, data, filePath):
         """requires a valid python object and a filepath
         returns the filePath if valid
