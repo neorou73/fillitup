@@ -115,6 +115,7 @@ class TestCrud(unittest.TestCase):
         self.assertFalse(result_update == None)
         self.assertEqual(result_update.modified_count, 1)
 
+
     def test_mdb_update_many(self):
         from crud import Crud
         c = Crud()
@@ -126,14 +127,37 @@ class TestCrud(unittest.TestCase):
         self.assertFalse(result_update == None)
         self.assertEqual(result_update.modified_count, 2)
 
+
     def test_mdb_replace_one(self):
-        pass
+        from crud import Crud
+        c = Crud()
+        result_clear = c.mdb_delete({}, "testcollection")
+        result_id1 = c.mdb_create({ "test1": "success", "testing insert1": "success" }, "testcollection")
+        result_id2 = c.mdb_create({ "test2": "success", "testing insert2": "success" }, "testcollection")
+        result_update = c.mdb_update_one({ "test2": "success" }, { "$set": { "testing insert2": "success for the second time" }}, "testcollection")
+        self.assertFalse(result_update == None)
+        self.assertEqual(result_update.modified_count, 1)
 
-    def test_mdb_delete_one(self):
-        pass
 
-    def test_mdb_delete_many(self):
-        pass
+    def test_mdb_delete(self):
+        from crud import Crud
+        c = Crud()
+        result_clear = c.mdb_delete({}, "testcollection")
+        result_id1 = c.mdb_create({ "test1": "success", "testing insert1": "success" }, "testcollection")
+        result_id2 = c.mdb_create({ "test2": "success", "testing insert2": "success" }, "testcollection")
+        result_delete = c.mdb_delete_many({"test2": "success"}, "testcollection")
+        self.assertFalse(result_delete == None)
+        self.assertEqual(result_delete.deleted_count, 1)
+
+
+    def test_mdb_drop_collection(self):
+        from crud import Crud
+        c = Crud()
+        result_clear = c.mdb_delete({}, "testcollection")
+        result_id1 = c.mdb_create({ "test1": "success", "testing insert1": "success" }, "testcollection")
+        result_id2 = c.mdb_create({ "test2": "success", "testing insert2": "success" }, "testcollection")
+        result_drop = c.mdb_drop_collection("testcollection")
+        self.assertTrue(result_drop == None)
 
     # def test_mdb_drop_collection(self):
         # pass

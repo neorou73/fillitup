@@ -21,7 +21,8 @@ class Crud:
             return result.inserted_id
         except:
             import sys
-            return { "error": "unable to insert", "exception": sys.exc.info()[0] }
+            return { "error": "unable to insert", "exception": sys.exc_info()[0] }
+
 
     def mdb_search_for_one(self, data, collection):
         """
@@ -33,7 +34,8 @@ class Crud:
             return result
         except:
             import sys
-            return { "error": "unable to perform search for one", "exception": sys.exc.info()[0] }
+            return { "error": "unable to perform search for one", "exception": sys.exc_info()[0] }
+
 
     def mdb_search_for_all(self, collection):
         """
@@ -45,7 +47,8 @@ class Crud:
             return result
         except:
             import sys
-            return { "error": "unable to perform search for all", "exception": sys.exc.info()[0] }
+            return { "error": "unable to perform search for all", "exception": sys.exc_info()[0] }
+
 
     def mdb_delete(self, data, collection):
         """
@@ -56,7 +59,8 @@ class Crud:
             return result
         except:
             import sys
-            return { "error": "unable to perform deletion of data", "exception": sys.exc.info()[0] }
+            return { "error": "unable to perform deletion of data", "exception": sys.exc_info()[0] }
+
 
     def mdb_update_one(self, searchIdentifier, replacementData, collection):
         """
@@ -68,7 +72,8 @@ class Crud:
             return result
         except:
             import sys
-            return { "error": "unable to update the data as queried", "exception": sys.exc.info()[0] }
+            return { "error": "unable to update the data as queried", "exception": sys.exc_info()[0] }
+
 
     def mdb_update_many(self, searchIdentifier, replacementData, collection):
         """
@@ -80,7 +85,25 @@ class Crud:
             return result
         except:
             import sys
-            return { "error": "unable to update the data as queried", "exception": sys.exc.info()[0] }
+            return { "error": "unable to update the data as queried", "exception": sys.exc_info()[0] }
+
+
+    def mdb_delete_many(self, searchIdentifier, collection):
+        try:
+            result = self.mdb[collection].delete_many(searchIdentifier)
+            return result
+        except:
+            import sys
+            return { "error": "unable to delete the data as queried", "exception": sys.exc_info()[0] }
+
+
+    def mdb_drop_collection(self, collection):
+        try:
+            result = self.mdb[collection].drop()
+            return result
+        except:
+            import sys
+            return { "error": "unable to drop collection", "exception": sys.exc_info()[0] }
 
 
     # below lists all basic flat file methods
@@ -97,6 +120,7 @@ class Crud:
         except:
             return False
 
+
     def read(self, filePath):
         """requires a valid filepath
         reads file if exists
@@ -107,6 +131,7 @@ class Crud:
                 return json.load(fp)
         except:
             return { "error": "invalid file path" }
+
 
     def update(self, newData, filePath):
         """requires a valid filepath
@@ -120,6 +145,7 @@ class Crud:
         except:
             return False
 
+
     def delete(self, filePath):
         """requires a valid filepath
         reads file if exists
@@ -130,3 +156,4 @@ class Crud:
             return True
         except:
             return False
+
