@@ -7,9 +7,9 @@ class Crud:
 
         client = MongoClient()
         # client = MongoClient("mongodb://mongodb0.example.net:27017")
-
         self.mdb = client.fillitup # database is called fillitup
         #self.coll = self.mdb.dataset
+
 
     # below lists all mongodb methods
     def mdb_create(self, data, collection):
@@ -22,6 +22,66 @@ class Crud:
         except:
             import sys
             return { "error": "unable to insert", "exception": sys.exc.info()[0] }
+
+    def mdb_search_for_one(self, data, collection):
+        """
+        requires valid json data attribute and value to search against
+        and valid collection in self.mdb
+        returns match"""
+        try:
+            result = self.mdb[collection].find(data)
+            return result
+        except:
+            import sys
+            return { "error": "unable to perform search for one", "exception": sys.exc.info()[0] }
+
+    def mdb_search_for_all(self, collection):
+        """
+        requires valid collection in self.mdb
+        searches for all documents in that collection
+        returns match"""
+        try:
+            result = self.mdb[collection].find({})
+            return result
+        except:
+            import sys
+            return { "error": "unable to perform search for all", "exception": sys.exc.info()[0] }
+
+    def mdb_delete(self, data, collection):
+        """
+        collection needs to be a valid collection in database
+        returns match"""
+        try:
+            result = self.mdb[collection].delete_many(data)
+            return result
+        except:
+            import sys
+            return { "error": "unable to perform deletion of data", "exception": sys.exc.info()[0] }
+
+    def mdb_update_one(self, searchIdentifier, replacementData, collection):
+        """
+        valid collection is a must
+        searchIdentifier and replacementData are objects
+        returns match"""
+        try:
+            result = self.mdb[collection].update_one(searchIdentifier, replacementData)
+            return result
+        except:
+            import sys
+            return { "error": "unable to update the data as queried", "exception": sys.exc.info()[0] }
+
+    def mdb_update_many(self, searchIdentifier, replacementData, collection):
+        """
+        valid collection is a must
+        searchIdentifier and replacementData are objects
+        returns match"""
+        try:
+            result = self.mdb[collection].update_many(searchIdentifier, replacementData)
+            return result
+        except:
+            import sys
+            return { "error": "unable to update the data as queried", "exception": sys.exc.info()[0] }
+
 
     # below lists all basic flat file methods
     def create(self, data, filePath):
