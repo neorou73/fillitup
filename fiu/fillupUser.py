@@ -33,6 +33,7 @@ class fillupUser:
         else:
             return False
 
+
     def userExists(self, userEmail):
         pc = psqlConnect()
         pc.connect()
@@ -46,22 +47,60 @@ class fillupUser:
 
 
     def updateUser(self, userEmail, newData):
-        pass
+        if self.userExists(userEmail):
+            pc.psqlConnect()
+            pc.connect()
+            try:
+                sql = "update appuser set (email = '{1}', username = '{2}', fullname = '{3}', password = md5('{4}')) where email = '{0}'".format(userEmail, newData.email, newData.username, newData.fullname, newData.password)
+                pc.cursor.execute(sql)
+            except:
+                print("Unable to perform update")
+        else:
+            print('Unable to perform update, user does not exist')
+
 
     def deleteUser(self, userEmail):
-        pass
+        if self.userExists(userEmail):
+            pc.psqlConnect()
+            pc.connect()
+            try:
+                sql = "delete from appuser where email = '{0}'".format(userEmail)
+                pc.cursor.execute(sql)
+            except:
+                print("Unable to perform deletion")
+        else:
+            print('Unable to perform deletion, user does not exist')
+
 
     def getUser(self, userEmail):
-        pass
+        pc.psqlConnect()
+        pc.connect()
+        try:
+            sql = "select * from appuser where email = '{0}'".format(userEmail)
+            pc.cursor.execute(sql)
+            row = pc.fetchone()
+            return row
+        except:
+            return "Unable to find user in records."
 
     def getAllUsers(self):
-        pass
+        pc.psqlConnect()
+        pc.connect()
+        try:
+            sql = "select id, email, username, fullname, status, created from appuser order by id"
+            pc.cursor.execute(sql)
+            row = pc.fetchall()
+            return row
+        except:
+            return "Unable to find users in records."
 
     def loginUser(self, userEmail, password):
         pass
 
+
     def logoutUser(self, userEmail):
         pass
+
 
     def sendEmailToUser(self, userEmail):
         pass
