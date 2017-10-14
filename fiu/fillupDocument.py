@@ -31,17 +31,65 @@ class fillupDocument:
             return fuu.error
 
 
-    def getDocument(self, documentIdentifier):
-        pass
-
-    def updateDocument(self, documentIdentifer):
-        pass
-
     def deleteDocument(self, documentIdentifier):
-        pass
+        """
+        needs to use document identifier"""
+        try:
+            pc = psqlconnect()
+            pc.connect()
+            sql = "delete from appdocument where id = {0}".format(documentIdentifier)
+            pc.cursor.execute(sql)
+            self.conn.commit()
+            return true
+        except:
+            fuu.error.message = "Unable to delete the document"
+            return fuu.error
+
+    def updateDocument(self, documentIdentifier, updateData):
+        """
+        updateData should only have title creator and document
+        keys"""
+        try:
+            revisedUpdateData = []
+            revisedUpdateData.append(updateData['title'])
+            revisedUpdateData.append(updateData['creator'])
+            revisedUpdateData.append(updateData['document'])
+            revisedUpdateData.append(documentIdentifier)
+            pc = psqlconnect()
+            pc.connect()
+            sql = "update appdocument set title = '{0}', creator = '{1}, document = '{2}' where id = '{3}'".format(revisedUpdateData)
+            pc.cursor.execute(sql)
+            self.conn.commit()
+            return true
+        except:
+            fuu.error.message = "Unable to create a document"
+            return fuu.error
+
+    def readDocument(self, documentIdentifier):
+        """
+        needs to use document identifier"""
+        try:
+            pc = psqlconnect()
+            pc.connect()
+            sql = "select * from appdocument where id = {0}".format(documentIdentifier)
+            pc.cursor.execute(sql)
+            row = pc.cursor.fetchone()
+            return row
+        except:
+            fuu.error.message = "Unable to find the document"
+            return fuu.error
 
     def getAllDocuments(self):
-        pass
+        try:
+            pc = psqlconnect()
+            pc.connect()
+            sql = "select * from appdocument order by id"
+            pc.cursor.execute(sql)
+            rows = pc.cursor.fetchall()
+            return rows
+        except:
+            fuu.error.message = "Unable to find any documents"
+            return fuu.error
 
 
 if __name__ == "__main__":
@@ -56,4 +104,4 @@ if __name__ == "__main__":
     }
 
     if fud.createDocument(documentData):
-        print("success")    
+        print("success")
