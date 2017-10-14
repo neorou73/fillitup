@@ -15,7 +15,6 @@ def updateData(data):
 testFile = 'can_create_file.json'
 
 # figure out from here: https://docs.python.org/3.6/library/subprocess.html
-# how to test that mongod service is running
 
 class TestCrud(unittest.TestCase):
 
@@ -162,6 +161,6 @@ class TestCrud(unittest.TestCase):
     # def test_mdb_drop_collection(self):
         # pass
 
-        
+
 if __name__ == '__main__':
     unittest.main()
