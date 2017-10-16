@@ -12,8 +12,8 @@ class fillupUser:
 
     def validateUserData(self, userData):
         present = 0
-        for k in userData:
-            print("has " + k)
+        for k,v in userData.items():
+            # print("has " + k)
             if k in self.dictionaryKeys:
                 present = present + 1
         if present == len(self.dictionaryKeys):
@@ -23,12 +23,13 @@ class fillupUser:
 
 
     def createUser(self, userData):
-        if self.validateUserKeys(userData):
+        if self.validateUserData(userData):
             pc = psqlConnect()
             pc.connect()
-            sql = "insert into appuser (fullname, username, email, password) values ({0}, {1}, md5({2}), {3})"
-            pc.cursor.execute(sql.format(userData.fullname, userData.username, userData.email, userData.password))
-            self.conn.commit()
+            # print(userData.keys())
+            sql = "insert into appuser (fullname, username, email, password) values ('{0}', '{1}', '{2}', md5('{3}'))"
+            pc.cursor.execute(sql.format(userData['fullname'], userData['username'], userData['email'], userData['password']))
+            pc.conn.commit()
             return True
         else:
             return False
@@ -40,6 +41,7 @@ class fillupUser:
         sql = "select email from appuser where email = '{0}'"
         pc.cursor.execute(sql.format(userEmail))
         rows = pc.cursor.fetchone()
+        # print(rows)
         if rows[0] == userEmail:
             return True
         else:
@@ -54,11 +56,11 @@ class fillupUser:
                 sql = "update appuser set (email = '{1}', username = '{2}', fullname = '{3}', password = md5('{4}')) where email = '{0}'".format(userEmail, newData.email, newData.username, newData.fullname, newData.password)
                 pc.cursor.execute(sql)
             except:
-                self.error.message = "Unable to perform update"
-                return self.error
+                message = "Unable to perform update"
+                return message
         else:
-            self.error.message = 'Unable to perform update, user does not exist'
-            return self.error
+            message = 'Unable to perform update, user does not exist'
+            return message
 
 
     def deleteUser(self, userEmail):
@@ -68,6 +70,8 @@ class fillupUser:
             try:
                 sql = "delete from appuser where email = '{0}'".format(userEmail)
                 pc.cursor.execute(sql)
+                pc.conn.commit()
+                return ("success")
             except:
                 print("Unable to perform deletion")
         else:
@@ -83,8 +87,8 @@ class fillupUser:
             row = pc.cursor.fetchone()
             return row
         except:
-            self.error.message = "Unable to find user in records."
-            return self.error
+            message = "Unable to find user in records."
+            return message
 
     def getAllUsers(self):
         pc = psqlConnect()
@@ -95,8 +99,8 @@ class fillupUser:
             row = pc.cursor.fetchall()
             return row
         except:
-            self.error.message = "Unable to find users in records."
-            return self.error
+            message = "Unable to find users in records."
+            return message
 
 
     def loginUser(self, userEmail, password):
@@ -127,9 +131,9 @@ class fillupUser:
             sql = "select * from appuser where email = '{0}'".format(userEmail)
             pc.cursor.execute(sql)
             row = pc.cursor.fetchone()
-            print(row)
+            # print(row)
             sql2 = "update logintoken set logged_out = now() where appuser = {0} and token = '{1}'".format(row[0], accessToken)
-            print(row[0], sql2)
+            # print(row[0], sql2)
             pc.cursor.execute(sql2)
             pc.conn.commit()
         except:

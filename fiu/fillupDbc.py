@@ -32,17 +32,18 @@ class psqlConnect:
         # create a psycopg2 cursor that can execute queries
         self.cursor = self.conn.cursor()
         connectionStringEnding = self.databaseName + ' at ' + self.databaseHost
+        """
         if (self.cursor):
             print('connection made to ' + connectionStringEnding)
         else:
-            print('connection problem with ' + connectionStringEnding)
+            print('connection problem with ' + connectionStringEnding)"""
         
 
     def getCurrentTimestamp(self):
         try:
             self.cursor.execute("""SELECT now();""")
             rows = self.cursor.fetchall()
-            print(rows)
+            #print(rows)
         except Exception as e:
             print("Uh oh, can't connect. Invalid dbname, user or password?")
             print(e)
