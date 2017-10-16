@@ -88,6 +88,9 @@ class fillupDocument:
             message = "Unable to find any documents"
             return [message, sys.exc_info()]
 
+    def validateDocument(self, documentSchema, documentData):
+        pass
+
 
 if __name__ == "__main__":
     import json, uuid
