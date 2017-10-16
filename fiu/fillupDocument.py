@@ -68,7 +68,7 @@ class fillupDocument:
         try:
             pc = psqlConnect()
             pc.connect()
-            sql = "select * from appdocument where id = {0}".format(documentIdentifier)
+            sql = "select * from appdocument where id = '{0}'".format(documentIdentifier)
             pc.cursor.execute(sql)
             row = pc.cursor.fetchone()
             return row
