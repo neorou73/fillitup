@@ -23,7 +23,7 @@ class fillupDocument:
         try:
             pc = psqlConnect()
             pc.connect()
-            sql = "insert into appdocument (title, creator, document, created) values ('{0}',{1},'{2}',now())".format(documentObject['title'], documentObject['creator'], json.dumps(documentObject['document']))
+            sql = "insert into appdocument (id, title, creator, document, created) values ('{3}', '{0}',{1},'{2}',now())".format(documentObject['title'], documentObject['creator'], json.dumps(documentObject['document']))
             pc.cursor.execute(sql)
             pc.conn.commit()
             return "success"

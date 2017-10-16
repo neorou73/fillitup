@@ -32,7 +32,7 @@ create table logintoken (
 alter table logintoken owner to fillup;
 
 create table appDocument (
-  id serial, title text, 
+  id varchar(50), title text, 
   creator integer not null references appuser (id),
   document json not null,
   created date default current_timestamp, primary key (id));
