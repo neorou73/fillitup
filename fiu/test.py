@@ -3,37 +3,45 @@ a single test file for unit testing
 """
 import unittest
 
-def makeObject():
-    data = {}
-    data["can_create"] = "yes"
-    return data
-
-def updateData(data):
-    data["was_updated"] = "yes"
-    return data
-
-testFile = 'can_create_file.json'
-
-# figure out from here: https://docs.python.org/3.6/library/subprocess.html
-
 class TestCrud(unittest.TestCase):
 
-    def canCreateUser(self):
-        pass
+    def test_canCreateAndDestroyUser(self):
+        from fillupUser import fillupUser
+        fuu = fillupUser()
+        testUser = {}
+        testUser["fullname"] = "Test User"
+        testUser["username"] = "testuser1"
+        testUser["email"] = "neorou@yahoo.com"
+        testUser["password"] = "5ecret!"
 
-    def canEditUser(self):
-        pass
+        success = fuu.createUser(testUser)
+        self.assertTrue(success)
+        success2 = fuu.deleteUser("neorou@yahoo.com")
+        self.assertEqual(success2, "success")
+            
 
-    def canReadOneUser(self):
-        pass
+    def test_canEditUser(self):
+        from fillupUser import fillupUser
+        fuu = fillupUser()
+        testUser = {}
+        testUser["fullname"] = "Test User"
+        testUser["username"] = "testuser1"
+        testUser["email"] = "neorou@yahoo.com"
+        testUser["password"] = "5ecret!"
 
-    def canReadAllUsers(self):
-        pass
+        fuu.createUser(testUser)
+        updatedUserData = {}
+        updatedUserData["fullname"] = "Test User Updated"
+        updatedUserData["username"] = "testuser2"
+        updatedUserData["password"] = "5ecret!2"
+        updatedUserData["email"] = "neorou@yahoo.com"
 
-    def canDestroyUser(self):
-        pass
+        success = fuu.updateUser("neorou@yahoo.com", updatedUserData)
+        self.assertTrue(success)
+        fuu.deleteUser("neorou@yahoo.com")
 
-    def canConnectToDatabase(self):
+
+    def test_canConnectToDatabase(self):
         from fillupDbc import psqlConnect
         pc = psqlConnect()
         pc.connect()
@@ -41,30 +49,13 @@ class TestCrud(unittest.TestCase):
         rows = pc.cursor.fetchall()
         self.assertTrue(len(rows) > 0)
 
-    def canQueryDatabase(self):
+    def test_canQueryDatabase(self):
         from fillupDbc import psqlConnect
         pc = psqlConnect()
         pc.connect()
         pc.cursor.execute("""SELECT now();""")
         rows = pc.cursor.fetchall()
         self.assertTrue(len(rows) > 0)
-
-    def canCreateDocument(self):
-        pass
-
-    def canEditDocument(self):
-        pass
-
-    def canDeleteDocument(self):
-        pass
-
-    def canGetOneDocument(self):
-        pass
-
-    def canGetAllDocuments(self):
-        pass
-
-
 
 
 if __name__ == '__main__':
