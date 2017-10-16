@@ -23,7 +23,7 @@ class fillupDocument:
         try:
             pc = psqlConnect()
             pc.connect()
-            sql = "insert into appdocument (id, title, creator, document, created) values ('{3}', '{0}',{1},'{2}',now())".format(documentObject['title'], documentObject['creator'], json.dumps(documentObject['document']))
+            sql = "insert into appdocument (id, title, creator, document, created) values ('{3}', '{0}',{1},'{2}',now())".format(documentObject['title'], documentObject['creator'], json.dumps(documentObject['document']), documentObject['id'])
             pc.cursor.execute(sql)
             pc.conn.commit()
             return "success"
@@ -38,7 +38,7 @@ class fillupDocument:
         try:
             pc = psqlConnect()
             pc.connect()
-            sql = "delete from appdocument where id = {0}".format(documentIdentifier)
+            sql = "delete from appdocument where id = '{0}'".format(documentIdentifier)
             pc.cursor.execute(sql)
             pc.conn.commit()
             return "success"
@@ -52,14 +52,9 @@ class fillupDocument:
         updateData should only have title creator and document
         keys"""
         try:
-            revisedUpdateData = []
-            revisedUpdateData.append(updateData['title'])
-            revisedUpdateData.append(updateData['creator'])
-            revisedUpdateData.append(updateData['document'])
-            revisedUpdateData.append(documentIdentifier)
             pc = psqlConnect()
             pc.connect()
-            sql = "update appdocument set title = '{0}', creator = '{1}, document = '{2}' where id = '{3}'".format(revisedUpdateData)
+            sql = "update appdocument set title = '{0}', creator = {1}, document = '{2}' where id = '{3}'".format(updateData['title'], updateData['creator'], json.dumps(updateData['document']), documentIdentifier)
             pc.cursor.execute(sql)
             pc.conn.commit()
             return "success"
@@ -95,12 +90,21 @@ class fillupDocument:
 
 
 if __name__ == "__main__":
-    import json
+    import json, uuid
     fud = fillupDocument()
     documentData = {}
+    documentData["id"] = uuid.uuid4()
+    print(documentData['id'])
     documentData["title"] = "A Sample Document"
     documentData["creator"] = 1
     documentData["document"] = json.loads('{ "drink": "coffee", "food": "eggs, yogurt, nuts, fruit and toast" }')
 
     result = fud.createDocument(documentData)
-    print(result)
+    print("create a new document: ", result)
+
+    documentData["title"] = "A Revised Title"
+    result2 = fud.updateDocument(documentData['id'], documentData)
+    print("update an existing document: ", result2)
+
+    result3 = fud.deleteDocument(documentData['id'])
+    print("delete an existing document: ", result3)
