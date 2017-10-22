@@ -24,7 +24,7 @@ class TestCrud(unittest.TestCase):
         self.fuu = fillupUser()
         from fillupDocument import fillupDocument
         self.fud = fillupDocument()
-        
+
         documentData = {}
         self.uuid4 = uuid.uuid4()
         documentData["id"] = self.uuid4
@@ -42,13 +42,14 @@ class TestCrud(unittest.TestCase):
         self.assertTrue(success)
         success2 = self.fuu.deleteUser("neorou@yahoo.com")
         self.assertEqual(success2, "success")
-            
+        print('can create and destroy user')
 
     def test_canEditUser(self):
         self.fuu.createUser(self.testUser)
         success = self.fuu.updateUser("neorou@yahoo.com", self.updatedUserData)
         self.assertTrue(success)
         self.fuu.deleteUser("neorou@yahoo.com")
+        print('can create and edit or update user')
 
 
     def test_canConnectAndQueryToDatabase(self):
@@ -58,6 +59,7 @@ class TestCrud(unittest.TestCase):
         pc.cursor.execute("""SELECT now();""")
         rows = pc.cursor.fetchall()
         self.assertTrue(len(rows) > 0)
+        print('can connect and query database')
 
 
     def test_canCreateDocument(self):
@@ -65,6 +67,7 @@ class TestCrud(unittest.TestCase):
         self.assertTrue(result, "success")
         result2 = self.fud.deleteDocument(self.uuid4)
         self.assertTrue(result2, "success")
+        print('can create document')
 
 
     def test_canUpdateDocument(self):
@@ -74,7 +77,10 @@ class TestCrud(unittest.TestCase):
         self.assertTrue(result2, "success")
         result3 = self.fud.deleteDocument(self.uuid4)
         self.assertTrue(result3, "success")
+        print('can create update and delete document')
 
 
 if __name__ == '__main__':
     unittest.main()
+    print('test log:')
+    print(testLog)
