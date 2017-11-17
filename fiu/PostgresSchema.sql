@@ -38,3 +38,5 @@ create table appdocument (
   document json not null,
   created date default current_timestamp, primary key (id));
 alter table appdocument owner to fillup;
+
+insert into appuser (fullname, username, email, password) values ('Test User', 'testuser','neorou@gmail.com',md5('secret!'));

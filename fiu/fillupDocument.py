@@ -96,7 +96,7 @@ if __name__ == "__main__":
     import json, uuid
     fud = fillupDocument()
     documentData = {}
-    documentData["id"] = uuid.uuid4()
+    documentData["id"] = str(uuid.uuid4())
     print(documentData['id'])
     documentData["title"] = "A Sample Document"
     documentData["creator"] = 1

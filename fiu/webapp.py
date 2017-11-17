@@ -1,6 +1,7 @@
 from bottle import route, run, template, get, post, request
 import json, uuid
-fud = fillupDocument() # instantiate this here for sharing among routes below
+import fillupDocument
+fud = fillupDocument.fillupDocument() # instantiate this here for sharing among routes below
 
 @route('/')
 def index():
@@ -29,7 +30,7 @@ def newDocumentPost():
     # documentData =
     # return documentData
     documentData = {}
-    documentData["id"] = uuid.uuid4()
+    documentData["id"] = str(uuid.uuid4())
     print(documentData['id'])
     documentData["title"] = request.forms.get('title')
     documentData["creator"] = 1
