@@ -6,22 +6,24 @@ fud = fillupDocument.fillupDocument() # instantiate this here for sharing among 
 @route('/')
 def index():
     allDocuments = fud.getAllDocuments()
-    print(allDocuments)
+    #print(allDocuments)
     htmlString = "<h1>Fill It Up</h1><p><a href='/new'>record a new document</a></p>"
 
     if len(allDocuments) > 0:
         htmlString = htmlString + '<p>documents found in database:</p><ul>'
         for d in allDocuments:
-            htmlString = htmlString + '<li>' + d[1] + '</li>'
+            htmlString = htmlString + '<li><a href="/show-document/' + d[0] + '">' + d[1] + '</a></li>'
         htmlString = htmlString + '</ul>'
     else:
         htmlString = htmlString + '<p>no documents in the database right now.</p>'
 
     return htmlString
 
-@route('/process/<data>')
-def process(data):
-    return template('you provided: {{data}}', data=data)
+@route('/show-document/<documentId>')
+def showDocument(documentId):
+    theDocument = fud.readDocument(documentId)
+    return theDocument[3] # returns json output
+    # return template('you provided: {{data}}', data=data)
 
 @route('/new')
 def newDocumentForm():
@@ -38,9 +40,6 @@ def newDocumentForm():
 def newDocumentPost():
     # generate the new id
     documentId = uuid.uuid4()
-    # documentTitle =
-    # documentData =
-    # return documentData
     documentData = {}
     documentData["id"] = str(uuid.uuid4())
     print(documentData['id'])
