@@ -18,7 +18,7 @@ class psqlConnect:
         self.databaseHost = 'localhost'
         self.databaseUser = 'fillup'
         self.databasePassword = 'fillup'
-        self.connectString = "dbname=" + self.databaseName 
+        self.connectString = "dbname=" + self.databaseName
         self.connectString += " user=" + self.databaseUser
         self.connectString += " host=" + self.databaseHost
         self.connectString += " password=" + self.databasePassword
@@ -37,7 +37,7 @@ class psqlConnect:
             print('connection made to ' + connectionStringEnding)
         else:
             print('connection problem with ' + connectionStringEnding)"""
-        
+
 
     def getCurrentTimestamp(self):
         try:

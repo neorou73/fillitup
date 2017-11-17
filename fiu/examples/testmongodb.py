@@ -1,6 +1,6 @@
 """
 taken from https://docs.mongodb.com/getting-started/python/introduction/
-to install driver 
+to install driver
 pip install pymongo
 
 example of looking for data loaded from https://raw.githubusercontent.com/mongodb/docs-assets/primer-dataset/primer-dataset.json
@@ -49,7 +49,7 @@ result = db.restaurants.insert_one(
 print(result.inserted_id)
 """
 
-# look for (find) a restaurant, use the $or - can be $and 
+# look for (find) a restaurant, use the $or - can be $and
 
 cursor = db.restaurants.find({"$or": [{"cuisine": "Italian"}, {"address.zipcode": "10075"}]})
 for document in cursor:

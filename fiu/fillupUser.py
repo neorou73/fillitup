@@ -148,11 +148,11 @@ class fillupUser:
 
 if __name__ == "__main__":
     fuu = fillupUser()
-    test = { 
-        "fullname": "Kris Poe", 
-        "username": "neorou73", 
-        "email": "neorou@gmail.com", 
-        "password": "5ecret!" 
+    test = {
+        "fullname": "Kris Poe",
+        "username": "neorou73",
+        "email": "neorou@gmail.com",
+        "password": "5ecret!"
     }
 
     if (fuu.validateUserData(test)):
