@@ -110,21 +110,24 @@ class fillupUser:
             sql = "select * from appuser where email = '{0}' and password = md5('{1}')".format(userEmail, password)
             pc.cursor.execute(sql)
             row = pc.cursor.fetchone()
-            userToken = "thisIsAGeneralTestT0k3n"
-            import uuid
-            accessToken = uuid.uuid4()
-            sql2 = "insert into logintoken (token, appuser, created) values ('{0}', {1}, now())".format(accessToken, row[0])
-            # print(row[0], userToken, sql2)
-            pc.cursor.execute(sql2)
-            pc.conn.commit()
-            return accessToken
+            if len(row) > 0:
+                userToken = "thisIsAGeneralTestT0k3n"
+                import uuid
+                accessToken = str(uuid.uuid4())
+                sql2 = "insert into logintoken (token, appuser, created) values ('{0}', {1}, now())".format(accessToken, row[0])
+                # print(row[0], userToken, sql2)
+                pc.cursor.execute(sql2)
+                pc.conn.commit()
+                return accessToken
+            else:
+                return "Unable to find users in records."
         except:
-            import sys
-            print (sys.exc_info[0])
+            # import sys
+            # print (sys.exc_info[0])
             return "Unable to find users in records."
 
 
-    def logoutUser(self, userEmail, accessToken):
+    def logoutUser(self, userEmail):
         pc = psqlConnect()
         pc.connect()
         try:
@@ -132,14 +135,14 @@ class fillupUser:
             pc.cursor.execute(sql)
             row = pc.cursor.fetchone()
             # print(row)
-            sql2 = "update logintoken set logged_out = now() where appuser = {0} and token = '{1}'".format(row[0], accessToken)
+            sql2 = "update logintoken set logged_out = now() where appuser = {0}".format(row[0])
             # print(row[0], sql2)
             pc.cursor.execute(sql2)
             pc.conn.commit()
         except:
             import sys
             print (sys.exc_info()[0])
-            return "Unable to find users in records."
+            return "Unable to find user in records."
 
 
     def sendEmailToUser(self, userEmail):

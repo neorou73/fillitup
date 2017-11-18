@@ -1,4 +1,4 @@
-from bottle import route, run, template, get, post, request, redirect, BaseRequest
+from bottle import route, run, template, get, post, request, response, redirect, BaseRequest
 import json, uuid
 
 # set memory
@@ -8,11 +8,50 @@ BaseRequest.MEMFILE_MAX = 1024 * 1024
 import fillupDocument
 fud = fillupDocument.fillupDocument() # instantiate this here for sharing among routes below
 
+@route('/login', method='get')
+def loginForm():
+    htmlString = '<form action="/login" method="post"><table><tbody>'
+    htmlString = htmlString + '<tr><th>email:</th>'
+    htmlString = htmlString + '<td><input name="email"/></td></tr>'
+    htmlString = htmlString + '<tr><th>password:</th>'
+    htmlString = htmlString + '<td><input type="password" name="password"/></td></tr>'
+    htmlString = htmlString + '<tr><td><input type="submit" name="submit" value="login"/></tr>'
+    htmlString = htmlString + '</tbody></table></form>'
+    return htmlString
+
+@route('/login', method='post')
+def loginUser():
+    import fillupUser
+    fuu = fillupUser.fillupUser()
+    credentials = {}
+    credentials['email'] = request.forms.get('email')
+    credentials['password'] = request.forms.get('password')
+    loggedin = fuu.loginUser(credentials['email'], credentials['password'])
+    if loggedin == "Unable to find users in records.":
+        return '<p>Credentials Invalid!</p><a href="/login">try logging in again</a>'
+    else:
+        response.set_cookie("account", credentials['email'], secret='some-secret-key')
+        return template('<p>generated an access token: {{loggedin}}', loggedin=loggedin)
+
+@route('/logout', method='get')
+def logoutUser():
+    import fillupUser
+    fuu = fillupUser.fillupUser()
+    email = request.get_cookie("account", secret='some-secret-key')
+    if email:
+        response.set_cookie("account", '', secret='some-secret-key')
+        loggedout = fuu.logoutUser(email)
+    redirect('/')
+
+
 @route('/')
 def index():
+    email = request.get_cookie("account", secret='some-secret-key')
     allDocuments = fud.getAllDocuments()
     #print(allDocuments)
     htmlString = "<h1>Fill It Up</h1><p><a href='/new'>record a new document</a></p>"
+    if email:
+        htmlString = htmlString + "<p>current user: " + email + " - <a href='/logout'>logout</a></p>"
 
     if len(allDocuments) > 0:
         htmlString = htmlString + '<p>documents found in database:</p><table><tbody>'
