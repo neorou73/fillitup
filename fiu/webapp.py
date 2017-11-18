@@ -1,5 +1,8 @@
-from bottle import route, run, template, get, post, request, redirect
+from bottle import route, run, template, get, post, request, redirect, BaseRequest
 import json, uuid
+
+# set memory
+BaseRequest.MEMFILE_MAX = 1024 * 1024
 
 # include the fillupDocument object
 import fillupDocument
