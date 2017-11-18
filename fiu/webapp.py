@@ -8,6 +8,9 @@ BaseRequest.MEMFILE_MAX = 1024 * 1024
 import fillupDocument
 fud = fillupDocument.fillupDocument() # instantiate this here for sharing among routes below
 
+import fillupUser
+fuu = fillupUser.fillupUser()
+
 @route('/login', method='get')
 def loginForm():
     htmlString = '<form action="/login" method="post"><table><tbody>'
@@ -21,8 +24,6 @@ def loginForm():
 
 @route('/login', method='post')
 def loginUser():
-    import fillupUser
-    fuu = fillupUser.fillupUser()
     credentials = {}
     credentials['email'] = request.forms.get('email')
     credentials['password'] = request.forms.get('password')
@@ -33,15 +34,14 @@ def loginUser():
         response.set_cookie("account", credentials['email'], secret='some-secret-key')
         return template('<p>generated an access token: {{loggedin}}', loggedin=loggedin)
 
+
 @route('/logout', method='get')
 def logoutUser():
-    import fillupUser
-    fuu = fillupUser.fillupUser()
     email = request.get_cookie("account", secret='some-secret-key')
     if email:
         response.set_cookie("account", '', secret='some-secret-key')
         loggedout = fuu.logoutUser(email)
-    redirect('/')
+    redirect('/login')
 
 
 @route('/')
@@ -52,98 +52,130 @@ def index():
     htmlString = "<h1>Fill It Up</h1><p><a href='/new'>record a new document</a></p>"
     if email:
         htmlString = htmlString + "<p>current user: " + email + " - <a href='/logout'>logout</a></p>"
+        if len(allDocuments) > 0:
+            htmlString = htmlString + '<p>documents found in database:</p><table><tbody>'
+            for d in allDocuments:
+                htmlString = htmlString + '<tr>'
+                htmlString = htmlString + '<td><a href="/show-document/' + d[0] + '" target="window">' + d[1] + '</a></td>'
+                htmlString = htmlString + '<td><a href="/edit-document/' + d[0] + '">edit</a></td>'
+                htmlString = htmlString + '<td><form action="/delete-document" method="post">'
+                htmlString = htmlString + '<input name="documentId" value="' + d[0] + '" type="hidden"/>'
+                htmlString = htmlString + '<input type="submit" value="delete"></form></td>'
+                htmlString = htmlString + '</tr>'
+            htmlString = htmlString + '</tbody></table>'
+        else:
+            htmlString = htmlString + '<p>no documents in the database right now.</p>'
 
-    if len(allDocuments) > 0:
-        htmlString = htmlString + '<p>documents found in database:</p><table><tbody>'
-        for d in allDocuments:
-            htmlString = htmlString + '<tr>'
-            htmlString = htmlString + '<td><a href="/show-document/' + d[0] + '" target="window">' + d[1] + '</a></td>'
-            htmlString = htmlString + '<td><a href="/edit-document/' + d[0] + '">edit</a></td>'
-            htmlString = htmlString + '<td><form action="/delete-document" method="post">'
-            htmlString = htmlString + '<input name="documentId" value="' + d[0] + '" type="hidden"/>'
-            htmlString = htmlString + '<input type="submit" value="delete"></form></td>'
-            htmlString = htmlString + '</tr>'
-        htmlString = htmlString + '</tbody></table>'
+        return htmlString
     else:
-        htmlString = htmlString + '<p>no documents in the database right now.</p>'
+        redirect('/login')
 
-    return htmlString
 
 @route('/show-document/<documentId>')
 def showDocument(documentId):
-    theDocument = fud.readDocument(documentId)
-    return theDocument[3] # returns json output
-    # return template('you provided: {{data}}', data=data)
+    email = request.get_cookie("account", secret='some-secret-key')
+    if email:
+        theDocument = fud.readDocument(documentId)
+        return theDocument[3] # returns json output
+        # return template('you provided: {{data}}', data=data)
+    else:
+        redirect('/')
+
 
 @route('/new')
 def newDocumentForm():
-    return """
-        <form action='new' method='post'>
-            <p><label>document title:</label><input type='text' name='title' maxlength=50 /></p>
-            <p><label>content:</label></p>
-            <div><textarea rows=5 cols=15 name='document'></textarea></div>
-            <p><input value='save document' type='submit'/></p>
-        </form>
-    """
+    email = request.get_cookie("account", secret='some-secret-key')
+    if email:
+        return """
+            <form action='new' method='post'>
+                <p><label>document title:</label><input type='text' name='title' maxlength=50 /></p>
+                <p><label>content:</label></p>
+                <div><textarea rows=5 cols=15 name='document'></textarea></div>
+                <p><input value='save document' type='submit'/></p>
+            </form>
+        """
+    else:
+        redirect('/login')
 
 @route('/new', method='post')
 def newDocumentPost():
-    # generate the new id
-    documentId = uuid.uuid4()
-    documentData = {}
-    documentData["id"] = str(uuid.uuid4())
-    print(documentData['id'])
-    documentData["title"] = request.forms.get('title')
-    documentData["creator"] = 1
-    documentData["document"] = json.loads(request.forms.get('document'))
-    result = fud.createDocument(documentData)
-    print(result)
-    if result:
-        #return documentData
-        redirect('/')
+    email = request.get_cookie("account", secret='some-secret-key')
+    if email:
+        # generate the new id
+        documentId = uuid.uuid4()
+        documentData = {}
+        documentData["id"] = str(uuid.uuid4())
+        print(documentData['id'])
+        documentData["title"] = request.forms.get('title')
+        documentData["creator"] = 1
+        documentData["document"] = json.loads(request.forms.get('document'))
+        result = fud.createDocument(documentData)
+        print(result)
+        if result:
+            #return documentData
+            redirect('/')
+        else:
+            return 'Error'
     else:
-        return 'Error'
+        redirect('/login')
+
 
 @route('/delete-document', method='post')
 def deleteDocument():
-    documentId = request.forms.get('documentId')
-    result = fud.deleteDocument(documentId)
-    # return ('<p>result: ' + result + '</p><p><a href="/">main page</a></p>')
-    if result:
-        redirect('/')
+    email = request.get_cookie("account", secret='some-secret-key')
+    if email:
+        documentId = request.forms.get('documentId')
+        result = fud.deleteDocument(documentId)
+        # return ('<p>result: ' + result + '</p><p><a href="/">main page</a></p>')
+        if result:
+            redirect('/')
+        else:
+            return ('<p>result: ' + result + '</p><p><a href="/">main page</a></p>')
     else:
-        return ('<p>result: ' + result + '</p><p><a href="/">main page</a></p>')
+        redirect('/login')
+
 
 @route('/edit-document/<documentId>', method='get')
 def editDocumentForm(documentId):
-    data = fud.readDocument(documentId)
-    print(json.dumps(data[3]))
-    revisedData = [data[0], data[1], data[2], json.dumps(data[3])]
-    formString = """
-        <form action='/edit-document/{{revisedData[0]}}' method='post'>
-            <p><label>document title:</label><input type='text' name='title' value='{{revisedData[1]}}' maxlength=50 /></p>
-            <p><label>content:</label></p>
-            <div><textarea rows=5 cols=15 name='document'>{{revisedData[3]}}</textarea></div>
-            <p>
-                <input type='hidden' name='creator' value='{{revisedData[2]}}'/>
-                <input value='save edit' type='submit'/>
-            </p>
-        </form>
-    """
-    return template(formString, revisedData=revisedData)
+    email = request.get_cookie("account", secret='some-secret-key')
+    if email:
+        data = fud.readDocument(documentId)
+        print(json.dumps(data[3]))
+        revisedData = [data[0], data[1], data[2], json.dumps(data[3])]
+        formString = """
+            <form action='/edit-document/{{revisedData[0]}}' method='post'>
+                <p><label>document title:</label><input type='text' name='title' value='{{revisedData[1]}}' maxlength=50 /></p>
+                <p><label>content:</label></p>
+                <div><textarea rows=5 cols=15 name='document'>{{revisedData[3]}}</textarea></div>
+                <p>
+                    <input type='hidden' name='creator' value='{{revisedData[2]}}'/>
+                    <input value='save edit' type='submit'/>
+                </p>
+            </form>
+        """
+        return template(formString, revisedData=revisedData)
+    else:
+        redirect('/login')
+
+
 
 @route('/edit-document/<documentId>', method='post')
 def editDocument(documentId):
-    newDocumentData = {}
-    newDocumentData['title'] = request.forms.get('title')
-    newDocumentData['creator'] = request.forms.get('creator')
-    newDocumentData['document'] = request.forms.get('document')
-    result = fud.updateDocument(documentId, newDocumentData)
-    print(result)
-    if result:
-        redirect('/')
+    email = request.get_cookie("account", secret='some-secret-key')
+    if email:
+        newDocumentData = {}
+        newDocumentData['title'] = request.forms.get('title')
+        newDocumentData['creator'] = request.forms.get('creator')
+        newDocumentData['document'] = request.forms.get('document')
+        result = fud.updateDocument(documentId, newDocumentData)
+        print(result)
+        if result:
+            redirect('/')
+        else:
+            return ('<p>result: ' + result + '</p><p><a href="/">main page</a></p>')
     else:
-        return ('<p>result: ' + result + '</p><p><a href="/">main page</a></p>')
+        redirect('/login')
+
 
 # run(host='localhost', port=8080)
 run(host='0.0.0.0', port=8080, server='gunicorn', workers=4, debug=True)
