@@ -23,7 +23,7 @@ class fillupDocument:
         try:
             pc = psqlConnect()
             pc.connect()
-            sql = "insert into appdocument (id, title, creator, document, created) values ('{3}', '{0}',{1},'{2}',now())".format(documentObject['title'], documentObject['creator'], json.dumps(documentObject['document']), documentObject['id'])
+            sql = "insert into appdocument (id, title, creator, document, created) values ('{3}', '{0}', {1}, '{2}',now())".format(documentObject['title'], documentObject['creator'], json.dumps(documentObject['document']), documentObject['id'])
             pc.cursor.execute(sql)
             pc.conn.commit()
             return "success"
@@ -59,7 +59,7 @@ class fillupDocument:
             pc.conn.commit()
             return "success"
         except:
-            message = "Unable to create a document"
+            message = "Unable to update a document"
             return [message, sys.exc_info()]
 
     def readDocument(self, documentIdentifier):
