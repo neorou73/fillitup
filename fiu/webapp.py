@@ -35,17 +35,8 @@ def readFileFromTemplate(filePath):
 
 @route('/login', method='get')
 def loginForm():
-    """
-    htmlString = '<form action="/login" method="post"><table><tbody>'
-    htmlString = htmlString + '<tr><th>email:</th>'
-    htmlString = htmlString + '<td><input name="email"/></td></tr>'
-    htmlString = htmlString + '<tr><th>password:</th>'
-    htmlString = htmlString + '<td><input type="password" name="password"/></td></tr>'
-    htmlString = htmlString + '<tr><td><input type="submit" name="submit" value="login"/></tr>'
-    htmlString = htmlString + '</tbody></table></form>'"""
     loginFormFile = configuration['html-templates-directory'] + '/login.html'
-    htmlString = readFileFromTemplate(loginFormFile)
-    return htmlString
+    return readFileFromTemplate(loginFormFile)
 
 @route('/login', method='post')
 def loginUser():

@@ -1,0 +1,20 @@
+
+<div class='main-page'>
+  <h1>Fill It Up</h1>
+  <p><a href='/new'>record a new document</a></p>
+  <p>current user: {{email}} - <a href='/logout'>logout</a></p>
+  <p>documents found in database:</p>
+  <table>
+    <tbody>
+      <tr>
+        <td><a href="/show-document/{{documentId}}" target="window">{{documentTitle}}</a></td>
+        <td><a href="/edit-document/{{documentId}}">edit</a></td>
+        <td>
+          <form action="/delete-document" method="post">
+            <input name="documentId" value="{{documentId}}" type="hidden"/>
+            <input type="submit" value="delete"></form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
