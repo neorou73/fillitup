@@ -1,5 +1,6 @@
 {
   "client-directory": "client",
   "html-templates-directory": "templates",
-  "application-name": "Fill It Up"
+  "application-name": "Fill It Up",
+  "secret-key": "6T60-7as!$k-ri59"
 }

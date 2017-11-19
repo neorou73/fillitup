@@ -5,11 +5,17 @@ import json, uuid
 from os.path import dirname, abspath
 webappDirectory = dirname(abspath(__file__))
 configFile = webappDirectory + '/config.default.json'
-# print(webappDirectory)
+
 with open(configFile, 'r') as jd:
     configuration = json.load(jd)
 
-print(configuration)
+clientDirectory = webappDirectory + '/' + configuration['client-directory']
+htmlTemplatesDirectory = webappDirectory + '/' + configuration['html-templates-directory']
+appName = configuration['application-name']
+secretKey = configuration['secret-key']
+
+# test configuration with as follows
+# print(webappDirectory)
 
 # set memory
 BaseRequest.MEMFILE_MAX = 1024 * 1024
@@ -21,15 +27,24 @@ fud = fillupDocument.fillupDocument() # instantiate this here for sharing among 
 import fillupUser
 fuu = fillupUser.fillupUser()
 
+def readFileFromTemplate(filePath):
+    with open(filePath, 'r') as fd:
+        return fd.read() # return as string data
+
+# print (readFileFromTemplate(htmlTemplatesDirectory + '/login.html')) # test print
+
 @route('/login', method='get')
 def loginForm():
+    """
     htmlString = '<form action="/login" method="post"><table><tbody>'
     htmlString = htmlString + '<tr><th>email:</th>'
     htmlString = htmlString + '<td><input name="email"/></td></tr>'
     htmlString = htmlString + '<tr><th>password:</th>'
     htmlString = htmlString + '<td><input type="password" name="password"/></td></tr>'
     htmlString = htmlString + '<tr><td><input type="submit" name="submit" value="login"/></tr>'
-    htmlString = htmlString + '</tbody></table></form>'
+    htmlString = htmlString + '</tbody></table></form>'"""
+    loginFormFile = configuration['html-templates-directory'] + '/login.html'
+    htmlString = readFileFromTemplate(loginFormFile)
     return htmlString
 
 @route('/login', method='post')
@@ -41,23 +56,23 @@ def loginUser():
     if loggedin == "Unable to find users in records.":
         return '<p>Credentials Invalid!</p><a href="/login">try logging in again</a>'
     else:
-        response.set_cookie("account", credentials['email'], secret='some-secret-key')
+        response.set_cookie("account", credentials['email'], secret=secretKey)
         # return template('<p>generated an access token: {{loggedin}}', loggedin=loggedin)
         redirect('/')
 
 
 @route('/logout', method='get')
 def logoutUser():
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     if email:
-        response.set_cookie("account", '', secret='some-secret-key')
+        response.set_cookie("account", '', secret=secretKey)
         loggedout = fuu.logoutUser(email)
     redirect('/login')
 
 
 @route('/')
 def index():
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     allDocuments = fud.getAllDocuments()
     #print(allDocuments)
     htmlString = "<h1>Fill It Up</h1><p><a href='/new'>record a new document</a></p>"
@@ -84,7 +99,7 @@ def index():
 
 @route('/show-document/<documentId>')
 def showDocument(documentId):
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     if email:
         theDocument = fud.readDocument(documentId)
         return theDocument[3] # returns json output
@@ -95,7 +110,7 @@ def showDocument(documentId):
 
 @route('/new')
 def newDocumentForm():
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     if email:
         return """
             <form action='new' method='post'>
@@ -110,7 +125,7 @@ def newDocumentForm():
 
 @route('/new', method='post')
 def newDocumentPost():
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     if email:
         # generate the new id
         documentId = uuid.uuid4()
@@ -133,7 +148,7 @@ def newDocumentPost():
 
 @route('/delete-document', method='post')
 def deleteDocument():
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     if email:
         documentId = request.forms.get('documentId')
         result = fud.deleteDocument(documentId)
@@ -148,7 +163,7 @@ def deleteDocument():
 
 @route('/edit-document/<documentId>', method='get')
 def editDocumentForm(documentId):
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     if email:
         data = fud.readDocument(documentId)
         print(json.dumps(data[3]))
@@ -172,7 +187,7 @@ def editDocumentForm(documentId):
 
 @route('/edit-document/<documentId>', method='post')
 def editDocument(documentId):
-    email = request.get_cookie("account", secret='some-secret-key')
+    email = request.get_cookie("account", secret=secretKey)
     if email:
         newDocumentData = {}
         newDocumentData['title'] = request.forms.get('title')
