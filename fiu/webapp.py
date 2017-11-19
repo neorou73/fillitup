@@ -103,14 +103,8 @@ def showDocument(documentId):
 def newDocumentForm():
     email = request.get_cookie("account", secret=secretKey)
     if email:
-        return """
-            <form action='new' method='post'>
-                <p><label>document title:</label><input type='text' name='title' maxlength=50 /></p>
-                <p><label>content:</label></p>
-                <div><textarea rows=5 cols=15 name='document'></textarea></div>
-                <p><input value='save document' type='submit'/></p>
-            </form>
-        """
+        loginFormFile = configuration['html-templates-directory'] + '/new-document.html'
+        return readFileFromTemplate(loginFormFile)
     else:
         redirect('/login')
 
