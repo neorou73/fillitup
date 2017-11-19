@@ -1,6 +1,16 @@
 from bottle import route, run, template, get, post, request, response, redirect, BaseRequest
 import json, uuid
 
+# get configuration JSON
+from os.path import dirname, abspath
+webappDirectory = dirname(abspath(__file__))
+configFile = webappDirectory + '/config.default.json'
+# print(webappDirectory)
+with open(configFile, 'r') as jd:
+    configuration = json.load(jd)
+
+print(configuration)
+
 # set memory
 BaseRequest.MEMFILE_MAX = 1024 * 1024
 
@@ -32,7 +42,8 @@ def loginUser():
         return '<p>Credentials Invalid!</p><a href="/login">try logging in again</a>'
     else:
         response.set_cookie("account", credentials['email'], secret='some-secret-key')
-        return template('<p>generated an access token: {{loggedin}}', loggedin=loggedin)
+        # return template('<p>generated an access token: {{loggedin}}', loggedin=loggedin)
+        redirect('/')
 
 
 @route('/logout', method='get')
@@ -176,6 +187,7 @@ def editDocument(documentId):
     else:
         redirect('/login')
 
-
-# run(host='localhost', port=8080)
-run(host='0.0.0.0', port=8080, server='gunicorn', workers=4, debug=True)
+# run the application
+run(host='0.0.0.0', port=8080)
+# run(host='0.0.0.0', port=8080, server='gunicorn', workers=4, debug=True)
+# run(host='0.0.0.0', port=8080, server='tornado', workers=2, debug=True)
