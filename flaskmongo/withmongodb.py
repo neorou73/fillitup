@@ -1,4 +1,4 @@
-from flask import Flask, url_for, render_template, request, make_response, redirect, abort, session, jsonify  
+from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify  
 
 app = Flask(__name__)
 Flask.SECRET_KEY = b'26ae9dd5b52d5111d9376decfeb36f1506848a623941678b31d845582e84b038'
