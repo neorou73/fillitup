@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Whoops, there is an error{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    {% if code %}
+    <h1>Sorry, it appears we encountered an error {{ code }}!</h1>
+    {% endif %}
+{% endblock %}
+
+{% if error %}
+  <h1>Sorry, it appears we encountered an error </h1>
+  <p>{{ error }}</p>
+{% endif %}

@@ -1,9 +1,14 @@
 node_modules
 .gitignore
-fillitup/__pycache__/*
+fiu/__pycache__/*
+flaskmongo/__pycache__/*
 .DS_Store
 *.swp
 *.pyc
 fiu/__pycache__
+fiu/__pycache__
 fiu/can_create_file.json
+flaskmongo/can_create_file.json
 fiu/*.pyc
+flaskmongo/*.pyc
+flaskmongo/fmvenv
