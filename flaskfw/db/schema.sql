@@ -1,7 +1,7 @@
 drop database fillitup;
 create database fillitup;
 drop role fillitupadmin;
-create role fillitupadmin with superuser password '1t5@secr3+!' valid until 'infinity';
+create role fillitupadmin with login superuser password '1+5@secret!' valid until 'infinity';
 
 \c fillitup 
 
@@ -12,6 +12,9 @@ create table people (
     password varchar(255) not null,
     tscreated timestamp default current_timestamp,
     changelog json);
+
+/* 4d9820104357e42325bce5f0ecccdaa7b3b42af2e59ac4de8217aa37ddd8948e is a hashed value of 1+5@secret!*/
+insert into people (username, email, password, tscreated) values ('admin','superuser@org.org','4d9820104357e42325bce5f0ecccdaa7b3b42af2e59ac4de8217aa37ddd8948e', now());
 
 alter table people owner to fillitupadmin;
 

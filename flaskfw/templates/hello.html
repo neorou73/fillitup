@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Whoops, there is an error{% endblock %}
+{% block title %}Welcome{% if name %}, {{ name }}{% endif %}{% endblock %}
 {% block head %}
     {{ super() }}
     <style type="text/css">

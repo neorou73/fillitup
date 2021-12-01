@@ -10,5 +10,7 @@ pip install ItsDangerous
 pip install Click 
 pip install Blinker
 pip install python-dotenv 
+pip install flask 
+pip install psycopg2 
 pip install Watchdog"
 
