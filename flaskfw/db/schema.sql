@@ -22,7 +22,7 @@ create table accesstokens (
     person varchar(255) references people(email),
     token text not null,
     tscreated timestamp default current_timestamp,
-    loggedout timestamp default null,
+    loggedout boolean default false,
     ttd integer default 86400);
 
 alter table accesstokens owner to fillitupadmin;

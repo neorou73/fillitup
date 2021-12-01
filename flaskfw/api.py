@@ -24,9 +24,12 @@ def login():
         print(request.form['password'])
         if pdb.validateUser(request.form['email'], request.form['password']):
             print ('user is valid')
-            pdb.loginUser(request.form['email'])
+            if pdb.loginUser(request.form['email']):
+                return render_template('hello.html', name=request.form['email'])
         else:
-            print ('user is not valid')
+            enotice = "user is not valid"
+            print (enotice)
+            error=enotice
         
     return render_template('login.html', error=error)
 
@@ -63,7 +66,7 @@ def not_found(error):
     resp = make_response(render_template('error.html', code=403), 403)
     #resp.headers['X-Something'] = 'A value'
     return resp
-    
+
 
 # not found
 @app.errorhandler(404)

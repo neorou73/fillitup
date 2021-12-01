@@ -81,13 +81,16 @@ class psqldb:
     def loginUser(self, email):
         try:
             self.connect()
-            self.cursor.execute("""INSERT INTO accesstokens (person, token) values (%s, %s);""", (email, self.createLoginToken()))
+            import uuid 
+            tokenString = uuid.uuid4().hex
+            print(tokenString)
+            self.cursor.execute("""INSERT INTO accesstokens (person, token) values (%s, %s);""", (email, tokenString))
             print("user " + email + " has been logged in.")
             self.conn.close()
-            return email
+            return True
         except Exception as e:
             print(e)
-            return e
+            return False
 
 
 if __name__ == "__main__":
