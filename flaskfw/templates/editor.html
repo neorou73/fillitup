@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Editor{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    {% if title %}
+    <h1>Editor Window for {{ title }}!</h1>
+    {% else %}
+    <h1>Editor Window</h1>
+    {% endif %}
+
+    <textarea>Next, use our Get Started docs to setup Tiny!</textarea>
+{% endblock %}

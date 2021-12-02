@@ -12,3 +12,4 @@ fiu/can_create_file.json
 fiu/*.pyc
 */*.pyc
 */fmvenv
+*/static/cached

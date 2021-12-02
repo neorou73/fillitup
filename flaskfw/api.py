@@ -43,6 +43,11 @@ def upload_file():
     
     return render_template('upload.html', name=name)
 
+@app.route('/editor', methods=['GET', 'POST'])
+@app.route('/editor/<postTitle>', methods=['GET', 'POST'])
+def use_editor(postTitle=None):
+    return render_template('editor.html', title=postTitle)
+
 
 # bad request
 @app.errorhandler(400)
