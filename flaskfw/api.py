@@ -23,6 +23,9 @@ app.secret_key = bytes(configurationObject['application']['secret_key'], 'utf-8'
 
 #url_for('static', filename='style.css')
 
+fileUploadDirectoryPath = os.path.dirname(os.path.realpath(__file__)) + "/static/fileuploads"
+print(fileUploadDirectoryPath)
+
 @app.route("/")
 @app.route('/hello/<name>')
 def hello(name=None):
@@ -70,7 +73,7 @@ def upload_file():
             print(f.content_type)
             print(f.filename)
             #filename = "getname"
-            f.save('/home/krispy/testuploads/' + f.filename)
+            f.save(fileUploadDirectoryPath + '/' + f.filename)
         
         return render_template('upload.html')
     return redirect(url_for('hello'))

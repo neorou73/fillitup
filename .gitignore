@@ -13,3 +13,4 @@ fiu/*.pyc
 */*.pyc
 */fmvenv
 */static/cached
+*/static/fileuploads
