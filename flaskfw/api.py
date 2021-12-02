@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify  
+from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify, url_for  
 
 import os, json, sys  
 
@@ -16,16 +16,19 @@ def readConfigurationFile():
 
 configurationObject = readConfigurationFile()
 print("read configuration file")
+print(configurationObject['application']['secret_key'])
 
 app = Flask(__name__)
-Flask.SECRET_KEY = configurationObject['application']['secret_key'].encode('utf-8')
+app.secret_key = bytes(configurationObject['application']['secret_key'], 'utf-8')
 
 #url_for('static', filename='style.css')
 
 @app.route("/")
 @app.route('/hello/<name>')
 def hello(name=None):
-    return render_template('hello.html', name=name)
+    if 'email' in session:
+        return render_template('hello.html', name=session['email'], loggedin=True)
+    return render_template('hello.html', name=name, loggedin=False)
     #return "<p>Hello, World!</p>"
 
 
@@ -42,6 +45,7 @@ def login():
         if pdb.validateUser(request.form['email'], request.form['password']):
             print ('user is valid')
             if pdb.loginUser(request.form['email']):
+                session['email'] = request.form['email']
                 return render_template('hello.html', name=request.form['email'])
         else:
             enotice = "user is not valid"
@@ -49,6 +53,12 @@ def login():
             error=enotice
         
     return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('email', None)
+    return redirect(url_for('hello'))
 
 
 @app.route('/upload', methods=['GET', 'POST'])

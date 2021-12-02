@@ -12,6 +12,11 @@
     {% else %}
     <h1>Hello, World!</h1>
     {% endif %}
+    {% if loggedin %}
+    <p>you are logged in - <a href="/logout">would you like to log in as someone else?</a></p>
+    {% else %}
+    <p>you are not logged in - try the login form below</p>
+    {% endif %}
     <div>testing templates:
         <ul>
             <li><a href="/">this page</a></li>
