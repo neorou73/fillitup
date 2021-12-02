@@ -16,7 +16,7 @@ def readConfigurationFile():
 
 configurationObject = readConfigurationFile()
 print("read configuration file")
-print(configurationObject['application']['secret_key'])
+#print(configurationObject['application']['secret_key'])
 
 app = Flask(__name__)
 app.secret_key = bytes(configurationObject['application']['secret_key'], 'utf-8')
@@ -65,9 +65,12 @@ def logout():
 def upload_file():
     if 'email' in session:
         if request.method == 'POST':
-            f = request.files['the_file']
-            filename = "getname"
-            f.save('/uploads/' + filename)
+            f = request.files['file1']
+            print(f)
+            print(f.content_type)
+            print(f.filename)
+            #filename = "getname"
+            f.save('/home/krispy/testuploads/' + f.filename)
         
         return render_template('upload.html')
     return redirect(url_for('hello'))
