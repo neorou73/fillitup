@@ -10,5 +10,8 @@
         "username": "admin",
         "email": "superuser@org.org",
         "password": "1+5@secret!"
+    },
+    "application": {
+        "secret_key": "26ae9dd5b52d5111d9376decfeb36f1506848a623941678b31d845582e84b038"
     }
 }

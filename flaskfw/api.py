@@ -1,7 +1,24 @@
 from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify  
 
+import os, json, sys  
+
+def readConfigurationFile():
+    try:
+        print("attempting to read configuration...")
+        jsonFilePath = os.getcwd() + "/api.config.default.json"
+        f = open(jsonFilePath, 'r')
+        jsonData = json.load(f)
+        f.close()
+        return jsonData
+    except Exception as e:
+        print('unable to read configuration file - please ensure file exists and properly formatted.')
+        sys.exit()
+
+configurationObject = readConfigurationFile()
+print("read configuration file")
+
 app = Flask(__name__)
-Flask.SECRET_KEY = b'26ae9dd5b52d5111d9376decfeb36f1506848a623941678b31d845582e84b038'
+Flask.SECRET_KEY = configurationObject['application']['secret_key'].encode('utf-8')
 
 #url_for('static', filename='style.css')
 
