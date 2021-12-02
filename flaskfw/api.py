@@ -149,6 +149,43 @@ def manage_site():
         return render_template('manage.html')
     return redirect(url_for('hello'))
 
+
+@app.route('/users/add')
+def add_user():
+    pass 
+
+@app.route('/users/edit')
+def edit_user():
+    pass 
+
+@app.route('/users/deactivate')
+def deactivate_user():
+    pass 
+
+@app.route('/users/purge')
+def purge_user():
+    pass
+
+@app.route('/sections/add')
+def add_section():
+    pass 
+
+@app.route('/sections/remove')
+def remove_section():
+    pass 
+
+@app.route('/sections/edit')
+def edit_section():
+    pass 
+
+@app.route('/keywords/add')
+def add_keyword():
+    pass 
+
+@app.route('/keywords/remove')
+def remove_keyword():
+    pass
+
 # bad request
 @app.errorhandler(400)
 def not_found(error):
