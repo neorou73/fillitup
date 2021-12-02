@@ -13,5 +13,11 @@
     <h1>Editor Window</h1>
     {% endif %}
 
-    <textarea>Next, use our Get Started docs to setup Tiny!</textarea>
+    <form method="post" action="/editor">
+        {% if title %}
+        <input type="hidden" name="title" value="{{title}}"/>
+        {% endif %}
+        <textarea id="editortextarea" name="editortextarea">Next, use our Get Started docs to setup Tiny!</textarea>
+        <button>save</button>
+    </form>
 {% endblock %}

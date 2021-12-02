@@ -82,6 +82,10 @@ def upload_file():
 @app.route('/editor/<postTitle>', methods=['GET', 'POST'])
 def use_editor(postTitle=None):
     if 'email' in session:
+        #if request.method == "POST" and hasattr(request.form, 'title'):
+        if request.method == "POST":
+            print(request.form['title'])
+            print(request.form['editortextarea'])
         return render_template('editor.html', title=postTitle)
     return redirect(url_for('hello'))
 
