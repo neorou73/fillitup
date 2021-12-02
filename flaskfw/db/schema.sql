@@ -26,7 +26,7 @@ create table accesstokens (
     ttd integer default 86400);
 
 alter table accesstokens owner to fillitupadmin;
-
+ 
 create table htmlcontent (
     id serial,
     title varchar(255) not null primary key,

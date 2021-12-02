@@ -85,12 +85,73 @@ class psqldb:
             tokenString = uuid.uuid4().hex
             print(tokenString)
             self.cursor.execute("""INSERT INTO accesstokens (person, token) values (%s, %s);""", (email, tokenString))
+            self.conn.commit()
             print("user " + email + " has been logged in.")
+            self.conn.close()
+            return tokenString
+        except Exception as e:
+            print(e)
+            return False
+    
+    def logoutUser(self, email):
+        try:
+            self.connect()
+            self.cursor.execute("""UPDATE accesstokens SET loggedout = 'true' WHERE person = (%s);""", (email))
+            self.conn.commit()
+            print("user " + email + " has been logged out.")
             self.conn.close()
             return True
         except Exception as e:
             print(e)
             return False
+    
+    def createContent(self, title, content):
+        try:
+            self.connect()
+            metadata = '{ "keywords": ["general"] }'
+            self.cursor.execute("""insert into htmlcontent (title, content, meta) values (%s, %s, %s);""", (title, content, metadata))
+            self.conn.commit()
+            print("new html content saved")
+            self.conn.close()
+            return True 
+        except Exception as e:
+            print(e)
+            return False
+    
+    def updateContent(self, title, content):
+        try:
+            self.connect()
+            metadata = '{ "keywords": ["general"] }'
+            self.cursor.execute("""update htmlcontent set content = (%s) where title = (%s);""", (content, title))
+            self.conn.commit()
+            print("existing html content saved")
+            self.conn.close()
+            return True 
+        except Exception as e:
+            print(e)
+            return False
+    
+    def getContent(self, title):
+        try:
+            self.connect()
+            self.cursor.execute("""select id, title, content from htmlcontent where title = (%s);""", (title,))
+            rows = self.cursor.fetchone()
+            self.conn.close()
+            return rows 
+        except Exception as e:
+            print(e)
+            return e
+    
+    def getAllContents(self):
+        try:
+            self.connect()
+            self.cursor.execute("""select id, title, to_char(tscreated, 'Mon DD, YYYY HH:mm:ss') as stringdate, meta, published from htmlcontent order by title;""")
+            rows = self.cursor.fetchall()
+            self.conn.close()
+            return rows 
+        except Exception as e:
+            print(e)
+            return e
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify, url_for  
+from markupsafe import escape, Markup
 
 import os, json, sys  
 
@@ -26,6 +27,14 @@ app.secret_key = bytes(configurationObject['application']['secret_key'], 'utf-8'
 fileUploadDirectoryPath = os.path.dirname(os.path.realpath(__file__)) + "/static/fileuploads"
 print(fileUploadDirectoryPath)
 
+"""
+instantiate database interface object
+"""
+sys.path.append(".")
+from fillupDbc import psqldb 
+pdb = psqldb()
+pdb.getCurrentTimestamp()
+
 @app.route("/")
 @app.route('/hello/<name>')
 def hello(name=None):
@@ -38,30 +47,39 @@ def hello(name=None):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
-    import sys
-    sys.path.append(".")
-    from fillupDbc import psqldb 
-    pdb = psqldb()
     if request.method == 'POST':
         print(request.form['email'])
         print(request.form['password'])
         if pdb.validateUser(request.form['email'], request.form['password']):
             print ('user is valid')
-            if pdb.loginUser(request.form['email']):
+            tokenString = pdb.loginUser(request.form['email']) 
+            if tokenString is not False:
                 session['email'] = request.form['email']
+                session['accesstoken'] = tokenString
                 return render_template('hello.html', name=request.form['email'])
+            else:
+                session.pop('email', None)
+                session.pop('accesstoken', None)
+                resp = make_response(render_template('error.html', code=401), 401)
+                return resp
         else:
             enotice = "user is not valid"
             print (enotice)
             error=enotice
         
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error, loggedin=True)
 
 @app.route('/logout')
 def logout():
     # remove the username from the session if it's there
-    session.pop('email', None)
-    return redirect(url_for('hello'))
+    print(session['email'])
+    if pdb.logoutUser(session['email']):
+        session.pop('email', None)
+        session.pop('session', None)
+        return redirect(url_for('hello'))
+    else:
+        resp = make_response(render_template('error.html', code=400), 400)
+        return resp
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -78,16 +96,50 @@ def upload_file():
         return render_template('upload.html')
     return redirect(url_for('hello'))
 
-@app.route('/editor', methods=['GET', 'POST'])
+#@app.route('/editor', methods=['GET', 'POST'])
 @app.route('/editor/<postTitle>', methods=['GET', 'POST'])
-def use_editor(postTitle=None):
+#def use_editor(postTitle=None):
+def use_editor(postTitle):
     if 'email' in session:
         #if request.method == "POST" and hasattr(request.form, 'title'):
-        if request.method == "POST":
+        # get content data based on title 
+        htmlContentData = pdb.getContent(postTitle)
+        print(htmlContentData)
+        if request.method == "POST" and htmlContentData is None:
             print(request.form['title'])
             print(request.form['editortextarea'])
-        return render_template('editor.html', title=postTitle)
+            results = pdb.createContent(request.form['title'], request.form['editortextarea'])
+            if not(results):
+                print('insert did not happen')
+                return render_template('editor.html', title=postTitle)
+            return render_template('editor.html', title=postTitle, content=request.form['editortextarea'])
+        elif request.method == "POST" and htmlContentData is not None:
+            results = pdb.updateContent(request.form['title'], request.form['editortextarea'])
+            if not(results):
+                print('insert did not happen')
+                return render_template('editor.html', title=postTitle)
+            return render_template('editor.html', title=postTitle, content=request.form['editortextarea'])
+        elif request.method == "GET" and htmlContentData is not None:
+            return render_template('editor.html', title=postTitle, content=htmlContentData[2])
+        else:
+            return render_template('editor.html', title=postTitle)
+
     return redirect(url_for('hello'))
+
+
+@app.route('/read')
+@app.route('/read/<postTitle>')
+def read_content(postTitle=None):
+    if postTitle:
+        htmlContentData = pdb.getContent(postTitle)
+        print(escape(htmlContentData[2]))
+        if htmlContentData is not None:
+            return render_template('read.html', title=postTitle, content=htmlContentData[2])
+        return render_template('read.html', title=postTitle)
+    listall = pdb.getAllContents()
+    print(len(listall))
+    return render_template('read.html', listall=listall)
+    
 
 
 @app.route('/manage')
