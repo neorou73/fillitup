@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% if name %}, {{ name }}{% endif %}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    {% if error %}
+    <div class="errorWarning">{{ error }} <a href="/login">log in</a></div>
+    {% else %}
+    <h1>Manage This Site</h1>
+    <h2>Users</h2>
+    <div>list users - add user - edit user - deactivate user - purge user</div>
+    <h2>Sections and Navigation</h2>
+    <div>add section - remove section - edit section content</div>
+    <h2>Presentation</h2>
+    <div>color and style editor</div>
+    <h2>Keywords</h2>
+    <div>list keywords - add keywords - remove keywords</div>
+    {% endif %}
+    
+{% endblock %}

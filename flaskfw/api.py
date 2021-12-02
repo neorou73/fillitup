@@ -63,18 +63,29 @@ def logout():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'POST':
-        f = request.files['the_file']
-        filename = "getname"
-        f.save('/uploads/' + filename)
-    
-    return render_template('upload.html', name=name)
+    if 'email' in session:
+        if request.method == 'POST':
+            f = request.files['the_file']
+            filename = "getname"
+            f.save('/uploads/' + filename)
+        
+        return render_template('upload.html')
+    return redirect(url_for('hello'))
 
 @app.route('/editor', methods=['GET', 'POST'])
 @app.route('/editor/<postTitle>', methods=['GET', 'POST'])
 def use_editor(postTitle=None):
-    return render_template('editor.html', title=postTitle)
+    if 'email' in session:
+        return render_template('editor.html', title=postTitle)
+    return redirect(url_for('hello'))
 
+
+@app.route('/manage')
+def manage_site():
+    error = None
+    if 'email' in session:
+        return render_template('manage.html')
+    return redirect(url_for('hello'))
 
 # bad request
 @app.errorhandler(400)
