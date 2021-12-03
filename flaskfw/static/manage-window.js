@@ -23,19 +23,42 @@ $( document ).ready(function() {
         return returnObject
     }
 
+    // reuseable function to submit manage forms 
+    const submitManageForm = (formId, parentDivId, successMsg, errorMsg) => {
+        $(formId).submit((e) => {
+            e.preventDefault() // avoid to execute the actual submit of the form.
+            $.ajax({
+                type: "POST",
+                url: e.target.action,
+                data: (objectifySerial($(formId).serialize())), // serializes the form's elements.
+                success: function(response){
+                    console.log(response) // show response from the php script.
+                    $(parentDivId).find(".form-result").append(successMsg)
+                },
+                error: function(eresponse){
+                    console.log(eresponse)
+                    $(parentDivId).find(".form-result").append(errorMsg)
+                }
+            })
+        })
+    }
+
     // submitting forms
     $("#formUsersAdd").submit((e) => {
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        
         $.ajax({
             type: "POST",
             url: e.target.action,
             data: (objectifySerial($("#formUsersAdd").serialize())), // serializes the form's elements.
             success: function(response){
-                console.log(response); // show response from the php script.
+                console.log(response) // show response from the php script.
                 $("#manage-users").find(".form-result").append('user added')
+            },
+            error: function(eresponse){
+                console.log(eresponse)
+                $("#manage-users").find(".form-result").append('ERROR: user was NOT added')
             }
-        });
+        })
     })
 
     $("#formUsersEdit").submit((e) => {
