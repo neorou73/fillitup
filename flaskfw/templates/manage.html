@@ -21,6 +21,13 @@
             background-color: white;
             color: navy;
         }
+
+        div.management-form-div {
+            max-width: 400px;
+        }
+        div.management-form-div > form > p {
+            text-align: right;
+        }
     </style>
     <script src="/static/manage-window.js"></script>
 {% endblock %}
@@ -41,75 +48,72 @@
             <h3>list users</h3>
             <p>list of users</p>
         </div>
-        <div>
+        <div class="management-form-div">
             <h3>add user</h3>
             <form method="post" action="/users/add">
                 <p><label for="username">username:</label><input name="username"/></p>
                 <p><label for="email">email:</label><input name="email"/></p>
                 <p><label for="password">password:</label><input name="password"/></p>
-                <button>add user</button>
+                <p><button>add user</button></p>
             </form>
         </div>
-        
-        <div>
+        <div class="management-form-div">
             <h3>edit user</h3>
             <form method="post" action="/users/edit">
                 <p><label for="id">id:</label><input name="id"/></p>
                 <p><label for="username">username:</label><input name="username"/></p>
                 <p><label for="email">email:</label><input name="email"/></p>
                 <p><label for="password">password:</label><input name="password"/></p>
-                <button>edit user</button>
+                <p><button>edit user</button></p>
             </form>
         </div>
-        
-        <div>
+        <div class="management-form-div">
             <h3>deactivate user</h3>
             <form method="post" action="/users/deactivate">
                 <p><label for="id">id:</label><input name="id"/></p>
                 <p><label for="username">username:</label><input name="username"/></p>
                 <p><label for="email">email:</label><input name="email"/></p>
-                <button>deactivate user</button>
+                <p><button>deactivate user</button></p>
             </form>
         </div>
-        
-        <div>
+        <div class="management-form-div">
             <h3>purge user</h3>
             <form method="post" action="/users/purge">
                 <p><label for="id">id:</label><input name="id"/></p>
                 <p><label for="username">username:</label><input name="username"/></p>
                 <p><label for="email">email:</label><input name="email"/></p>
-                <button>purge user</button>
+                <p><button>purge user</button></p>
             </form>
         </div>
     </div>
     <div class="manage-section" id="manage-sections">
         <h2>Sections and Navigation</h2>
-        <div>
+        <div class="management-form-div">
             <h3>add section</h3>
             <form method="post" action="/sections/add">
                 <p><label for="section">section name:</label><input name="section"/></p>
-                <button>add section</button>
+                <p><button>add section</button></p>
             </form>
         </div>
-        <div>
+        <div class="management-form-div">
             <h3>remove section</h3>
             <form method="post" action="/sections/remove">
                 <p><label for="section">section name:</label><input name="section"/></p>
-                <button>remove section</button>
+                <p><button>remove section</button></p>
             </form>
         </div>
-        <div>
+        <div class="management-form-div">
             <h3>edit section content</h3>
             <form method="post" action="/sections/edit">
                 <p><label for="sectioncurrent">section name (current):</label><input name="sectioncurrent"/></p>
                 <p><label for="sectionnew">section name (new):</label><input name="sectionnew"/></p>
-                <button>remove section</button>
+                <p><button>remove section</button></p>
             </form>
         </div>
     </div>
     <div class="manage-section" id="manage-presentation">    
         <h2>Presentation</h2>
-        <div>
+        <div class="management-form-div">
             <p>color and style editor</p>
             <div id="settingSample">Hello, World! 0123456789</div>
             <form method="post" action="/presentation/configure">
@@ -125,18 +129,18 @@
         <div>
             <p>list keywords</p>
         </div>
-        <div>
+        <div class="management-form-div">
             <h3>add keywords</h3>
             <form method="post" action="/keywords/add">
                 <p><label for="keywords">keywords:</label><input name="keywords"/></p>
-                <button>remove keywords</button>
+                <p><button>remove keywords</button></p>
             </form>
         </div>
-        <div>
+        <div class="management-form-div">
             <h3>remove keywords</h3>
             <form method="post" action="/keywords/remove">
                 <p><label for="keywords">keyword:</label><input name="keywords"/></p>
-                <button>remove keywords</button>
+                <p><button>remove keywords</button></p>
             </form>
         </div>
     </div>
