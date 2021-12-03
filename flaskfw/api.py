@@ -150,9 +150,11 @@ def manage_site():
     return redirect(url_for('hello'))
 
 
-@app.route('/users/add')
+@app.route('/users/add', methods=['GET', 'POST'])
 def add_user():
-    pass 
+    if request.method == "POST":
+        return(request.form) 
+    return redirect(url_for('manage_site'))
 
 @app.route('/users/edit')
 def edit_user():

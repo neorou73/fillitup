@@ -50,65 +50,72 @@
         </div>
         <div class="management-form-div">
             <h3>add user</h3>
-            <form method="post" action="/users/add">
-                <p><label for="username">username:</label><input name="username"/></p>
-                <p><label for="email">email:</label><input name="email"/></p>
-                <p><label for="password">password:</label><input name="password"/></p>
+            <form method="post" action="/users/add" id="formUsersAdd">
+                <p><label for="username">username:</label><input name="username" type="text"/></p>
+                <p><label for="email">email:</label><input name="email" type="text"/></p>
+                <p><label for="password">password:</label><input name="password" type="password"/></p>
                 <p><button>add user</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
         <div class="management-form-div">
             <h3>edit user</h3>
-            <form method="post" action="/users/edit">
+            <form method="post" action="/users/edit" id="formUsersEdit">
                 <p><label for="id">id:</label><input name="id"/></p>
                 <p><label for="username">username:</label><input name="username"/></p>
                 <p><label for="email">email:</label><input name="email"/></p>
                 <p><label for="password">password:</label><input name="password"/></p>
                 <p><button>edit user</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
         <div class="management-form-div">
             <h3>deactivate user</h3>
-            <form method="post" action="/users/deactivate">
+            <form method="post" action="/users/deactivate" id="formUsersDeactivate">
                 <p><label for="id">id:</label><input name="id"/></p>
                 <p><label for="username">username:</label><input name="username"/></p>
                 <p><label for="email">email:</label><input name="email"/></p>
                 <p><button>deactivate user</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
         <div class="management-form-div">
             <h3>purge user</h3>
-            <form method="post" action="/users/purge">
+            <form method="post" action="/users/purge" id="formUsersPurge">
                 <p><label for="id">id:</label><input name="id"/></p>
                 <p><label for="username">username:</label><input name="username"/></p>
                 <p><label for="email">email:</label><input name="email"/></p>
                 <p><button>purge user</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
     </div>
     <div class="manage-section" id="manage-sections">
         <h2>Sections and Navigation</h2>
         <div class="management-form-div">
             <h3>add section</h3>
-            <form method="post" action="/sections/add">
+            <form method="post" action="/sections/add" id="formSectionsAdd">
                 <p><label for="section">section name:</label><input name="section"/></p>
                 <p><button>add section</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
         <div class="management-form-div">
             <h3>remove section</h3>
-            <form method="post" action="/sections/remove">
+            <form method="post" action="/sections/remove" id="formSectionsRemove">
                 <p><label for="section">section name:</label><input name="section"/></p>
                 <p><button>remove section</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
         <div class="management-form-div">
             <h3>edit section content</h3>
-            <form method="post" action="/sections/edit">
+            <form method="post" action="/sections/edit" id="formSectionsEdit">
                 <p><label for="sectioncurrent">section name (current):</label><input name="sectioncurrent"/></p>
                 <p><label for="sectionnew">section name (new):</label><input name="sectionnew"/></p>
                 <p><button>remove section</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
     </div>
     <div class="manage-section" id="manage-presentation">    
@@ -116,12 +123,13 @@
         <div class="management-form-div">
             <p>color and style editor</p>
             <div id="settingSample">Hello, World! 0123456789</div>
-            <form method="post" action="/presentation/configure">
+            <form method="post" action="/presentation/configure" id="formPresentationConfigure">
                 <p><label for="bgHeavyRgb">heavy background color:</label><input name="bgHeavyRgb"/></p>
                 <p><label for="bgLightRgb">light background color:</label><input name="bgLightRgb"/></p>
                 <p><label for="textRgb">text color:</label><input name="textRgb"/></p>
                 <p><button>set</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
     </div>
     <div class="manage-section" id="manage-keywords">
@@ -131,19 +139,22 @@
         </div>
         <div class="management-form-div">
             <h3>add keywords</h3>
-            <form method="post" action="/keywords/add">
+            <form method="post" action="/keywords/add" id="formKeywordsAdd">
                 <p><label for="keywords">keywords:</label><input name="keywords"/></p>
                 <p><button>remove keywords</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
         <div class="management-form-div">
             <h3>remove keywords</h3>
-            <form method="post" action="/keywords/remove">
+            <form method="post" action="/keywords/remove" id="formKeywordsRemove">
                 <p><label for="keywords">keyword:</label><input name="keywords"/></p>
                 <p><button>remove keywords</button></p>
             </form>
+            <div class="form-result"></div>
         </div>
     </div>
     {% endif %}
     
 {% endblock %}
+
