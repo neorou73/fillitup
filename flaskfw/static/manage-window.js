@@ -1,23 +1,14 @@
-
-
-document.addEventListener('readystatechange', event => { 
-
-    // When HTML/DOM elements are ready:
-    if (event.target.readyState === "interactive") {   //does same as:  ..addEventListener("DOMContentLoaded"..
-        //alert("hi 1");
-        let messageString = 'Hello Vue!'
-        console.log(messageString)
-        /*var app6 = new Vue({
-            el: '#app-6',
-            data: {
-            message: messageString
-            }
-        })*/
+$( document ).ready(function() {
+    console.log( "document ready!" );
+    const showOne = (toShow) => {
+        $('.manage-section').hide()
+        $(toShow).show()
     }
+    showOne('#manage-users') // default call
 
-    // When window loaded ( external resources are loaded too- `css`,`src`, etc...) 
-    if (event.target.readyState === "complete") {
-        let messageString = 'Vue is loaded!'
-        console.log(messageString)
-    }
+    $(".manage-section-selector").click((e) => {
+        // console.log(e.target.id)
+        const divToShowId = "#" + e.target.id.replace("-selector", "") // drop the last text to give the div we want to show
+        showOne(divToShowId)
+    })
 });

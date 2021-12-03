@@ -4,10 +4,25 @@
     {{ super() }}
     <style type="text/css">
         .important { color: #336699; }
+        .manage-section-selector {
+            background-color: navy;
+            font-weight: bold;
+            color: white;
+            margin: 5px;
+            padding: 10px;
+            box-shadow: olive;
+        }
+        .manage-section-selector:hover {
+            background-color: white;
+            color: navy;
+            cursor: pointer;
+        }
+        .manage-section-selector.selected {
+            background-color: white;
+            color: navy;
+        }
     </style>
-    <script src="/static/manage-window.js">
-
-    </script>
+    <script src="/static/manage-window.js"></script>
 {% endblock %}
 {% block content %}
     {% if error %}
@@ -15,10 +30,10 @@
     {% else %}
     <h1>Manage This Site</h1>
     <div>
-        <span class="manage-section-selector"> users |</span>
-        <span class="manage-section-selector"> sections and navigations |</span>
-        <span class="manage-section-selector"> presentation |</span>
-        <span class="manage-section-selector"> keywords </span>
+        <span class="manage-section-selector" id="manage-users-selector"> users </span>
+        <span class="manage-section-selector" id="manage-sections-selector"> sections and navigations </span>
+        <span class="manage-section-selector" id="manage-presentation-selector"> presentation </span>
+        <span class="manage-section-selector" id="manage-keywords-selector"> keywords </span>
     </div>
     <div class="manage-section" id="manage-users">
         <h2>Users</h2>
@@ -67,7 +82,7 @@
             </form>
         </div>
     </div>
-    <div class="manage-section" id="manage-sections-and-navigations">
+    <div class="manage-section" id="manage-sections">
         <h2>Sections and Navigation</h2>
         <div>
             <h3>add section</h3>
@@ -94,7 +109,16 @@
     </div>
     <div class="manage-section" id="manage-presentation">    
         <h2>Presentation</h2>
-        <div>color and style editor</div>
+        <div>
+            <p>color and style editor</p>
+            <div id="settingSample">Hello, World! 0123456789</div>
+            <form method="post" action="/presentation/configure">
+                <p><label for="bgHeavyRgb">heavy background color:</label><input name="bgHeavyRgb"/></p>
+                <p><label for="bgLightRgb">light background color:</label><input name="bgLightRgb"/></p>
+                <p><label for="textRgb">text color:</label><input name="textRgb"/></p>
+                <p><button>set</button></p>
+            </form>
+        </div>
     </div>
     <div class="manage-section" id="manage-keywords">
         <h2>Keywords</h2>
