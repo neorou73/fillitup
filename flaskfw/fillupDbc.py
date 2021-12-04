@@ -96,7 +96,7 @@ class psqldb:
     def logoutUser(self, email):
         try:
             self.connect()
-            self.cursor.execute("""UPDATE accesstokens SET loggedout = 'true' WHERE person = (%s);""", (email))
+            self.cursor.execute("""UPDATE accesstokens SET loggedout = 'true' WHERE person = %s;""", (email,))
             self.conn.commit()
             print("user " + email + " has been logged out.")
             self.conn.close()

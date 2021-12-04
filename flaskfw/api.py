@@ -73,9 +73,10 @@ def login():
 def logout():
     # remove the username from the session if it's there
     print(session['email'])
+    print(session['accesstoken'])
     if pdb.logoutUser(session['email']):
         session.pop('email', None)
-        session.pop('session', None)
+        session.pop('accesstoken', None)
         return redirect(url_for('hello'))
     else:
         resp = make_response(render_template('error.html', code=400), 400)
