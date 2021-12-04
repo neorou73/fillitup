@@ -48,7 +48,7 @@
             <h3>list users</h3>
             <p>list of users</p>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formUsersAddDiv">
             <h3>add user</h3>
             <form method="post" action="/users/add" id="formUsersAdd">
                 <p><label for="username">username:</label><input name="username" type="text"/></p>
@@ -58,7 +58,7 @@
             </form>
             <div class="form-result"></div>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formUsersEditDiv">
             <h3>edit user</h3>
             <form method="post" action="/users/edit" id="formUsersEdit">
                 <p><label for="id">id:</label><input name="id"/></p>
@@ -69,7 +69,7 @@
             </form>
             <div class="form-result"></div>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formUsersDeactivateDiv">
             <h3>deactivate user</h3>
             <form method="post" action="/users/deactivate" id="formUsersDeactivate">
                 <p><label for="id">id:</label><input name="id"/></p>
@@ -79,7 +79,7 @@
             </form>
             <div class="form-result"></div>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formUsersPurgeDiv">
             <h3>purge user</h3>
             <form method="post" action="/users/purge" id="formUsersPurge">
                 <p><label for="id">id:</label><input name="id"/></p>
@@ -92,7 +92,7 @@
     </div>
     <div class="manage-section" id="manage-sections">
         <h2>Sections and Navigation</h2>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formSectionsAddDiv">
             <h3>add section</h3>
             <form method="post" action="/sections/add" id="formSectionsAdd">
                 <p><label for="section">section name:</label><input name="section"/></p>
@@ -100,7 +100,7 @@
             </form>
             <div class="form-result"></div>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formSectionsRemoveDiv">
             <h3>remove section</h3>
             <form method="post" action="/sections/remove" id="formSectionsRemove">
                 <p><label for="section">section name:</label><input name="section"/></p>
@@ -108,7 +108,7 @@
             </form>
             <div class="form-result"></div>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formSectionsEditDiv">
             <h3>edit section content</h3>
             <form method="post" action="/sections/edit" id="formSectionsEdit">
                 <p><label for="sectioncurrent">section name (current):</label><input name="sectioncurrent"/></p>
@@ -120,7 +120,7 @@
     </div>
     <div class="manage-section" id="manage-presentation">    
         <h2>Presentation</h2>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formPresentationConfigureDiv">
             <p>color and style editor</p>
             <div id="settingSample">Hello, World! 0123456789</div>
             <form method="post" action="/presentation/configure" id="formPresentationConfigure">
@@ -137,7 +137,7 @@
         <div>
             <p>list keywords</p>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formKeywordsAddDiv">
             <h3>add keywords</h3>
             <form method="post" action="/keywords/add" id="formKeywordsAdd">
                 <p><label for="keywords">keywords:</label><input name="keywords"/></p>
@@ -145,7 +145,7 @@
             </form>
             <div class="form-result"></div>
         </div>
-        <div class="management-form-div">
+        <div class="management-form-div" id="formKeywordsRemoveDiv">
             <h3>remove keywords</h3>
             <form method="post" action="/keywords/remove" id="formKeywordsRemove">
                 <p><label for="keywords">keyword:</label><input name="keywords"/></p>

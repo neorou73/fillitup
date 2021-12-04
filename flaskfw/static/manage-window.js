@@ -43,7 +43,8 @@ $( document ).ready(function() {
         })
     }
 
-    // submitting forms
+    // submitting forms, specific example of the above
+    /*
     $("#formUsersAdd").submit((e) => {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         $.ajax({
@@ -52,49 +53,28 @@ $( document ).ready(function() {
             data: (objectifySerial($("#formUsersAdd").serialize())), // serializes the form's elements.
             success: function(response){
                 console.log(response) // show response from the php script.
-                $("#manage-users").find(".form-result").append('user added')
+                $("#formUsersAddDiv").find(".form-result").append('user added')
             },
             error: function(eresponse){
                 console.log(eresponse)
-                $("#manage-users").find(".form-result").append('ERROR: user was NOT added')
+                $("#formUsersAddDiv").find(".form-result").append('ERROR: user was NOT added')
             }
         })
     })
+    */
+    // instead we are calling the function 
+    submitManageForm("#formUsersAdd", "#formUsersAddDiv", "user added", "ERROR: user was NOT added")
+    submitManageForm("#formUsersEdit", "#formUsersEditDiv", "user edited", "ERROR: user was NOT edited")
+    submitManageForm("#formUsersDeactivate", "#formUsersDeactivateDiv", "user deactivated", "ERROR: user was NOT deactivated")
+    submitManageForm("#formUsersPurge", "#formUsersPurgeDiv", "user purged", "ERROR: user was NOT purged")
 
-    $("#formUsersEdit").submit((e) => {
-
-    })
-
-    $("#formUsersDeactivate").submit((e) => {
-
-    })
-
-    $("#formUsersPurge").submit((e) => {
-
-    })
-
-    $("#formSectionsAdd").submit((e) => {
-
-    })
-
-    $("#formSectionsRemove").submit((e) => {
-
-    })
-
-    $("#formSectionsEdit").submit((e) => {
-
-    })
-
-    $("#formPresentationConfigure").submit((e) => {
-
-    })
-
-    $("#formKeywordsAdd").submit((e) => {
-
-    })
-
-    $("#formKeywordsRemove").submit((e) => {
-
-    })
+    submitManageForm("#formSectionsAdd", "#formSectionsAddDiv", "section added", "ERROR: section was NOT added")
+    submitManageForm("#formSectionsRemove", "#formSectionsRemoveDiv", "user removed", "ERROR: section was NOT removed")
+    submitManageForm("#formSectionsEdit", "#formSectionsEditDiv", "user edited", "ERROR: section was NOT edited")
+    
+    submitManageForm("#formPresentationConfigure", "#formPresentationConfigureDiv", "configuration change made", "ERROR: configuration change was NOT made")
+    
+    submitManageForm("#formKeywordsAdd", "#formKeywordsAddDiv", "keyword added", "ERROR: keyword was NOT added")
+    submitManageForm("#formKeywordsRemove", "#formKeywordsRemoveDiv", "keyword removed", "ERROR: keyword was NOT removed")
 
 });
