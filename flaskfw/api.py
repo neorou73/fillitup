@@ -56,7 +56,7 @@ def login():
             if tokenString is not False:
                 session['email'] = request.form['email']
                 session['accesstoken'] = tokenString
-                return render_template('hello.html', name=request.form['email'])
+                return redirect(url_for('hello'))
             else:
                 session.pop('email', None)
                 session.pop('accesstoken', None)
@@ -66,6 +66,10 @@ def login():
             enotice = "user is not valid"
             print (enotice)
             error=enotice
+            session.pop('email', None)
+            session.pop('accesstoken', None)
+            resp = make_response(render_template('error.html', code=401), 401)
+            return resp
         
     return render_template('login.html', error=error, loggedin=True)
 
