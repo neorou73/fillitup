@@ -144,7 +144,6 @@ def read_content(postTitle=None):
     listall = pdb.getAllContents()
     print(len(listall))
     return render_template('read.html', listall=listall)
-    
 
 
 @app.route('/manage')
@@ -155,23 +154,65 @@ def manage_site():
     return redirect(url_for('hello'))
 
 
-@app.route('/users/add', methods=['GET', 'POST'])
+### JSON values returned for these management calls
+@app.route('/users/add', methods=['POST'])
 def add_user():
     if request.method == "POST":
-        return(request.form) 
-    return redirect(url_for('manage_site'))
+        userData = {}
+        userData['username'] = request.form['username']
+        userData['hashedPassword'] = pdb.hash_password(request.form['password'])
+        userData['email'] = request.form['email']
+        if pdb.createUser(userData):
+            return jsonify(userData)
+        else:
+            resp = make_response(render_template('error.html', code=400), 400)
+            #resp.headers['X-Something'] = 'A value'
+            return resp
 
-@app.route('/users/edit')
+
+@app.route('/users/list')
+def list_users():
+    return jsonify(pdb.getUsers())
+
+
+@app.route('/users/edit', methods=['POST'])
 def edit_user():
-    pass 
+    if request.method == "POST":
+        userData = {
+            'username': request.form('username'),
+            'password': pdb.hash_password(request.form('password')),
+            'email': request.form('email')
+        }
+        if pdb.editUser(userData):
+            return jsonify([userData['username'], userData['email']])
+        else:
+            resp = make_response(render_template('error.html', code=400), 400)
+            #resp.headers['X-Something'] = 'A value'
+            return resp
 
-@app.route('/users/deactivate')
+@app.route('/users/deactivate', methods=['POST'])
 def deactivate_user():
-    pass 
+    if request.method == "POST":
+        if pdb.editUser(request.form('email'), "deactivate"):
+            return jsonify({ "email": request.form('email')})
+        else:
+            resp = make_response(render_template('error.html', code=400), 400)
+            #resp.headers['X-Something'] = 'A value'
+            return resp
 
-@app.route('/users/purge')
+@app.route('/users/purge', methods=['POST'])
 def purge_user():
-    pass
+    if request.method == "POST":
+        if pdb.editUser(request.form('email'), "purge"):
+            return jsonify({ "email": request.form('email')})
+        else:
+            resp = make_response(render_template('error.html', code=400), 400)
+            #resp.headers['X-Something'] = 'A value'
+            return resp
+
+@app.route('/sections/list')
+def list_sections():
+    pass 
 
 @app.route('/sections/add')
 def add_section():
@@ -183,6 +224,10 @@ def remove_section():
 
 @app.route('/sections/edit')
 def edit_section():
+    pass 
+
+@app.route('/keywords/list')
+def list_keywords():
     pass 
 
 @app.route('/keywords/add')

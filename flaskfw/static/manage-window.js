@@ -27,6 +27,7 @@ $( document ).ready(function() {
     const submitManageForm = (formId, parentDivId, successMsg, errorMsg) => {
         $(formId).submit((e) => {
             e.preventDefault() // avoid to execute the actual submit of the form.
+            console.log(objectifySerial($(formId).serialize()))
             $.ajax({
                 type: "POST",
                 url: e.target.action,

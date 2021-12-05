@@ -139,15 +139,15 @@ class psqldb:
         try:
             self.connect()
             if userEmail:
-                self.cursor.execute("""SELECT * FROM people WHERE email = (%s);""", (email,))
+                self.cursor.execute("""SELECT id, email, username, tscreated FROM people WHERE email = (%s);""", (email,))
             else:
-                self.cursor.execute("""SELECT * FROM people WHERE order by email;""")
+                self.cursor.execute("""SELECT id, email, username, tscreated FROM people order by email;""")
             rows = self.cursor.fetchall()
             print(rows)
             self.conn.close()
             
             if len(rows) > 0:
-                return True
+                return rows
             else:
                 return False
         except Exception as e:
@@ -157,7 +157,7 @@ class psqldb:
     def purgeUser(self, userEmail):
         try:
             self.connect()
-            self.cursor.execute("""DELETE FROM people WHERE email = %s CASCADE;""", (userData.email))
+            self.cursor.execute("""DELETE FROM people WHERE email = %s AND id != 1 CASCADE;""", (userData.email))
             self.conn.commit()
             self.conn.close()
             return True
@@ -165,7 +165,7 @@ class psqldb:
             print(e)
             return False
 
-    def getSections(self, sectionName=Name):
+    def getSections(self, sectionName=None):
         # of mpt sectionName, get all sections 
         try:
             self.connect()
