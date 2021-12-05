@@ -50,10 +50,11 @@ $( document ).ready(function() {
             url: '/users/list',
             success: (response) => {
                 console.log(response)
-                let htmlString = "<table><tbody><tr>"
+                let htmlString = "<table id='management-table'><tbody><tr>"
                 htmlString = htmlString + "<th>username</th>"
                 htmlString = htmlString + "<th>email</th>"
                 htmlString = htmlString + "<th>date created</th>"
+                htmlString = htmlString + "<th></th><th></th>"
                 htmlString = htmlString + "</tr>"
 
                 for(let r=0;r<response.length;r++) {
@@ -61,6 +62,8 @@ $( document ).ready(function() {
                     htmlString = htmlString + "<td>" + response[r][1] + "</td>"
                     htmlString = htmlString + "<td>" + response[r][0] + "</td>"
                     htmlString = htmlString + "<td>" + response[r][2] + "</td>"
+                    htmlString = htmlString + "<td><button id='" + "deactivate_email_" + response[r][0] + "'>deactivate</button></td>"
+                    htmlString = htmlString + "<td><button id='" + "purge_email_" + response[r][0] + "'>purge</button></td>"
                     htmlString = htmlString + "</tr>"
                 }
                 htmlString = htmlString + "</tbody></table>"
