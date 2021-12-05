@@ -162,6 +162,7 @@ def add_user():
         userData['username'] = request.form['username']
         userData['hashedPassword'] = pdb.hash_password(request.form['password'])
         userData['email'] = request.form['email']
+        print(userData)
         if pdb.createUser(userData):
             return jsonify(userData)
         else:
@@ -183,6 +184,7 @@ def edit_user():
             'password': pdb.hash_password(request.form('password')),
             'email': request.form('email')
         }
+        print(userData)
         if pdb.editUser(userData):
             return jsonify([userData['username'], userData['email']])
         else:

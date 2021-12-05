@@ -44,6 +44,34 @@ $( document ).ready(function() {
         })
     }
 
+    const getUsers = () => {
+        $.ajax({
+            type: "GET",
+            url: '/users/list',
+            success: (response) => {
+                console.log(response)
+                let htmlString = "<table><tbody><tr>"
+                htmlString = htmlString + "<th>username</th>"
+                htmlString = htmlString + "<th>email</th>"
+                htmlString = htmlString + "<th>date created</th>"
+                htmlString = htmlString + "</tr>"
+
+                for(let r=0;r<response.length;r++) {
+                    htmlString = htmlString + "<tr>"
+                    htmlString = htmlString + "<td>" + response[r][1] + "</td>"
+                    htmlString = htmlString + "<td>" + response[r][0] + "</td>"
+                    htmlString = htmlString + "<td>" + response[r][2] + "</td>"
+                    htmlString = htmlString + "</tr>"
+                }
+                htmlString = htmlString + "</tbody></table>"
+                $('#userslist').replaceWith(htmlString)
+            },
+            error: (eresponse) => {
+                console.log(eresponse)
+            }
+        })
+    }
+    getUsers()
     // submitting forms, specific example of the above
     /*
     $("#formUsersAdd").submit((e) => {

@@ -108,7 +108,8 @@ class psqldb:
     def createUser(self, userData):
         try:
             self.connect()
-            self.cursor.execute("""INSERT INTO people (username, email, password) values (%s, %s, %s);""", (userData.username, userData.email, userData.hashedPassword))
+            print(userData)
+            self.cursor.execute("""INSERT INTO people (username, email, password) values (%s, %s, %s);""", (userData['username'], userData['email'], userData['hashedPassword']))
             self.conn.commit()
             self.conn.close()
             return True
@@ -121,11 +122,11 @@ class psqldb:
         try:
             self.connect()
             if clause == 'passwordReset':
-                self.cursor.execute("""UPDATE people SET password = %s WHERE email = %s;""", (userData.hashedPassword, userData.email))
+                self.cursor.execute("""UPDATE people SET password = %s WHERE email = %s;""", (userData['hashedPassword'], userData['email']))
             elif clause == 'deactivation':
-                self.cursor.execute("""UPDATE people SET deactivated = 'true' WHERE email = %s;""", (userData.email))
+                self.cursor.execute("""UPDATE people SET deactivated = 'true' WHERE email = %s;""", (userData['email']))
             else:
-                self.cursor.execute("""UPDATE people SET username = %s, email = %s, password = %s, deactivated = %s WHERE email = %s""", (userData.username, userData.email, userData.hashedPassword, userData.activationStatus, userData.email))
+                self.cursor.execute("""UPDATE people SET username = %s, email = %s, password = %s, deactivated = %s WHERE email = %s""", (userData['username'], userData['email'], userData['hashedPassword'], userData['activationStatus'], userData['email']))
             self.conn.commit()
             self.conn.close()
             return True
@@ -139,7 +140,7 @@ class psqldb:
         try:
             self.connect()
             if userEmail:
-                self.cursor.execute("""SELECT id, email, username, tscreated FROM people WHERE email = (%s);""", (email,))
+                self.cursor.execute("""SELECT id, email, username, tscreated FROM people WHERE email = (%s);""", (userEmail,))
             else:
                 self.cursor.execute("""SELECT id, email, username, tscreated FROM people order by email;""")
             rows = self.cursor.fetchall()
@@ -157,7 +158,7 @@ class psqldb:
     def purgeUser(self, userEmail):
         try:
             self.connect()
-            self.cursor.execute("""DELETE FROM people WHERE email = %s AND id != 1 CASCADE;""", (userData.email))
+            self.cursor.execute("""DELETE FROM people WHERE email = %s AND id != 1 CASCADE;""", (userEmail))
             self.conn.commit()
             self.conn.close()
             return True
@@ -188,7 +189,7 @@ class psqldb:
     def createSection(self, sectionData):
         try:
             self.connect()
-            self.cursor.execute("""INSERT INTO sections (name, description) values (%s, %s);""", (sectionData.name, sectionData.description))
+            self.cursor.execute("""INSERT INTO sections (name, description) values (%s, %s);""", (sectionData['name'], sectionData['description']))
             self.conn.commit()
             self.conn.close()
             return True
@@ -199,7 +200,7 @@ class psqldb:
     def editSection(self, sectionData):
         try:
             self.connect()
-            self.cursor.execute("""UPDATE sections SET name = %s, description = %s, metadata = %s where name = %s);""", (sectionData.name, sectionData.description, sectionData.metadata, sectionData.name))
+            self.cursor.execute("""UPDATE sections SET name = %s, description = %s, metadata = %s where name = %s);""", (sectionData['name'], sectionData['description'], sectionData['metadata'], sectionData['name']))
             self.conn.commit()
             self.conn.close()
             return True
@@ -236,7 +237,7 @@ class psqldb:
     def createKeyword(self, keywordData):
         try:
             self.connect()
-            self.cursor.execute("""INSERT INTO keywords (name, description) values (%s, %s);""", (keywordData.name, keywordData.description))
+            self.cursor.execute("""INSERT INTO keywords (name, description) values (%s, %s);""", (keywordData['name'], keywordData['description']))
             self.conn.commit()
             self.conn.close()
             return True
@@ -247,7 +248,7 @@ class psqldb:
     def removeKeyword(self, keyword):
         try:
             self.connect()
-            self.cursor.execute("""DELETE FROM keywords where name = %s);""", (keyword,))
+            self.cursor.execute("""DELETE FROM keywords where name = %s);""", (keyword))
             self.conn.commit()
             self.conn.close()
             return True
