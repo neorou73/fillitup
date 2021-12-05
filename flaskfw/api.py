@@ -112,18 +112,18 @@ def use_editor(postTitle):
         print(htmlContentData)
         if request.method == "POST" and htmlContentData is None:
             print(request.form['title'])
-            print(request.form['editortextarea'])
-            results = pdb.createContent(request.form['title'], request.form['editortextarea'])
+            print(request.form['content'])
+            results = pdb.createContent(postTitle, request.form['content'])
             if not(results):
                 print('insert did not happen')
                 return render_template('editor.html', title=postTitle)
-            return render_template('editor.html', title=postTitle, content=request.form['editortextarea'])
+            return render_template('editor.html', title=postTitle, content=request.form['content'])
         elif request.method == "POST" and htmlContentData is not None:
-            results = pdb.updateContent(request.form['title'], request.form['editortextarea'])
+            results = pdb.updateContent(postTitle, request.form['content'])
             if not(results):
                 print('insert did not happen')
                 return render_template('editor.html', title=postTitle)
-            return render_template('editor.html', title=postTitle, content=request.form['editortextarea'])
+            return render_template('editor.html', title=postTitle, content=request.form['content'])
         elif request.method == "GET" and htmlContentData is not None:
             return render_template('editor.html', title=postTitle, content=htmlContentData[2])
         else:
