@@ -1,3 +1,85 @@
+<script src="/static/fe_manage.js"></script>
 <div>
     <h2>Manage this System</h2>
+    <div id="mng-users" class="management-div">
+        <h3>User Management</h3>
+        <div id="userslist">
+            <table class="manage-list">
+                <tbody>
+                    <tr>
+                        <th>username (email | userid)</th>
+                        <th>when created</th>
+                        <th>status</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>Jim Kirk (captain@uss.enterprise.ship | 1)</td>
+                        <td>Mon, Sep 8, 1966</td>
+                        <td>inactive <button>activate</button></td>
+                        <td>
+                            <button>purge</button>
+                            <button>reset password</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="mng-keywords" class="management-div">
+        <h3>Keywords Management</h3>
+        <div id="keywordslist">show keywords
+            <table class="manage-list">
+                <tbody>
+                    <tr>
+                        <th>keyword | id</th>
+                        <th>description</th>
+                        <th>when created</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>general | 1</td>
+                        <td>an uncategorized content</td>
+                        <td>Mon, Sep 8, 1966</td>
+                        <td>
+                            <button>remove</button>
+                            <button>change name</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="mng-sections" class="management-div">
+        <h3>Sections Management</h3>
+        <div id="sectionslist">
+            <table class="manage-list">
+                <tbody>
+                    <tr>
+                        <th>section| id</th>
+                        <th>description</th>
+                        <th>when created</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>general | 1</td>
+                        <td>an uncategorized section</td>
+                        <td>Mon, Sep 8, 1966</td>
+                        <td>
+                            <button>remove</button>
+                            <button>change name</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="mng-presentation" class="management-div">
+        <h3>Manage View and Presentation</h3>
+        <div id="configure-css-scheme">
+            <p>dark-background</p>
+            <p>light-background</p>
+            <p>text-color</p>
+            <p>link-color</p>
+        </div>
+    </div>
 </div>
