@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify, url_for  
+from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify, url_for
+from flask.helpers import send_from_directory  
 from markupsafe import escape, Markup
 
 import os, json, sys  
@@ -36,6 +37,15 @@ pdb = psqldb()
 pdb.getCurrentTimestamp()
 
 @app.route("/")
+@app.route("/manage")
+@app.route("/manage/<path:text>")
+@app.route("/users")
+@app.route("/users/<path:text>")
+@app.route("/editor/<path:text>")
+@app.route("/read/<path:text>")
+def output_frontend(text=None):
+    return send_from_directory('static', 'frontend.html')
+
 @app.route('/hello/<name>')
 def hello(name=None):
     if 'email' in session:
@@ -87,7 +97,7 @@ def logout():
         return resp
 
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/api/upload', methods=['GET', 'POST'])
 def upload_file():
     if 'email' in session:
         if request.method == 'POST':
@@ -101,8 +111,9 @@ def upload_file():
         return render_template('upload.html')
     return redirect(url_for('hello'))
 
+
 #@app.route('/editor', methods=['GET', 'POST'])
-@app.route('/editor/<postTitle>', methods=['GET', 'POST'])
+@app.route('/api/editor/<postTitle>', methods=['GET', 'POST'])
 #def use_editor(postTitle=None):
 def use_editor(postTitle):
     if 'email' in session:
@@ -132,8 +143,8 @@ def use_editor(postTitle):
     return redirect(url_for('hello'))
 
 
-@app.route('/read')
-@app.route('/read/<postTitle>')
+@app.route('/api/read')
+@app.route('/api/read/<postTitle>')
 def read_content(postTitle=None):
     if postTitle:
         htmlContentData = pdb.getContent(postTitle)
@@ -146,7 +157,7 @@ def read_content(postTitle=None):
     return render_template('read.html', listall=listall)
 
 
-@app.route('/manage')
+@app.route('/api/manage')
 def manage_site():
     error = None
     if 'email' in session:
@@ -155,7 +166,7 @@ def manage_site():
 
 
 ### JSON values returned for these management calls
-@app.route('/users/add', methods=['POST'])
+@app.route('/api/users/add', methods=['POST'])
 def add_user():
     if request.method == "POST":
         userData = {}
@@ -171,12 +182,12 @@ def add_user():
             return resp
 
 
-@app.route('/users/list')
+@app.route('/api/users/list')
 def list_users():
     return jsonify(pdb.getUsers())
 
 
-@app.route('/users/edit', methods=['POST'])
+@app.route('/api/users/edit', methods=['POST'])
 def edit_user():
     if request.method == "POST":
         userData = {
@@ -192,7 +203,7 @@ def edit_user():
             #resp.headers['X-Something'] = 'A value'
             return resp
 
-@app.route('/users/deactivate', methods=['POST'])
+@app.route('/api/users/deactivate', methods=['POST'])
 def deactivate_user():
     if request.method == "POST":
         if pdb.editUser(request.form('email'), "deactivate"):
@@ -202,7 +213,7 @@ def deactivate_user():
             #resp.headers['X-Something'] = 'A value'
             return resp
 
-@app.route('/users/purge', methods=['POST'])
+@app.route('/api/users/purge', methods=['POST'])
 def purge_user():
     if request.method == "POST":
         if pdb.editUser(request.form('email'), "purge"):
@@ -212,33 +223,34 @@ def purge_user():
             #resp.headers['X-Something'] = 'A value'
             return resp
 
-@app.route('/sections/list')
+@app.route('/api/sections/list')
 def list_sections():
     pass 
 
-@app.route('/sections/add')
+@app.route('/api/sections/add')
 def add_section():
     pass 
 
-@app.route('/sections/remove')
+@app.route('/api/sections/remove')
 def remove_section():
     pass 
 
-@app.route('/sections/edit')
+@app.route('/api/sections/edit')
 def edit_section():
     pass 
 
-@app.route('/keywords/list')
+@app.route('/api/keywords/list')
 def list_keywords():
     pass 
 
-@app.route('/keywords/add')
+@app.route('/api/keywords/add')
 def add_keyword():
     pass 
 
-@app.route('/keywords/remove')
+@app.route('/api/keywords/remove')
 def remove_keyword():
     pass
+
 
 # bad request
 @app.errorhandler(400)

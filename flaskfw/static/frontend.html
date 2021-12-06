@@ -1,31 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% block head %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="/static/cached/style.css" />
-    <title>{% block title %}{% endblock %}</title>
+    <title></title>
 
     <script src="/static/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/vue@next"></script>
+    <!--
+    <script src="/static/vue/vue.cjs.js"></script>
+    <script src="/static/vue/vue.cjs.prod.js"></script>
+    <script src="/static/vue/vue.esm-browser.js"></script>
+    <script src="/static/vue/vue.esm-bundler.js"></script>
+    -->
+    <script src="/static/vue/vue.global.js"></script>
+    <script src="/static/vue/vue.global.prod.js"></script>
+    <!--
+    <script src="/static/vue/vue.runtime.esm-browser.js"></script>
+    <script src="/static/vue/vue.runtime.esm-browser.prod.js"></script>
+    <script src="/static/vue/vue.runtime.esm-bundler.js"></script>
+    -->
+    <script src="/static/vue/vue.runtime.global.js"></script>
+    <script src="/static/vue/vue.runtime.global.prod.js"></script>
+    <script src="/static/frontend.js"></script>
     <!-- <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>  
     <script src="https://cdn.tiny.cloud/1/6xplizfngwozibpna6mjmi9jwq60hb8c1hu099c79vzdvkap/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script>tinymce.init({selector:'#editortextarea'});</script>
     -->
     
-    {% endblock %}
 </head>
 <body>
     <div class="topnav">
         <a href="/">home</a>
     </div>
-    <div class="content">{% block content %}{% endblock %}</div>
+    <div class="content">
+        TEST
+    </div>
     <div class="footer">
-        {% block footer %}
         &copy; Copyright 2021 by <a href="http://domain.invalid/">neorou73</a>.
-        {% endblock %}
     </div>
 </body>
 </html>
