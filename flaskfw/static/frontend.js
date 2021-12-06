@@ -21,25 +21,43 @@ $( document ).ready(function() {
         "/users": {
             "view": "users.html", "javascripts": ["users.js"]
         },
-        "/editors": {
-            "view": "editors.html", "javascripts": ["editors.js"]
+        "/editor": {
+            "view": "editor.html", "javascripts": ["editor.js"]
         },
         "/read": {
             "view": "read.html", "javascripts": ["read.js"]
         }
     }
     
-    if (location.pathname.substring(0, 8) == "/editors") {
-        console.log(clientRouterMap["/editors"])
+    if (location.pathname.substring(0, 8) == "/editor") {
+        console.log(clientRouterMap["/editor"])
+        $.get("/static/fe_editor.html", function(data){
+            $("#includedHtml").html(data);
+        });
     } else if (location.pathname.substring(0, 5) == "/read") {
         console.log(clientRouterMap["/read"])
+        $.get("/static/fe_read.html", function(data){
+            $("#includedHtml").html(data);
+        });
     } else if (location.pathname.substring(0, 7) == "/manage") {
         console.log(clientRouterMap["/manage"])
+        $.get("/static/fe_manage.html", function(data){
+            $("#includedHtml").html(data);
+        });
     } else if (location.pathname.substring(0, 6) == "/users") {
         console.log(clientRouterMap["/users"])
+        $.get("/static/fe_users.html", function(data){
+            $("#includedHtml").html(data);
+        });
     } else if (location.pathname.substring(0, 1) == "/") {
         console.log(clientRouterMap["/"])
+        $.get("/static/fe_index.html", function(data){
+            $("#includedHtml").html(data);
+        });
     } else {
         console.log('404 not found')
+        $.get("/static/fe_404.html", function(data){
+            $("#includedHtml").html(data);
+        });
     }
 })
