@@ -37,17 +37,17 @@
         <a href="/read">read</a>
         <a href="/editor">write</a>
         <a href="/manage">manage</a>
-        <a href="/users">user</a>
+        <a href="/users">me</a>
     </div>
     <div class="content">
         <div id="logoutDiv">
-            <button>logout</button>
+            <button id="logoutFormLogoutButton">logout</button>
         </div>
         <div id="loginFormDiv">
-            <form id="loginForm">
-                <p>email: <input name="email"/></p>
-                <p>password: <input name="password" type="password/"></p>
-                <button>login</button>
+            <form id="loginForm" action="/login">
+                <p>email: <input id='loginFormEmail' name="email"/></p>
+                <p>password: <input id='loginFormPassword' name="password" type="password/"></p>
+                <button id="loginFormLoginButton">login</button>
             </form>
         </div>
         <div id="includedHtml"></div>

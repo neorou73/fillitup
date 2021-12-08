@@ -13,7 +13,6 @@ $( document ).ready(function() {
     })
 
     // reuseable function to turn serialized data to object 
-
     const objectifySerial = (serialString) => {
         let returnObject = {}
         let returnArray = serialString.split("&")

@@ -56,7 +56,7 @@ def hello(name=None):
     #return "<p>Hello, World!</p>"
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
     error = None
     if request.method == 'POST':
@@ -68,22 +68,21 @@ def login():
             if tokenString is not False:
                 session['email'] = request.form['email']
                 session['accesstoken'] = tokenString
-                return redirect(url_for('hello'))
+                return jsonify(session)
             else:
                 session.pop('email', None)
                 session.pop('accesstoken', None)
-                resp = make_response(render_template('error.html', code=401), 401)
-                return resp
+                #resp = make_response(render_template('error.html', code=401), 401)
+                return jsonify({ 'error': { 'code': 401 }})
         else:
             enotice = "user is not valid"
             print (enotice)
             error=enotice
             session.pop('email', None)
             session.pop('accesstoken', None)
-            resp = make_response(render_template('error.html', code=401), 401)
-            return resp
+            return jsonify({ 'error': { 'code': 401 }})
         
-    return render_template('login.html', error=error, loggedin=True)
+    #return render_template('login.html', error=error, loggedin=True)
 
 @app.route('/logout')
 def logout():
@@ -93,10 +92,9 @@ def logout():
     if pdb.logoutUser(session['email']):
         session.pop('email', None)
         session.pop('accesstoken', None)
-        return redirect(url_for('hello'))
+        return jsonify({ 'loggedout': True })
     else:
-        resp = make_response(render_template('error.html', code=400), 400)
-        return resp
+        return jsonify({ 'loggedout': False, 'error': { 'code': 400 }})
 
 
 @app.route('/api/upload', methods=['GET', 'POST'])
