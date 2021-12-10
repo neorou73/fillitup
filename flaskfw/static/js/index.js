@@ -63,16 +63,6 @@ else {
             // xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8"); // "application/json;charset=UTF-8"
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // 
             return xhr
-            //xhr.onreadystatechange = () => { // Call a function when the state changes.
-                //if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    // Request finished. Do processing here.
-                    //console.log(xhr.response)
-                //}
-            //}
-            // xhr.send("foo=bar&lorem=ipsum"); // data as url safe text
-            // xhr.send(new Int8Array());
-            // xhr.send(document);
-            // to send data instead of application/x-www-form-urlencoded, use application/json instead
         }
 
         /* process login event and manage token */
@@ -82,25 +72,27 @@ else {
             formData = formData + '&password=' + encodeURIComponent(document.getElementById("loginFormPassword").value)
             console.log(formData)
             //e.preventDefault(); // avoid to execute the actual submit of the form.
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/login", true);
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            //var xhr = new XMLHttpRequest();
+            //xhr.open("POST", "/login", true);
+            //xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            let xhr = xhrPost('/login')
             xhr.onreadystatechange = () => { // Call a function when the state changes.
-                console.log(xhr.readyState)
+                // console.log(xhr.readyState) // use for tests only
                 if (xhr.readyState == 4) {
                     // Request finished. Do processing here.
-                    console.log(xhr.response)
-                    console.log(xhr.responseText)
+                    console.log(JSON.parse(xhr.response))
+                    setAccessScope(JSON.parse(xhr.response))
+                    isLoggedIn()
                 }
             }
             xhr.send(formData); // data as url safe text
         }
 
-        document.getElementById("logoutFormLogoutButton").click((e) => {
+        document.getElementById("logoutFormLogoutButton").onclick = (e) => {
             console.log("logging out")
             destroyAccessScope()
             isLoggedIn()
-        })
+        }
 
         isLoggedIn()
 
