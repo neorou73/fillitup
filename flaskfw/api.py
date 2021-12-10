@@ -46,7 +46,7 @@ pdb.getCurrentTimestamp()
 @app.route("/read")
 @app.route("/read/<path:text>")
 def output_frontend(text=None):
-    return send_from_directory('static', 'frontend.html')
+    return send_from_directory('static', 'index.html')
 
 @app.route('/hello/<name>')
 def hello(name=None):
