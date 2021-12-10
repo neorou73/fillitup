@@ -56,9 +56,10 @@ def hello(name=None):
     #return "<p>Hello, World!</p>"
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
+    print(request.form)
     if request.method == 'POST':
         print(request.form['email'])
         print(request.form['password'])

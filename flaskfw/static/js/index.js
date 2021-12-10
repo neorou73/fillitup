@@ -6,7 +6,7 @@ if(document.readyState === "complete") {
 }
 else if(document.readyState === "interactive") {
     // DOM ready! Images, frames, and other subresources are still downloading.
-    console.log('DOM ready! Images, frames, and other subresources are still downloading.')
+    console.log('DOM ready! Images, frames, and other subresources are still downloading at interactive state.')
 }
 else {
     // Loading still in progress.
@@ -60,7 +60,8 @@ else {
             xhr.open("POST", postUrl, true);
 
             //Send the proper header information along with the request
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8"); // "application/json;charset=UTF-8"
+            // xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8"); // "application/json;charset=UTF-8"
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // 
             return xhr
             //xhr.onreadystatechange = () => { // Call a function when the state changes.
                 //if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
@@ -77,27 +78,22 @@ else {
         /* process login event and manage token */
         document.getElementById("loginFormLoginButton").onclick = (e) => {
             console.log("login form clicked")
-            const postData = {
-                "email": document.getElementById("loginFormEmail").value,
-                "password": document.getElementById("loginFormPassword").value
-            }
-            console.log(postData)
-            e.preventDefault(); // avoid to execute the actual submit of the form.
-            let xhr = xhrPost("/login")
+            let formData = 'email=' + encodeURIComponent(document.getElementById("loginFormEmail").value)
+            formData = formData + '&password=' + encodeURIComponent(document.getElementById("loginFormPassword").value)
+            console.log(formData)
+            //e.preventDefault(); // avoid to execute the actual submit of the form.
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/login", true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = () => { // Call a function when the state changes.
-                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(xhr.readyState)
+                if (xhr.readyState == 4) {
                     // Request finished. Do processing here.
                     console.log(xhr.response)
-                    const userData = { 'email': xhr.response.email, 'accesstoken': xhr.response.accesstoken }
-                    setAccessScope(userData)
-                    isLoggedIn()
-                } else {
-                    console.log(xhr.response)
-                    destroyAccessScope()
-                    isLoggedIn()
+                    console.log(xhr.responseText)
                 }
             }
-            xhr.send(JSON.parse(postData)); // data as url safe text
+            xhr.send(formData); // data as url safe text
         }
 
         document.getElementById("logoutFormLogoutButton").click((e) => {
