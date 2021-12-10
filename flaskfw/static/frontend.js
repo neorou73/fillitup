@@ -5,14 +5,10 @@ $( document ).ready(function() {
     const loggedIn = localStorage.getItem('fiuscope_at')
 
     const setAccessScope = (userData) => {
-        localStorage.setItem('fiuEmail', userData.email)
-        localStorage.setItem('fiuAccessToken', userData.accesstoken)
-        localStorage.setItem('fiuScope', { 'email': userData.email, 'accesstoken': userData.accesstoken })
+        localStorage.setItem('fiuScope', JSON.stringify({ 'email': userData.email, 'accesstoken': userData.accesstoken }))
     }
 
     const destroyAccessScope = () => {
-        localStorage.removeItem('fiuEmail')
-        localStorage.removeItem('fiuAccessToken')
         localStorage.removeItem('fiuScope')
         localStorage.clear()
     }
@@ -29,7 +25,7 @@ $( document ).ready(function() {
 
     const isLoggedIn = () => {
         console.log(localStorage)
-        if (localStorage.getItem('fiuEmail') != null || localStorage.getItem('fiuAccesToken') != null) {
+        if (localStorage.getItem('fiuScope') != null ) {
             console.log('user is logged in, showing logout')
             showLogin(false)
         } else {

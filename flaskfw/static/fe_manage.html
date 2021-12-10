@@ -1,34 +1,17 @@
-<script src="/static/fe_manage.js"></script>
 <div><br/></div>
-<div class="metaTagMenuHolder">
-    <span class="select-mng-div metaTagSelector" id="select-users-mng">manage users</span>
-    <span class="select-mng-div metaTagSelector" id="select-keywords-mng">manage keywords</span>
-    <span class="select-mng-div metaTagSelector" id="select-presentation-mng">manage presentation</span>
+<div id="selectManageDiv" class="metaTagMenuHolder">
+    <span v-on:click="showOnly" class="metaTagSelector" id="select-users-mng">manage users</span>
+    <span v-on:click="showOnly" class="metaTagSelector" id="select-keywords-mng">manage keywords</span>
+    <span v-on:click="showOnly" class="metaTagSelector" id="select-presentation-mng">manage presentation</span>
 </div>
 <div>
     <h2>Manage this System</h2>
     <div id="mng-users" class="management-div">
         <h3>User Management</h3>
         <div id="userslist">
-            <table class="manage-list">
-                <tbody>
-                    <tr>
-                        <th>username (email | userid)</th>
-                        <th>when created</th>
-                        <th>status</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td>Jim Kirk (captain@uss.enterprise.ship | 1)</td>
-                        <td>Mon, Sep 8, 1966</td>
-                        <td>inactive <button>activate</button></td>
-                        <td>
-                            <button>purge</button>
-                            <button>reset password</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <ul v-for="u in users">
+                <li>{{ u.username }} ({{ u.email }}) id: {{ u.id }}, created {{ u.created }}</li>
+            </ul>
         </div>
     </div>
     <div id="mng-keywords" class="management-div">
