@@ -1,8 +1,6 @@
 if(document.readyState === "complete") {
     // Fully loaded!
     console.log( "document index.js ready!" )
-    
-    
 }
 else if(document.readyState === "interactive") {
     // DOM ready! Images, frames, and other subresources are still downloading.
@@ -139,5 +137,10 @@ else {
             }
             xhr.send()
         }
+
+        const { apiCalls } = require('./apiCalls.js');
+        const ap = new apiCalls()
+        console.log(ap.foo)
+        ap.mingdis()
     });
 }
