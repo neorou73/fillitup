@@ -137,8 +137,5 @@ else {
             }
             xhr.send()
         }
-        
-        const ap = apiCalls()
-        ap.mingdis()
     });
 }
