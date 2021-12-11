@@ -137,10 +137,8 @@ else {
             }
             xhr.send()
         }
-
-        const { apiCalls } = require('./apiCalls.js');
-        const ap = new apiCalls()
-        console.log(ap.foo)
+        
+        const ap = apiCalls()
         ap.mingdis()
     });
 }
