@@ -38,4 +38,8 @@ const getUsers = () => {
     xhr.send()
 }
 
+const getKeywords = () => {}
+const getFileUploads = () => {}
+const getHtmlContents = () => {}
+
 export { test, getUsers };
