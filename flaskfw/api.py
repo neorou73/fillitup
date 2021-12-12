@@ -45,6 +45,13 @@ pdb.getCurrentTimestamp()
 @app.route("/editor/<path:text>")
 @app.route("/read")
 @app.route("/read/<path:text>")
+@app.route("/uploads")
+@app.route("/uploads/<path:text>")
+@app.route("/keywords")
+@app.route("/keywords/<path:text>")
+@app.route("/me")
+@app.route("/me/<path:text>")
+
 def output_frontend(text=None):
     return send_from_directory('static', 'index.html')
 
@@ -54,7 +61,6 @@ def hello(name=None):
         return render_template('hello.html', name=session['email'], loggedin=True)
     return render_template('hello.html', name=name, loggedin=False)
     #return "<p>Hello, World!</p>"
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -142,7 +148,6 @@ def use_editor(postTitle):
             return render_template('editor.html', title=postTitle)
 
     return redirect(url_for('hello'))
-
 
 @app.route('/api/read')
 @app.route('/api/read/<postTitle>')

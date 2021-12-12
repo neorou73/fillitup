@@ -15,8 +15,6 @@ const getXhrList = (urlString, sessionStorageKey) => {
     xhr.send()
 }
 
-
-
 const xhrPost = (postUrl) => {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", postUrl, true);

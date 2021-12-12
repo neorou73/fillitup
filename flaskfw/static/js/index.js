@@ -100,7 +100,19 @@ else {
             return xhr
         }
 
-        if (location.pathname.substring(0, 8) == "/editor") {
+        if (location.pathname.substring(0, 9) == "/keywords") {
+            let xhr = xhrGet("/static/views/keywords.html")
+            xhr.onload = () => {
+                document.getElementById("includedHtml").innerHTML = xhr.response;
+            }
+            xhr.send()
+        } else if (location.pathname.substring(0, 8) == "/uploads") {
+            let xhr = xhrGet("/static/views/uploads.html")
+            xhr.onload = () => {
+                document.getElementById("includedHtml").innerHTML = xhr.response;
+            }
+            xhr.send()
+        } else if (location.pathname.substring(0, 8) == "/editor") {
             let xhr = xhrGet("/static/views/editor.html")
             xhr.onload = () => {
                 document.getElementById("includedHtml").innerHTML = xhr.response;
@@ -116,12 +128,18 @@ else {
             let xhr = xhrGet("/static/views/manage.html")
             xhr.onload = () => {
                 document.getElementById("includedHtml").innerHTML = xhr.response;
-                const allusers = JSON.parse(sessionStorage.getItem('allusers'))
-                document.getElementById("ajaxuserslist").innerHTML = allusers
             }
             xhr.send()
         } else if (location.pathname.substring(0, 6) == "/users") {
             let xhr = xhrGet("/static/views/users.html")
+            xhr.onload = () => {
+                document.getElementById("includedHtml").innerHTML = xhr.response;
+                const allusers = JSON.parse(sessionStorage.getItem('allusers'))
+                document.getElementById("ajaxuserslist").innerHTML = allusers
+            }
+            xhr.send()
+        } else if (location.pathname.substring(0, 3) == "/me") {
+            let xhr = xhrGet("/static/views/me.html")
             xhr.onload = () => {
                 document.getElementById("includedHtml").innerHTML = xhr.response;
             }
