@@ -116,6 +116,8 @@ else {
             let xhr = xhrGet("/static/views/manage.html")
             xhr.onload = () => {
                 document.getElementById("includedHtml").innerHTML = xhr.response;
+                const allusers = JSON.parse(sessionStorage.getItem('allusers'))
+                document.getElementById("ajaxuserslist").innerHTML = allusers
             }
             xhr.send()
         } else if (location.pathname.substring(0, 6) == "/users") {

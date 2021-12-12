@@ -1,43 +1,67 @@
 <div><br/></div>
-<div id="selectManageDiv" class="metaTagMenuHolder">
-    <span v-on:click="showOnly" class="metaTagSelector" id="select-users-mng">manage users</span>
-    <span v-on:click="showOnly" class="metaTagSelector" id="select-keywords-mng">manage keywords</span>
-    <span v-on:click="showOnly" class="metaTagSelector" id="select-presentation-mng">manage presentation</span>
-</div>
+<!--<div id="selectManageDiv" class="metaTagMenuHolder">
+    <span class="metaTagSelector" id="select-users-mng">manage users</span>
+    <span class="metaTagSelector" id="select-keywords-mng">manage keywords</span>
+    <span class="metaTagSelector" id="select-presentation-mng">manage presentation</span>
+</div>-->
 <div>
     <h2>Manage this System</h2>
+
+    <!-- User Management -->
     <div id="mng-users" class="management-div">
         <h3>User Management</h3>
-        <div id="userslist">
-            <ul v-for="u in users">
-                <li>{{ u.username }} ({{ u.email }}) id: {{ u.id }}, created {{ u.created }}</li>
-            </ul>
+        <div id="ajaxuserslist"></div>
+        <div>
+            <p>username: <input id="user.create.username" name="user.create.username"/></p>
+            <p>email: <input id="user.create.email" name="user.create.email"/></p>
+            <p><button id="user.create">create user</button></p>
+        </div>
+        <div>
+            <p>username: <input id="user.update.username" name="user.update.username"/></p>
+            <p>email: <input id="user.update.email" name="user.update.email"/></p>
+            <p><button id="user.update">update user</button></p>
+        </div>
+        <div>
+            <p>email: <input id="user.pwreset.email" name="user.pwreset.email"/></p>
+            <p><button id="user.pwreset">reset password</button></p>
+        </div>
+        <div>
+            <p>email: <input id="user.toggleactive.email" name="user.toggleactive.email"/></p>
+            <p><button id="user.toggleactive">toggle activation</button></p>
         </div>
     </div>
+
+    <!-- Keywords Management -->
     <div id="mng-keywords" class="management-div">
         <h3>Keywords Management</h3>
-        <div id="keywordslist">show keywords
-            <table class="manage-list">
-                <tbody>
-                    <tr>
-                        <th>keyword | id</th>
-                        <th>description</th>
-                        <th>when created</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td>general | 1</td>
-                        <td>an uncategorized content</td>
-                        <td>Mon, Sep 8, 1966</td>
-                        <td>
-                            <button>remove</button>
-                            <button>change name</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="keywordslist"></div>
+        <div>
+            <form method=post enctype=multipart/form-data>
+                <input type=file name=file>
+                <button id="fileuploads.upload">upload</button>
+            </form>
+        </div>
+        <div>
+            <p>file name: <input id="fileuploads.name.remove" name="fileuploads.name.remove"/></p>
+            <p><button id="fileuploads.remove">remove keyword</button></p>
         </div>
     </div>
+
+    <!-- Uploads Management -->
+    <div id="mng-uploads" class="management-div">
+        <h3>Uploads Management</h3>
+        <div id="uploadedfileslist"></div>
+        <div>
+            <p>keyword: <input id="keyword.add.keyword" name="keyword.add.keyword"/></p>
+            <p><button id="keyword.add">add keyword</button></p>
+        </div>
+        <div>
+            <p>keyword: <input id="keyword.remove.keyword" name="keyword.remove.keyword"/></p>
+            <p><button id="keyword.remove">remove keyword</button></p>
+        </div>
+    </div>
+
+    <!-- Presentation Management -->
     <div id="mng-presentation" class="management-div">
         <h3>Manage View and Presentation</h3>
         <div id="configure-css-scheme">
@@ -50,28 +74,13 @@
             <div class="sample-element" id="sampleScrollBox"></div>
         </div>
     </div>
-    <!--<div id="mng-sections" class="management-div">
-        <h3>Sections Management</h3>
-        <div id="sectionslist">
-            <table class="manage-list">
-                <tbody>
-                    <tr>
-                        <th>section| id</th>
-                        <th>description</th>
-                        <th>when created</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td>general | 1</td>
-                        <td>an uncategorized section</td>
-                        <td>Mon, Sep 8, 1966</td>
-                        <td>
-                            <button>remove</button>
-                            <button>change name</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>-->
 </div>
+
+<script>
+    window.addEventListener("load", () => {
+        if(document.readyState === "complete") {
+            // Fully loaded!
+            document.getElementById('ajaxuserslist').innerHTML = 'ming ming!'
+        }
+    })  
+</script>

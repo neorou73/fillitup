@@ -6,6 +6,9 @@ create database fillup with owner fillup;
 properties and methods
 """
 
+from os import EX_CANTCREAT
+
+
 class psqldb:
     """
     a database connection class to use in this application
@@ -256,7 +259,7 @@ class psqldb:
             print(e)
             return False
     
-    def createContent(self, title, content):
+    def createHtmlContent(self, title, content):
         try:
             self.connect()
             metadata = '{ "keywords": ["general"] }'
@@ -269,7 +272,7 @@ class psqldb:
             print(e)
             return False
     
-    def updateContent(self, title, content):
+    def updateHtmlContent(self, title, content):
         try:
             self.connect()
             metadata = '{ "keywords": ["general"] }'
@@ -282,7 +285,7 @@ class psqldb:
             print(e)
             return False
     
-    def getContent(self, title):
+    def getHtmlContent(self, title):
         try:
             self.connect()
             self.cursor.execute("""select id, title, content from htmlcontent where title = (%s);""", (title,))
@@ -293,7 +296,7 @@ class psqldb:
             print(e)
             return e
     
-    def getAllContents(self):
+    def getHtmlContents(self):
         try:
             self.connect()
             self.cursor.execute("""select id, title, to_char(tscreated, 'Mon DD, YYYY HH:mm:ss') as stringdate, meta, published from htmlcontent order by title;""")
@@ -303,6 +306,29 @@ class psqldb:
         except Exception as e:
             print(e)
             return e
+
+    def getFileUploads(self):
+        try:
+            self.connect()
+            self.cursor.execute("""select * from uploads order by tscreated desc""")
+            rows = self.cursor.fetchall()
+            self.conn.close()
+            return rows
+        except Exception as e:
+            print(e)
+            return e 
+    
+    def createFileUpload(self, uploadData):
+        try:
+            self.connect()
+            self.cursor.execute("""insert into uploads (filename, fullpath, filetype) values (%s, %s, %s);""", (uploadData['filename'], uploadData['fullpath'], uploadData['filetype']))
+            self.conn.commit()
+            print("new upload data saved")
+            self.conn.close()
+            return True 
+        except Exception as e:
+            print(e)
+            return False
 
 
 if __name__ == "__main__":

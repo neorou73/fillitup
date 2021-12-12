@@ -224,33 +224,50 @@ def purge_user():
             #resp.headers['X-Something'] = 'A value'
             return resp
 
-@app.route('/api/sections/list')
-def list_sections():
-    pass 
+@app.route('/api/fileuploads/list')
+def list_fileuploads():
+    return jsonify(pdb.getFileUploads())
 
-@app.route('/api/sections/add')
-def add_section():
-    pass 
+@app.route('/api/fileuploads/create', methods=['POST'])
+def create_fileupload():
+    # requires processing of file upload and copy to upload directory
+    uploadedFile = request.files['file']
+    localTarget = fileUploadDirectoryPath + '/' + uploadedFile.filename
+    uploadedFile.save(os.path.join(fileUploadDirectoryPath, uploadedFile.filename))
+    uploadData = {
+        "filename": uploadedFile.filename,
+        "fullpath": localTarget,
+        "filetype": request.form('filetype')
+    }
+    return jsonify(pdb.createFileUpload(uploadData))
 
-@app.route('/api/sections/remove')
-def remove_section():
-    pass 
+@app.route('/api/htmlcontents/list')
+def get_htmlcontents():
+    return jsonify(pdb.getHtmlContents())
 
-@app.route('/api/sections/edit')
-def edit_section():
-    pass 
+@app.route('/api/htmlcontents/get/<title>')
+def get_htmlcontent(title):
+    return jsonify(pdb.getHtmlContent(title))
+
+@app.route('/api/htmlcontents/create', methods=['POST'])
+def create_htmlcontent():
+    return jsonify(pdb.createHtmlContent(request.form('title'), request.form('content')))
+
+@app.route('/api/htmlcontents/update', methods=['POST'])
+def update_htmlcontent():
+    return jsonify(pdb.updateHtmlContent(request.form('title'), request.form('content')))
 
 @app.route('/api/keywords/list')
 def list_keywords():
-    pass 
+    return jsonify(pdb.getKeywords())
 
-@app.route('/api/keywords/add')
-def add_keyword():
-    pass 
+@app.route('/api/keywords/create', methods=['POST'])
+def create_keyword():
+    return jsonify(pdb.createKeyword(request.form('keywordData')))
 
-@app.route('/api/keywords/remove')
+@app.route('/api/keywords/remove', methods=['POST'])
 def remove_keyword():
-    pass
+    return jsonify(pdb.removeKeyword(request.form('keyword')))
 
 
 # bad request
