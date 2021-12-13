@@ -29,8 +29,12 @@
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>  
     <script src="https://cdn.tiny.cloud/1/6xplizfngwozibpna6mjmi9jwq60hb8c1hu099c79vzdvkap/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script>tinymce.init({selector:'#editortextarea'});</script>
-    -->
+    
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    
     <script src="/static/js/index.js"></script>
+    -->
     <script type="module" src="/static/js/loadmodules.js"></script>
     
 </head>
@@ -46,10 +50,10 @@
         <a href="/me">me</a>
     </div>
     <div class="content">
-        <div id="logoutDiv">
+        <div id="logoutDiv" vjs-if="isLoggedIn">
             <button id="logoutFormLogoutButton">logout</button>
         </div>
-        <div id="loginFormDiv">
+        <div id="loginFormDiv" vjs-if="!isLoggedIn">
             <p>email: <input id='loginFormEmail' name="email"/></p>
             <p>password: <input id='loginFormPassword' name="password" type="password"></p>
             <button id="loginFormLoginButton">login</button>

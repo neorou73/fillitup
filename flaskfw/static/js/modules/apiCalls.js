@@ -29,7 +29,7 @@ const xhrPost = (postUrl) => {
  * define postings for saving htmlContent, add/remove keywords, uploading a file, add/change user
  */
 const test = () => {
-    return 'klatoo verata nikto'
+    return 'testing, testing....klatoo verata nikto!'
 }
 
 const getUsers = () => {
@@ -45,4 +45,4 @@ const getHtmlContents = () => {
     getXhrList('/api/htmlcontents/list', 'allhtmlcontents')
 }
 
-export { test, getUsers, getKeywords, getFileUploads, getHtmlContents };
+export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost };

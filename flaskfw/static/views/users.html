@@ -5,7 +5,10 @@
     <!-- User Management -->
     <div id="mng-users" class="management-div">
         <h3>User Management</h3>
-        <div id="ajaxuserslist"></div>
+        <div id="ajaxuserslist" vjs-model="userstest"></div>
+        <div vjs-for="user in userslist">
+            <p>{{ user.id }}: {{ user.email }}</p>
+        </div>
         <div>
             <p>username: <input id="user.create.username" name="user.create.username"/></p>
             <p>email: <input id="user.create.email" name="user.create.email"/></p>
