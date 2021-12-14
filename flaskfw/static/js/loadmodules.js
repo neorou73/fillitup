@@ -56,8 +56,6 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         const allusers = JSON.parse(sessionStorage.getItem('allusers'))
         document.getElementById("alluserslist").innerHTML = buildHtmlTable(Object.keys(allusers[0]), allusers)
         document.getElementById('user.create').addEventListener('click', () => {
-            //const userDataString = "username=" + document.getElementById('user.create.username').value + "&password=" + document.getElementById('user.create.password').value + "&email=" + document.getElementById('user.create.email').value 
-            //console.log('create user ' + userDataString)
             const userData = {
                 "username": document.getElementById('user.create.username').value,
                 "email": document.getElementById('user.create.email').value,

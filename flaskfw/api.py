@@ -79,15 +79,16 @@ def login():
             else:
                 session.pop('email', None)
                 session.pop('accesstoken', None)
-                #resp = make_response(render_template('error.html', code=401), 401)
-                return jsonify({ 'error': { 'code': 401 }})
+            errorObject = { "code": 401, "error": "Unauthorized", "description": "This user is not valid" }
+            return jsonify(errorObject)
         else:
             enotice = "user is not valid"
             print (enotice)
             error=enotice
             session.pop('email', None)
             session.pop('accesstoken', None)
-            return jsonify({ 'error': { 'code': 401 }})
+            errorObject = { "code": 401, "error": "Unauthorized", "description": "This user is not valid" }
+            return jsonify(errorObject)
         
     #return render_template('login.html', error=error, loggedin=True)
 
@@ -101,7 +102,8 @@ def logout():
         session.pop('accesstoken', None)
         return jsonify({ 'loggedout': True })
     else:
-        return jsonify({ 'loggedout': False, 'error': { 'code': 400 }})
+        errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+        return jsonify(errorObject)
 
 
 @app.route('/api/upload', methods=['GET', 'POST'])
@@ -184,9 +186,8 @@ def add_user():
         if pdb.createUser(userData):
             return jsonify(userData)
         else:
-            resp = make_response(render_template('error.html', code=400), 400)
-            #resp.headers['X-Something'] = 'A value'
-            return resp
+            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+            return jsonify(errorObject)
 
 
 @app.route('/api/users/list')
@@ -209,17 +210,16 @@ def list_users():
 def edit_user():
     if request.method == "POST":
         userData = {
-            'username': request.form('username'),
-            'password': pdb.hash_password(request.form('password')),
-            'email': request.form('email')
+            'username': request.form['username'],
+            'password': pdb.hash_password(request.form['password']),
+            'email': request.form['email']
         }
         print(userData)
         if pdb.editUser(userData):
             return jsonify([userData['username'], userData['email']])
         else:
-            resp = make_response(render_template('error.html', code=400), 400)
-            #resp.headers['X-Something'] = 'A value'
-            return resp
+            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+            return jsonify(errorObject)
 
 @app.route('/api/users/deactivate', methods=['POST'])
 def deactivate_user():
@@ -227,9 +227,8 @@ def deactivate_user():
         if pdb.editUser(request.form('email'), "deactivate"):
             return jsonify({ "email": request.form('email')})
         else:
-            resp = make_response(render_template('error.html', code=400), 400)
-            #resp.headers['X-Something'] = 'A value'
-            return resp
+            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+            return jsonify(errorObject)
 
 @app.route('/api/users/purge', methods=['POST'])
 def purge_user():
@@ -237,9 +236,8 @@ def purge_user():
         if pdb.editUser(request.form('email'), "purge"):
             return jsonify({ "email": request.form('email')})
         else:
-            resp = make_response(render_template('error.html', code=400), 400)
-            #resp.headers['X-Something'] = 'A value'
-            return resp
+            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+            return jsonify(errorObject)
 
 @app.route('/api/fileuploads/list')
 def list_fileuploads():

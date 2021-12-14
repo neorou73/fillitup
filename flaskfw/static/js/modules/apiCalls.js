@@ -18,23 +18,18 @@ const getXhrList = (urlString, sessionStorageKey) => {
 const xhrPost = (postUrl) => {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", postUrl, true);
-
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // 
     return xhr
 }
 
 const addUserPost = (userData) => {
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", '/api/users/add', true);
-
+    let xhr = xhrPost('/api/users/add')
     //Send the proper header information along with the request
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
         if (xhr.readyState == 4) {
             console.log(xhr.response)
+            getXhrList('/api/users/list', 'allusers')
         }
     }
     console.log(userData)
