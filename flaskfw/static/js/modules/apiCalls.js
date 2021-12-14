@@ -24,6 +24,23 @@ const xhrPost = (postUrl) => {
     return xhr
 }
 
+const addUserPost = (userData) => {
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/api/users/add', true);
+
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+        if (xhr.readyState == 4) {
+            console.log(xhr.response)
+        }
+    }
+    console.log(userData)
+    xhr.send(JSON.stringify(userData))
+}
+
 /*
  * lists: get users, keywords, uploads, htmlContents 
  * define postings for saving htmlContent, add/remove keywords, uploading a file, add/change user
@@ -45,4 +62,4 @@ const getHtmlContents = () => {
     getXhrList('/api/htmlcontents/list', 'allhtmlcontents')
 }
 
-export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost };
+export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost };

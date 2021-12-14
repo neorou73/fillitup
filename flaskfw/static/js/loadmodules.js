@@ -1,4 +1,4 @@
-import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost } from './modules/apiCalls.js'
+import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost } from './modules/apiCalls.js'
 import {evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 
 console.log(test())
@@ -55,6 +55,19 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         document.getElementById("includedHtml").innerHTML = xhr.response;
         const allusers = JSON.parse(sessionStorage.getItem('allusers'))
         document.getElementById("alluserslist").innerHTML = buildHtmlTable(Object.keys(allusers[0]), allusers)
+        document.getElementById('user.create').addEventListener('click', () => {
+            //const userDataString = "username=" + document.getElementById('user.create.username').value + "&password=" + document.getElementById('user.create.password').value + "&email=" + document.getElementById('user.create.email').value 
+            //console.log('create user ' + userDataString)
+            const userData = {
+                "username": document.getElementById('user.create.username').value,
+                "email": document.getElementById('user.create.email').value,
+                "password": document.getElementById('user.create.password').value,
+            }
+            addUserPost(userData)
+        })
+        document.getElementById('user.update').addEventListener('click', () => {})
+        document.getElementById('user.pwreset').addEventListener('click', () => {})
+        document.getElementById('user.toggleactive').addEventListener('click', () => {})
         buildObjectBindings(vjsObjects)
     }
     xhr.send()

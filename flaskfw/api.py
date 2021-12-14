@@ -175,10 +175,11 @@ def manage_site():
 @app.route('/api/users/add', methods=['POST'])
 def add_user():
     if request.method == "POST":
+        print(request.json)
         userData = {}
-        userData['username'] = request.form['username']
-        userData['hashedPassword'] = pdb.hash_password(request.form['password'])
-        userData['email'] = request.form['email']
+        userData['username'] = request.json['username']
+        userData['hashedPassword'] = pdb.hash_password(request.json['password'])
+        userData['email'] = request.json['email']
         print(userData)
         if pdb.createUser(userData):
             return jsonify(userData)
