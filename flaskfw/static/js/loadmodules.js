@@ -1,4 +1,5 @@
 import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost } from './modules/apiCalls.js'
+import {evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 
 console.log(test())
 getUsers()
@@ -6,26 +7,7 @@ getUsers()
 //getFileUploads()
 //getHtmlContents()
 
-let vjsObjects = { "ifs": [], "fors": [], "models": [] }
-const buildObjectBindings = (vjsObjects) => {
-    const vjsIfs = document.querySelectorAll("[vjs-if]")
-    vjsIfs.forEach((ele) => {
-        const ifsData = { "classes": ele.classList, "id": ele.id, "vjsIf": ele.getAttribute("vjs-if"), "data": ele.innerHTML }
-        vjsObjects["ifs"].push(ifsData)
-    })
-    const vjsFors = document.querySelectorAll("[vjs-for]")
-    vjsFors.forEach((ele) => {
-        const forsData = { "classes": ele.classList, "id": ele.id, "vjsFor": ele.getAttribute("vjs-for"), "data": ele.innerHTML }
-        vjsObjects["fors"].push(forsData)      
-    })
-    const vjsModels = document.querySelectorAll("[vjs-model]")
-    vjsModels.forEach((ele) => {
-        const modelsData = { "classes": ele.classList, "id": ele.id, "vjsModel": ele.getAttribute("vjs-model"), "data": ele.innerHTML }
-        vjsObjects["models"].push(modelsData)      
-    })
-    console.log(vjsObjects)
-}
-
+let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
 if (location.pathname.substring(0, 9) == "/keywords") {
     let xhr = xhrGet("/static/views/keywords.html")
     xhr.onload = () => {
@@ -72,7 +54,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         document.title = "Manage Users"
         document.getElementById("includedHtml").innerHTML = xhr.response;
         const allusers = JSON.parse(sessionStorage.getItem('allusers'))
-        document.getElementById("ajaxuserslist").innerHTML = allusers
+        document.getElementById("alluserslist").innerHTML = buildHtmlTable(Object.keys(allusers[0]), allusers)
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
@@ -107,16 +89,50 @@ window.addEventListener("load", () => {
 
     const location = window.location
     console.log(location) // use pathname 
+
+    let appDomBindings = {
+        'htmlContents': {},
+        'keywords': {},
+        'isLoggedIn': {
+            'state': false
+        }
+    }
+    
+    /* 
+    'isLoggedIn': {
+            'state': True,
+            'objects': {
+                'users': {},
+                'fileUploads': {},
+                'me': {}
+            }
+        }
+    'isLoggedIn': {
+            'state': False
+        }
+    */
     
     const setAccessScope = (userData) => {
         localStorage.setItem('fiuRootScope', JSON.stringify({ 
             'me.email': userData.email, 
             'me.accesstoken': userData.accesstoken }))
+        appDomBindings['isLoggedIn']['state'] = true 
+        appDomBindings['isLoggedIn']['objects'] = {
+            'users': {},
+            'fileUploads': {},
+            'me': {}
+        }
+        localStorage.setItem('domBindings', appDomBindings)
+        console.log(appDomBindings)
     }
 
     const destroyAccessScope = () => {
         localStorage.removeItem('fiuRootScope')
         localStorage.clear()
+        appDomBindings['isLoggedIn']['state'] = false 
+        delete appDomBindings['isLoggedIn']['objects']
+        localStorage.setItem('domBindings', appDomBindings)
+        console.log(appDomBindings)
     }
 
     const showLogin = (status) => {
@@ -130,7 +146,7 @@ window.addEventListener("load", () => {
     }
 
     const isLoggedIn = () => {
-        console.log(localStorage)
+        //console.log(localStorage)
         if (localStorage.getItem('fiuRootScope') != null ) {
             console.log('user is logged in, showing logout')
             showLogin(false)

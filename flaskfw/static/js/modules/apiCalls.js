@@ -9,7 +9,7 @@ const getXhrList = (urlString, sessionStorageKey) => {
     xhr.onload = () => {
         if (xhr.readyState == 4) {
             sessionStorage.setItem(sessionStorageKey, JSON.stringify(JSON.parse(xhr.response)))
-            console.log(sessionStorage)
+            // console.log(sessionStorage)
         }
     }
     xhr.send()

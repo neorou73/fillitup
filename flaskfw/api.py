@@ -190,7 +190,18 @@ def add_user():
 
 @app.route('/api/users/list')
 def list_users():
-    return jsonify(pdb.getUsers())
+    
+    data = pdb.getUsers()
+    print(data)
+    returnObject = []
+    for k in data:
+        row = {}
+        row['id'] = k[0]
+        row['email'] = k[1]
+        row['name'] = k[2]
+        row['created'] = k[3]
+        returnObject.append(row)
+    return jsonify(returnObject)
 
 
 @app.route('/api/users/edit', methods=['POST'])
