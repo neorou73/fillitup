@@ -21,19 +21,35 @@ const xhrPost = (postUrl) => {
     return xhr
 }
 
-const addUserPost = (userData) => {
-    let xhr = xhrPost('/api/users/add')
+const addJsonPost = (postData, urlString, saveObject) => {
+    let xhr = xhrPost(urlString)
     //Send the proper header information along with the request
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
         if (xhr.readyState == 4) {
             console.log(xhr.response)
-            getXhrList('/api/users/list', 'allusers')
+            getXhrList(urlString, saveObject)
         }
     }
-    console.log(userData)
-    xhr.send(JSON.stringify(userData))
+    console.log(postData)
+    xhr.send(JSON.stringify(postData))
+}
+
+const addUserPost = (userData) => {
+    addJsonPost(userData, '/api/users/list', 'allusers')
+}
+
+const addKeywordPost = (keywordData) => {
+    addJsonPost(keywordData, '/api/keywords/create', 'allkeywords')
+}
+
+const addFileUploadPost = (fileUploadData) => {
+    addJsonPost(fileUploadData, '/api/fileuploads/create', 'allfileuploads')
+}
+
+const addFileUploadPost = (htmlContentData) => {
+    addJsonPost(htmlContentData, '/api/htmlcontents/create', 'allhtmlcontents')
 }
 
 /*
