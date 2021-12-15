@@ -40,7 +40,11 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
         xhr2.onload = () => {
             if (xhr2.readyState == 4) {
-                console.log(xhr2.response)
+                let xhr2response = JSON.parse(xhr2.response) 
+                console.log(xhr2response)
+                if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
+                    document.getElementById('htmlcontent.content').innerText = xhr2response.content
+                }
                 document.getElementById('htmlcontent.title').innerText = queriedTitle
                 document.getElementById('htmlcontent.save').addEventListener('click', () => {
                     const htmlContentData = {

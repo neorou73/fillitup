@@ -262,12 +262,25 @@ def get_htmlcontents():
 
 @app.route('/api/htmlcontents/get/<title>')
 def get_htmlcontent(title):
-    return jsonify(pdb.getHtmlContent(title))
+    hct = pdb.getHtmlContent(title)
+    print(hct)
+    if len(hct) == 3:
+        returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2] }
+        return jsonify(returnObject)
+    else:
+        errorObject = { "code": 404, "error": "Not Found", "description": "This HTML Content has not been created yet" }
+        return jsonify(errorObject)
 
-@app.route('/api/htmlcontents/create', methods=['POST'])
+@app.route('/api/htmlcontents/save', methods=['POST'])
 def create_htmlcontent():
     print(request.json)
-    return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content']))
+    hct = pdb.getHtmlContent(request.json['title'])
+    print(hct)
+    if len(hct) == 0:
+        return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content']))
+    else:
+        return jsonify(pdb.updateHtmlContent(request.json['title'], request.json['content']))
+
 
 @app.route('/api/htmlcontents/update', methods=['POST'])
 def update_htmlcontent():

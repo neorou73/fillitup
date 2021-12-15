@@ -48,7 +48,7 @@ const addFileUploadPost = (fileUploadData) => {
 }
 
 const addHtmlContentPost = (htmlContentData) => {
-    addJsonPost(htmlContentData, '/api/htmlcontents/create', 'allhtmlcontents')
+    addJsonPost(htmlContentData, '/api/htmlcontents/save', 'allhtmlcontents')
 }
 
 /*
