@@ -258,7 +258,16 @@ def create_fileupload():
 
 @app.route('/api/htmlcontents/list')
 def get_htmlcontents():
-    return jsonify(pdb.getHtmlContents())
+    data = pdb.getHtmlContents()
+    print(data)
+    returnObject = []
+    for k in data:
+        row = {}
+        row['id'] = k[0]
+        row['title'] = k[1]
+        row['created'] = k[2]
+        returnObject.append(row)
+    return jsonify(returnObject)
 
 @app.route('/api/htmlcontents/get/<title>')
 def get_htmlcontent(title):

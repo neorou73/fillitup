@@ -5,7 +5,7 @@ console.log(test())
 getUsers()
 //getKeywords()
 //getFileUploads()
-//getHtmlContents()
+getHtmlContents()
 
 let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
 if (location.pathname.substring(0, 9) == "/keywords") {
@@ -64,6 +64,9 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     xhr.onload = () => {
         document.title = "Read Content"
         document.getElementById("includedHtml").innerHTML = xhr.response;
+        const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
+        console.log(allhtmlcontents)
+        document.getElementById("allhtmlcontentslist").innerHTML = buildHtmlTable(Object.keys(allhtmlcontents[0]), allhtmlcontents)
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
