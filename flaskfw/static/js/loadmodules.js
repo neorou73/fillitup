@@ -2,10 +2,10 @@ import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xh
 import {evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 
 console.log(test())
-getUsers()
+
 //getKeywords()
 //getFileUploads()
-getHtmlContents()
+
 
 let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
 if (location.pathname.substring(0, 9) == "/keywords") {
@@ -32,34 +32,40 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     }
     xhr.send()
 } else if (location.pathname.substring(0, 7) == "/editor") {
-    const queriedTitle = location.pathname.replace("/editor/","")
-    let xhr = xhrGet("/static/views/editor.html")
-    xhr.onload = () => {
-        document.title = "Edit Content"
-        document.getElementById("includedHtml").innerHTML = xhr.response
-        let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
-        xhr2.onload = () => {
-            if (xhr2.readyState == 4) {
-                let xhr2response = JSON.parse(xhr2.response) 
-                console.log(xhr2response)
-                if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
-                    document.getElementById('htmlcontent.content').innerText = xhr2response.content
-                }
-                document.getElementById('htmlcontent.title').innerText = queriedTitle
-                document.getElementById('htmlcontent.save').addEventListener('click', () => {
-                    const htmlContentData = {
-                        "title": queriedTitle,
-                        "content": document.getElementById('htmlcontent.content').value
+    if (location.pathname == "/editor") {
+        window.location.replace(location.origin + "/read")
+    } else {
+        const queriedTitle = location.pathname.replace("/editor/","")
+        let xhr = xhrGet("/static/views/editor.html")
+        xhr.onload = () => {
+            document.title = "Edit Content"
+            document.getElementById("includedHtml").innerHTML = xhr.response
+            let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
+            xhr2.onload = () => {
+                if (xhr2.readyState == 4) {
+                    let xhr2response = JSON.parse(xhr2.response) 
+                    console.log(xhr2response)
+                    if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
+                        document.getElementById('htmlcontent.content').innerText = xhr2response.content
                     }
-                    addHtmlContentPost(htmlContentData)
-                })
-                buildObjectBindings(vjsObjects)
+                    document.getElementById('htmlcontent.title').innerText = queriedTitle
+                    document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        const htmlContentData = {
+                            "title": queriedTitle,
+                            "content": document.getElementById('htmlcontent.content').value
+                        }
+                        addHtmlContentPost(htmlContentData)
+                    })
+                    buildObjectBindings(vjsObjects)
+                }
             }
+            xhr2.send()
         }
-        xhr2.send()
+        xhr.send()
     }
-    xhr.send()
+    
 } else if (location.pathname.substring(0, 5) == "/read") {
+    getHtmlContents()
     let xhr = xhrGet("/static/views/read.html")
     xhr.onload = () => {
         document.title = "Read Content"
@@ -79,6 +85,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     }
     xhr.send()
 } else if (location.pathname.substring(0, 6) == "/users") {
+    getUsers()
     let xhr = xhrGet("/static/views/users.html")
     xhr.onload = () => {
         document.title = "Manage Users"
