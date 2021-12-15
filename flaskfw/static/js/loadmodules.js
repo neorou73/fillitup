@@ -3,26 +3,27 @@ import {evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable} fro
 
 console.log(test())
 
-//getKeywords()
-//getFileUploads()
-
-
 let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
 if (location.pathname.substring(0, 9) == "/keywords") {
+    getKeywords()
     let xhr = xhrGet("/static/views/keywords.html")
     xhr.onload = () => {
         document.title = "keywords"
-        document.getElementById("includedHtml").innerHTML = xhr.response;
-        document.getElementById('keywords.add').addEventListener('click', () => {
-            const htmlContentData = {
-                "keyword": document.getElementById('keywords.add.keyword').value
+        document.getElementById("includedHtml").innerHTML = xhr.response
+        const allkeywords = JSON.parse(sessionStorage.getItem('allkeywords'))
+        document.getElementById("allkeywordslist").innerHTML = buildHtmlTable(Object.keys(allkeywords[0]), allkeywords)
+        document.getElementById('keyword.add').addEventListener('click', () => {
+            const keywordData = {
+                "name": document.getElementById('keyword.add.keyword').value,
+                "description": document.getElementById('keyword.add.description').value
             }
-            addHtmlContentPost(userData)
+            addKeywordPost(keywordData)
         })
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
 } else if (location.pathname.substring(0, 8) == "/uploads") {
+    //getFileUploads()
     let xhr = xhrGet("/static/views/uploads.html")
     xhr.onload = () => {
         document.title = "File Uploads"

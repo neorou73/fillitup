@@ -230,7 +230,7 @@ class psqldb:
             self.conn.close()
             
             if len(rows) > 0:
-                return True
+                return rows
             else:
                 return False
         except Exception as e:

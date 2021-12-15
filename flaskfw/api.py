@@ -297,11 +297,28 @@ def update_htmlcontent():
 
 @app.route('/api/keywords/list')
 def list_keywords():
-    return jsonify(pdb.getKeywords())
+    data = pdb.getKeywords()
+    print(data)
+    if data:
+        returnObject = []
+        for k in data:
+            row = {}
+            row['id'] = k[0]
+            row['name'] = k[1]
+            row['description'] = k[2]
+            row['created'] = k[3]
+            returnObject.append(row)
+        return jsonify(returnObject)
+    else:
+        return jsonify([{ 'id': 'id', 'name': 'name', 'description': 'description', 'created': 'created' }])
 
 @app.route('/api/keywords/create', methods=['POST'])
 def create_keyword():
-    return jsonify(pdb.createKeyword(request.form('keywordData')))
+    keywordData = {
+        'name': request.json['name'], 
+        'description': request.json['description']
+    }
+    return jsonify(pdb.createKeyword(keywordData))
 
 @app.route('/api/keywords/remove', methods=['POST'])
 def remove_keyword():
