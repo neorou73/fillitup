@@ -48,7 +48,7 @@ const addFileUploadPost = (fileUploadData) => {
     addJsonPost(fileUploadData, '/api/fileuploads/create', 'allfileuploads')
 }
 
-const addFileUploadPost = (htmlContentData) => {
+const addHtmlContentPost = (htmlContentData) => {
     addJsonPost(htmlContentData, '/api/htmlcontents/create', 'allhtmlcontents')
 }
 
@@ -73,4 +73,4 @@ const getHtmlContents = () => {
     getXhrList('/api/htmlcontents/list', 'allhtmlcontents')
 }
 
-export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost };
+export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addHtmlContentPost, addFileUploadPost, addKeywordPost };

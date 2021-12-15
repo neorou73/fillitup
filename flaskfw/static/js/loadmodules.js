@@ -1,4 +1,4 @@
-import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost } from './modules/apiCalls.js'
+import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost } from './modules/apiCalls.js'
 import {evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 
 console.log(test())
@@ -13,6 +13,12 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     xhr.onload = () => {
         document.title = "keywords"
         document.getElementById("includedHtml").innerHTML = xhr.response;
+        document.getElementById('keywords.add').addEventListener('click', () => {
+            const htmlContentData = {
+                "keyword": document.getElementById('keywords.add.keyword').value
+            }
+            addHtmlContentPost(userData)
+        })
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
@@ -21,6 +27,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     xhr.onload = () => {
         document.title = "File Uploads"
         document.getElementById("includedHtml").innerHTML = xhr.response;
+        document.getElementById('fileuploads.upload').addEventListener('click', () => {})
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
@@ -29,6 +36,13 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     xhr.onload = () => {
         document.title = "Edit Content"
         document.getElementById("includedHtml").innerHTML = xhr.response;
+        document.getElementById('htmlcontent.create').addEventListener('click', () => {
+            const htmlContentData = {
+                "title": document.getElementById('htmlcontent.title').value,
+                "content": document.getElementById('htmlcontent.content').value
+            }
+            addHtmlContentPost(userData)
+        })
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
@@ -63,9 +77,9 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             }
             addUserPost(userData)
         })
-        document.getElementById('user.update').addEventListener('click', () => {})
-        document.getElementById('user.pwreset').addEventListener('click', () => {})
-        document.getElementById('user.toggleactive').addEventListener('click', () => {})
+        //document.getElementById('user.update').addEventListener('click', () => {})
+        //document.getElementById('user.pwreset').addEventListener('click', () => {})
+        //document.getElementById('user.toggleactive').addEventListener('click', () => {})
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
