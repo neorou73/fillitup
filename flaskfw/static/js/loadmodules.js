@@ -31,19 +31,28 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
-} else if (location.pathname.substring(0, 8) == "/editor") {
+} else if (location.pathname.substring(0, 7) == "/editor") {
+    const queriedTitle = location.pathname.replace("/editor/","")
     let xhr = xhrGet("/static/views/editor.html")
     xhr.onload = () => {
         document.title = "Edit Content"
-        document.getElementById("includedHtml").innerHTML = xhr.response;
-        document.getElementById('htmlcontent.create').addEventListener('click', () => {
-            const htmlContentData = {
-                "title": document.getElementById('htmlcontent.title').value,
-                "content": document.getElementById('htmlcontent.content').value
+        document.getElementById("includedHtml").innerHTML = xhr.response
+        let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
+        xhr2.onload = () => {
+            if (xhr2.readyState == 4) {
+                console.log(xhr2.response)
+                document.getElementById('htmlcontent.title').innerText = queriedTitle
+                document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                    const htmlContentData = {
+                        "title": queriedTitle,
+                        "content": document.getElementById('htmlcontent.content').value
+                    }
+                    addHtmlContentPost(htmlContentData)
+                })
+                buildObjectBindings(vjsObjects)
             }
-            addHtmlContentPost(userData)
-        })
-        buildObjectBindings(vjsObjects)
+        }
+        xhr2.send()
     }
     xhr.send()
 } else if (location.pathname.substring(0, 5) == "/read") {

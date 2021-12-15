@@ -29,7 +29,6 @@ const addJsonPost = (postData, urlString, saveObject) => {
     xhr.onload = () => {
         if (xhr.readyState == 4) {
             console.log(xhr.response)
-            getXhrList(urlString, saveObject)
         }
     }
     console.log(postData)

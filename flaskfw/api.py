@@ -266,7 +266,8 @@ def get_htmlcontent(title):
 
 @app.route('/api/htmlcontents/create', methods=['POST'])
 def create_htmlcontent():
-    return jsonify(pdb.createHtmlContent(request.form('title'), request.form('content')))
+    print(request.json)
+    return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content']))
 
 @app.route('/api/htmlcontents/update', methods=['POST'])
 def update_htmlcontent():
