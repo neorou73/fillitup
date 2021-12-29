@@ -48,7 +48,13 @@ const addFileUploadPost = (fileUploadData) => {
 }
 
 const addHtmlContentPost = (htmlContentData) => {
+    console.log(htmlContentData)
     addJsonPost(htmlContentData, '/api/htmlcontents/save', 'allhtmlcontents')
+}
+
+const updateHtmlContentPost = (htmlContentData) => {
+    console.log(htmlContentData)
+    addJsonPost(htmlContentData, '/api/htmlcontents/update', 'allhtmlcontents')
 }
 
 /*
@@ -72,4 +78,4 @@ const getHtmlContents = () => {
     getXhrList('/api/htmlcontents/list', 'allhtmlcontents')
 }
 
-export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addHtmlContentPost, addFileUploadPost, addKeywordPost };
+export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addHtmlContentPost, addFileUploadPost, addKeywordPost, updateHtmlContentPost };

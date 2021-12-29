@@ -14,7 +14,7 @@ const evaluateString = (theString) => {
     }
 }
 
-const buildHtmlTable = (columnTitles, rowData) => {
+const buildHtmlTable = (columnTitles, rowData, provideLink) => {
     let htmlString = '<table><thead><tr>'
     for (let ct=0;ct<columnTitles.length;ct++) {
         htmlString = htmlString + '<th>' + columnTitles[ct] + '</th>'
@@ -25,6 +25,10 @@ const buildHtmlTable = (columnTitles, rowData) => {
         for (let c=0;c<columnTitles.length;c++) {
             row = row + '<td>' + rowData[r][columnTitles[c]] + '</td>'
         }
+        if (provideLink) {
+            row = row + '<td><button id="open-row-' + r + '">open</button></td>'
+        }
+
         row = row + '</tr>'
         htmlString = htmlString + row
     }

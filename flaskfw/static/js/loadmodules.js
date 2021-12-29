@@ -1,4 +1,4 @@
-import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost } from './modules/apiCalls.js'
+import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
 import {evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 
 console.log(test())
@@ -11,7 +11,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         document.title = "keywords"
         document.getElementById("includedHtml").innerHTML = xhr.response
         const allkeywords = JSON.parse(sessionStorage.getItem('allkeywords'))
-        document.getElementById("allkeywordslist").innerHTML = buildHtmlTable(Object.keys(allkeywords[0]), allkeywords)
+        document.getElementById("allkeywordslist").innerHTML = buildHtmlTable(Object.keys(allkeywords[0]), allkeywords, false)
         document.getElementById('keyword.add').addEventListener('click', () => {
             const keywordData = {
                 "name": document.getElementById('keyword.add.keyword').value,
@@ -43,7 +43,8 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             document.getElementById("includedHtml").innerHTML = xhr.response
             let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
             xhr2.onload = () => {
-                if (xhr2.readyState == 4) {
+                console.log(xhr2)
+                if (xhr2.readyState == 4 && xhr2.status == 200) {
                     let xhr2response = JSON.parse(xhr2.response) 
                     console.log(xhr2response)
                     if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
@@ -58,7 +59,20 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                         addHtmlContentPost(htmlContentData)
                     })
                     buildObjectBindings(vjsObjects)
+                } else {
+                    document.getElementById('htmlcontent.title').innerText = queriedTitle
+                    document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        const htmlContentData = {
+                            "title": queriedTitle,
+                            "content": document.getElementById('htmlcontent.content').value
+                        }
+                        updateHtmlContentPost(htmlContentData)
+                    })
+                    buildObjectBindings(vjsObjects)
                 }
+            }
+            xhr2.onerror = (e) => {
+                console.log(e)
             }
             xhr2.send()
         }
@@ -67,16 +81,51 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     
 } else if (location.pathname.substring(0, 5) == "/read") {
     getHtmlContents()
-    let xhr = xhrGet("/static/views/read.html")
-    xhr.onload = () => {
-        document.title = "Read Content"
-        document.getElementById("includedHtml").innerHTML = xhr.response;
-        const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
-        console.log(allhtmlcontents)
-        document.getElementById("allhtmlcontentslist").innerHTML = buildHtmlTable(Object.keys(allhtmlcontents[0]), allhtmlcontents)
-        buildObjectBindings(vjsObjects)
+    if (location.pathname == "/read") {
+        let xhr = xhrGet("/static/views/read.html")
+        xhr.onload = () => {
+            document.title = "Read Content"
+            document.getElementById("includedHtml").innerHTML = xhr.response;
+            const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
+            console.log(allhtmlcontents)
+            document.getElementById("allhtmlcontentslist").innerHTML = buildHtmlTable(Object.keys(allhtmlcontents[0]), allhtmlcontents, true)
+            buildObjectBindings(vjsObjects)
+            document.getElementById("content-exists-to-read").setAttribute("display", "none")
+        }
+        xhr.send()
+    } else {
+        const queriedTitle = location.pathname.replace("/read/","")
+        let xhr = xhrGet("/static/views/read.html")
+        xhr.onload = () => {
+            document.title = "Read Content"
+            document.getElementById("includedHtml").innerHTML = xhr.response;
+            const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
+            console.log(allhtmlcontents)
+            document.getElementById("allhtmlcontentslist").innerHTML = buildHtmlTable(Object.keys(allhtmlcontents[0]), allhtmlcontents, true)
+            let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
+            xhr2.onload = () => {
+                if (xhr2.readyState == 4) {
+                    let xhr2response = JSON.parse(xhr2.response) 
+                    console.log(xhr2response)
+                    if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
+                        document.getElementById('htmlcontent.content').innerText = xhr2response.content
+                    }
+                    document.getElementById('htmlcontent.title').innerText = queriedTitle
+                    
+                    buildObjectBindings(vjsObjects)
+                }
+            }
+            xhr2.send()
+
+            
+            // buildObjectBindings(vjsObjects)
+        }
+        xhr.send()
+
+        document.title = "Edit Content"
+            document.getElementById("includedHtml").innerHTML = xhr.response
+            
     }
-    xhr.send()
 } else if (location.pathname.substring(0, 7) == "/manage") {
     let xhr = xhrGet("/static/views/manage.html")
     xhr.onload = () => {
@@ -92,7 +141,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         document.title = "Manage Users"
         document.getElementById("includedHtml").innerHTML = xhr.response;
         const allusers = JSON.parse(sessionStorage.getItem('allusers'))
-        document.getElementById("alluserslist").innerHTML = buildHtmlTable(Object.keys(allusers[0]), allusers)
+        document.getElementById("alluserslist").innerHTML = buildHtmlTable(Object.keys(allusers[0]), allusers, true)
         document.getElementById('user.create').addEventListener('click', () => {
             const userData = {
                 "username": document.getElementById('user.create.username').value,
