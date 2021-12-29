@@ -22,11 +22,16 @@ const buildHtmlTable = (columnTitles, rowData, provideLink) => {
     htmlString += '</tr></thead><tbody>'
     for (let r=0;r<rowData.length;r++) {
         let row = '<tr>'
+        let titleString = ""
         for (let c=0;c<columnTitles.length;c++) {
             row = row + '<td>' + rowData[r][columnTitles[c]] + '</td>'
+            if (columnTitles[c] == 'title') {
+                titleString = rowData[r][columnTitles[c]]
+            }
         }
         if (provideLink) {
-            row = row + '<td><button id="open-row-' + r + '">open</button></td>'
+            row = row + '<td><a href="/read/' + titleString + '">open</a></td>'
+            row = row + '<td><a href="/editor/' + titleString + '">edit</a></td>'
         }
 
         row = row + '</tr>'
