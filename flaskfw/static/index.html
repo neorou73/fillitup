@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="/static/cached/style.css" />
+    <title></title>
+
+    <!--
+    <script src="/static/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="/static/w3.js"></script>
+    <script src="/static/vue/vue.cjs.js"></script>
+    <script src="/static/vue/vue.cjs.prod.js"></script>
+    <script src="/static/vue/vue.esm-browser.js"></script>
+    <script src="/static/vue/vue.esm-bundler.js"></script>
+    
+    <script src="/static/vue/vue.global.js"></script>
+    <script src="/static/vue/vue.global.prod.js"></script>
+    
+    <script src="/static/vue/vue.runtime.esm-browser.js"></script>
+    <script src="/static/vue/vue.runtime.esm-browser.prod.js"></script>
+    <script src="/static/vue/vue.runtime.esm-bundler.js"></script>
+    
+    <script src="/static/vue/vue.runtime.global.js"></script>
+    <script src="/static/vue/vue.runtime.global.prod.js"></script>
+    
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>  
+    <script src="https://cdn.tiny.cloud/1/6xplizfngwozibpna6mjmi9jwq60hb8c1hu099c79vzdvkap/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>tinymce.init({selector:'#editortextarea'});</script>
+    -->
+    <!--
+        REACT development
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    -->
+    <!--
+        REACT production
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    -->
+    <!--
+    <script src="/static/js/index.js"></script>
+    -->
+    <script type="module" src="/static/js/loadmodules.js"></script>
+    
+</head>
+<body>
+    <div class="topnav">
+        <a href="/">home</a>
+        <a href="/read">read</a>
+        <a href="/editor">write</a>
+        <a href="/users">users</a>
+        <a href="/uploads">uploads</a>
+        <a href="/keywords">keywords</a>
+        <a href="/manage">system</a>
+        <a href="/me">me</a>
+    </div>
+    <div class="content">
+        <div id="logoutDiv" vjs-if="isLoggedIn">
+            <button id="logoutFormLogoutButton">logout</button>
+        </div>
+        <div id="loginFormDiv" vjs-if="!isLoggedIn">
+            <p>email: <input id='loginFormEmail' name="email"/></p>
+            <p>password: <input id='loginFormPassword' name="password" type="password"></p>
+            <button id="loginFormLoginButton">login</button>
+        </div>
+        <div id="includedHtml"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2021 by <a href="http://domain.invalid/">neorou73</a>.
+    </div>
+</body>
+</html>

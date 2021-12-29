@@ -6,6 +6,9 @@ create database fillup with owner fillup;
 properties and methods
 """
 
+from os import EX_CANTCREAT
+
+
 class psqldb:
     """
     a database connection class to use in this application
@@ -85,9 +88,244 @@ class psqldb:
             tokenString = uuid.uuid4().hex
             print(tokenString)
             self.cursor.execute("""INSERT INTO accesstokens (person, token) values (%s, %s);""", (email, tokenString))
+            self.conn.commit()
             print("user " + email + " has been logged in.")
             self.conn.close()
+            return tokenString
+        except Exception as e:
+            print(e)
+            return False
+    
+    def logoutUser(self, email):
+        try:
+            self.connect()
+            self.cursor.execute("""UPDATE accesstokens SET loggedout = 'true' WHERE person = %s;""", (email,))
+            self.conn.commit()
+            print("user " + email + " has been logged out.")
+            self.conn.close()
             return True
+        except Exception as e:
+            print(e)
+            return False
+    
+    def createUser(self, userData):
+        try:
+            self.connect()
+            print(userData)
+            self.cursor.execute("""INSERT INTO people (username, email, password) values (%s, %s, %s);""", (userData['username'], userData['email'], userData['hashedPassword']))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def editUser(self, userData, clause=None):
+        # clause indicates whether it is for deactivation, password change, or any change - default is change all with email as indicator
+        try:
+            self.connect()
+            if clause == 'passwordReset':
+                self.cursor.execute("""UPDATE people SET password = %s WHERE email = %s;""", (userData['hashedPassword'], userData['email']))
+            elif clause == 'deactivation':
+                self.cursor.execute("""UPDATE people SET deactivated = 'true' WHERE email = %s;""", (userData['email']))
+            else:
+                self.cursor.execute("""UPDATE people SET username = %s, email = %s, password = %s, deactivated = %s WHERE email = %s""", (userData['username'], userData['email'], userData['hashedPassword'], userData['activationStatus'], userData['email']))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+        
+
+    def getUsers(self, userEmail=None):
+        # if no userEmail, get all users 
+        try:
+            self.connect()
+            if userEmail:
+                self.cursor.execute("""SELECT id, email, username, tscreated FROM people WHERE email = (%s);""", (userEmail,))
+            else:
+                self.cursor.execute("""SELECT id, email, username, tscreated FROM people order by email;""")
+            rows = self.cursor.fetchall()
+            print(rows)
+            self.conn.close()
+            
+            if len(rows) > 0:
+                return rows
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return e
+
+    def purgeUser(self, userEmail):
+        try:
+            self.connect()
+            self.cursor.execute("""DELETE FROM people WHERE email = %s AND id != 1 CASCADE;""", (userEmail))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def getSections(self, sectionName=None):
+        # of mpt sectionName, get all sections 
+        try:
+            self.connect()
+            if sectionName:
+                self.cursor.execute("""SELECT * FROM sections WHERE name = (%s);""", (sectionName,))
+            else:
+                self.cursor.execute("""SELECT * FROM sections order by id;""")
+            rows = self.cursor.fetchall()
+            print(rows)
+            self.conn.close()
+            
+            if len(rows) > 0:
+                return True
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return e
+
+    def createSection(self, sectionData):
+        try:
+            self.connect()
+            self.cursor.execute("""INSERT INTO sections (name, description) values (%s, %s);""", (sectionData['name'], sectionData['description']))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def editSection(self, sectionData):
+        try:
+            self.connect()
+            self.cursor.execute("""UPDATE sections SET name = %s, description = %s, metadata = %s where name = %s);""", (sectionData['name'], sectionData['description'], sectionData['metadata'], sectionData['name']))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def removeSection(self, sectionName):
+        try:
+            self.connect()
+            self.cursor.execute("""DELETE FROM sections where name = %s);""", (sectionName,))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def getKeywords(self):
+        try:
+            self.connect()
+            self.cursor.execute("""SELECT * FROM keywords order by id;""")
+            rows = self.cursor.fetchall()
+            self.conn.close()
+            
+            if len(rows) > 0:
+                return rows
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return e
+
+    def createKeyword(self, keywordData):
+        try:
+            self.connect()
+            self.cursor.execute("""INSERT INTO keywords (name, description) values (%s, %s);""", (keywordData['name'], keywordData['description']))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def removeKeyword(self, keyword):
+        try:
+            self.connect()
+            self.cursor.execute("""DELETE FROM keywords where name = %s);""", (keyword))
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+    
+    def createHtmlContent(self, title, content):
+        try:
+            self.connect()
+            metadata = '{ "keywords": ["general"] }'
+            self.cursor.execute("""insert into htmlcontent (title, content, meta) values (%s, %s, %s);""", (title, content, metadata))
+            self.conn.commit()
+            print("new html content saved")
+            self.conn.close()
+            return True 
+        except Exception as e:
+            print(e)
+            return False
+    
+    def updateHtmlContent(self, title, content):
+        try:
+            self.connect()
+            metadata = '{ "keywords": ["general"] }'
+            self.cursor.execute("""update htmlcontent set content = (%s) where title = (%s);""", (content, title))
+            self.conn.commit()
+            print("existing html content saved")
+            self.conn.close()
+            return True 
+        except Exception as e:
+            print(e)
+            return False
+    
+    def getHtmlContent(self, title):
+        try:
+            self.connect()
+            self.cursor.execute("""select id, title, content from htmlcontent where title = (%s);""", (title,))
+            rows = self.cursor.fetchone()
+            self.conn.close()
+            return rows 
+        except Exception as e:
+            print(e)
+            return e
+    
+    def getHtmlContents(self):
+        try:
+            self.connect()
+            self.cursor.execute("""select id, title, to_char(tscreated, 'Mon DD, YYYY HH:mm:ss') as stringdate, meta, published from htmlcontent order by title;""")
+            rows = self.cursor.fetchall()
+            self.conn.close()
+            return rows 
+        except Exception as e:
+            print(e)
+            return e
+
+    def getFileUploads(self):
+        try:
+            self.connect()
+            self.cursor.execute("""select * from uploads order by tscreated desc""")
+            rows = self.cursor.fetchall()
+            self.conn.close()
+            return rows
+        except Exception as e:
+            print(e)
+            return e 
+    
+    def createFileUpload(self, uploadData):
+        try:
+            self.connect()
+            self.cursor.execute("""insert into uploads (filename, fullpath, filetype) values (%s, %s, %s);""", (uploadData['filename'], uploadData['fullpath'], uploadData['filetype']))
+            self.conn.commit()
+            print("new upload data saved")
+            self.conn.close()
+            return True 
         except Exception as e:
             print(e)
             return False

@@ -6,6 +6,7 @@
   body {
     margin: 10;
     font-family: Montserrat, Arial, Helvetica, sans-serif;
+    height: 100%
   }
   
   /* Style the top navigation bar */
@@ -144,4 +145,8 @@
     height: auto;
   }
   
+  textarea {
+    width: 100%;
+    min-height: 45px;
+  }
   

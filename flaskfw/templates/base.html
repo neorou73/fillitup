@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="/static/cached/style.css" />
     <title>{% block title %}{% endblock %}</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>  
-    <script>tinymce.init({selector:'textarea'});</script>
+    <script src="/static/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>  
+    <script src="https://cdn.tiny.cloud/1/6xplizfngwozibpna6mjmi9jwq60hb8c1hu099c79vzdvkap/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>tinymce.init({selector:'#editortextarea'});</script>
+    -->
     
     {% endblock %}
 </head>

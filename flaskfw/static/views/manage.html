@@ -1,0 +1,32 @@
+<div><br/></div>
+<!--<div id="selectManageDiv" class="metaTagMenuHolder">
+    <span class="metaTagSelector" id="select-users-mng">manage users</span>
+    <span class="metaTagSelector" id="select-keywords-mng">manage keywords</span>
+    <span class="metaTagSelector" id="select-presentation-mng">manage presentation</span>
+</div>-->
+<div>
+    <h2>Manage this System</h2>
+
+    <!-- Presentation Management -->
+    <div id="mng-presentation" class="management-div">
+        <h3>Manage View and Presentation</h3>
+        <div id="configure-css-scheme">
+            <p>dark-background</p>
+            <p>light-background</p>
+            <p>text-color</p>
+            <p>link-color</p>
+            <div class="sample-element" id="sampleImage"></div>
+            <div class="sample-element" id="sampleTable"></div>
+            <div class="sample-element" id="sampleScrollBox"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("load", () => {
+        if(document.readyState === "complete") {
+            // Fully loaded!
+            document.getElementById('ajaxuserslist').innerHTML = 'ming ming!'
+        }
+    })  
+</script>
