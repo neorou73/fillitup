@@ -65,15 +65,15 @@ def hello(name=None):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
-    print(request.form)
+    print(request.json)
     if request.method == 'POST':
-        print(request.form['email'])
-        print(request.form['password'])
-        if pdb.validateUser(request.form['email'], request.form['password']):
+        print(request.json['email'])
+        print(request.json['password'])
+        if pdb.validateUser(request.json['email'], request.json['password']):
             print ('user is valid')
-            tokenString = pdb.loginUser(request.form['email']) 
+            tokenString = pdb.loginUser(request.json['email']) 
             if tokenString is not False:
-                session['email'] = request.form['email']
+                session['email'] = request.json['email']
                 session['accesstoken'] = tokenString
                 return jsonify(session)
             else:

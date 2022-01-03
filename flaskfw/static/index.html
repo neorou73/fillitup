@@ -60,14 +60,16 @@
     </div>
     <div class="content">
         <div id="logoutDiv" vjs-if="isLoggedIn">
-            <button id="logoutFormLogoutButton">logout</button>
+            <div>
+                <button id="logoutFormLogoutButton">logout</button>
+            </div>
+            <div id="includedHtml"></div>
         </div>
         <div id="loginFormDiv" vjs-if="!isLoggedIn">
             <p>email: <input id='loginFormEmail' name="email"/></p>
             <p>password: <input id='loginFormPassword' name="password" type="password"></p>
             <button id="loginFormLoginButton">login</button>
         </div>
-        <div id="includedHtml"></div>
     </div>
     <div class="footer">
         &copy; Copyright 2021 by <a href="http://domain.invalid/">neorou73</a>.

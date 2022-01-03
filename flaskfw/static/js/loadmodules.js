@@ -257,20 +257,26 @@ window.addEventListener("load", () => {
     /* process login event and manage token */
     document.getElementById("loginFormLoginButton").onclick = (e) => {
         console.log("login form clicked")
-        let formData = 'email=' + encodeURIComponent(document.getElementById("loginFormEmail").value)
-        formData = formData + '&password=' + encodeURIComponent(document.getElementById("loginFormPassword").value)
-        console.log(formData)
+        const postData = {
+            "email": document.getElementById("loginFormEmail").value,
+            "password": document.getElementById("loginFormPassword").value
+        }
+        console.log(postData)
         let xhr = xhrPost('/login')
-        xhr.onreadystatechange = () => { // Call a function when the state changes.
-            // console.log(xhr.readyState) // use for tests only
+
+
+        //Send the proper header information along with the request
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
             if (xhr.readyState == 4) {
-                // Request finished. Do processing here.
-                console.log(JSON.parse(xhr.response))
+                console.log(xhr.response)
                 setAccessScope(JSON.parse(xhr.response))
                 isLoggedIn()
             }
         }
-        xhr.send(formData); // data as url safe text
+        console.log(postData)
+        xhr.send(JSON.stringify(postData))
     }
 
     document.getElementById("logoutFormLogoutButton").onclick = (e) => {
