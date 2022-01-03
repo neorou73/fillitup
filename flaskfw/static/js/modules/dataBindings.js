@@ -47,10 +47,10 @@ const valuateVjsFors = () => {
     //console.log(vjsObjects.fors)
 }
 
-const translateMdInput = () => {
+const translateMdInput = (mdString) => {
     const MD = window.markdownit()
-    //console.log(MD.render($scope.mdcontenttextinput))
-    return MD.render($scope.mdcontenttextinput)
+    console.log(MD.render(mdString))
+    return MD.render(mdString)
 }
 
 //let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
@@ -94,4 +94,4 @@ const buildObjectBindings = (vjsObjects) => {
     valuateVjsFors()
 }
 
-export { evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable }
+export { evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable }

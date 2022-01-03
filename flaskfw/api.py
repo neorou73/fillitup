@@ -274,7 +274,7 @@ def get_htmlcontent(title):
     hct = pdb.getHtmlContent(title)
     print(hct)
     try:
-        returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2] }
+        returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2], 'markdownst': hct[3] }
         return jsonify(returnObject)
     except:
         errorObject = { "code": 404, "error": "Not Found", "description": "This HTML Content has not been created yet", "object": sys.exc_info() }
@@ -283,12 +283,12 @@ def get_htmlcontent(title):
 @app.route('/api/htmlcontents/save', methods=['POST'])
 def create_htmlcontent():
     print(request.json)
-    return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content']))
+    return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content'], request.json['markdownst']))
 
 @app.route('/api/htmlcontents/update', methods=['POST'])
 def update_htmlcontent():
     print(request.json)
-    return jsonify(pdb.updateHtmlContent(request.json['title'], request.json['content']))
+    return jsonify(pdb.updateHtmlContent(request.json['title'], request.json['content'], request.json['markdownst']))
 
 @app.route('/api/keywords/list')
 def list_keywords():

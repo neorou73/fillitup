@@ -1,5 +1,5 @@
 import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
-import {evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
+import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 
 console.log(test())
 
@@ -47,26 +47,32 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                 if (xhr2.readyState == 4 && xhr2.status == 200) {
                     let xhr2response = JSON.parse(xhr2.response) 
                     console.log(xhr2response)
-                    if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
-                        document.getElementById('htmlcontent.content').innerText = xhr2response.content
+                    if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('markdownst')) {
+                        document.getElementById('htmlcontent.markdownst').value = xhr2response.markdownst
                     }
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
+                    document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
                     document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
                         const htmlContentData = {
                             "title": queriedTitle,
-                            "content": document.getElementById('htmlcontent.content').value
+                            "markdownst": document.getElementById('htmlcontent.markdownst').value,
+                            "content": mdData
                         }
-                        addHtmlContentPost(htmlContentData)
+                        updateHtmlContentPost(htmlContentData)
                     })
                     buildObjectBindings(vjsObjects)
                 } else {
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
                     document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
                         const htmlContentData = {
                             "title": queriedTitle,
-                            "content": document.getElementById('htmlcontent.content').value
+                            "markdownst": document.getElementById('htmlcontent.markdownst').value,
+                            "content": mdData
                         }
-                        updateHtmlContentPost(htmlContentData)
+                        addHtmlContentPost(htmlContentData)
+                        document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
                     })
                     buildObjectBindings(vjsObjects)
                 }
@@ -108,7 +114,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                     let xhr2response = JSON.parse(xhr2.response) 
                     console.log(xhr2response)
                     if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
-                        document.getElementById('htmlcontent.content').innerText = xhr2response.content
+                        document.getElementById('htmlcontent.content').innerHTML = xhr2response.content
                     }
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
                     

@@ -32,6 +32,7 @@ create table htmlcontent (
     id serial,
     title varchar(255) not null primary key,
     content text,
+    markdown text,
     meta json,
     tscreated timestamp default current_timestamp,
     published boolean default false);
@@ -42,6 +43,7 @@ create table htmlcontentchanges (
     id serial,
     htctitle varchar(255) references htmlcontent(title),
     contentdata text,
+    markdowndata text,
     metadata json,
     tscreated timestamp default current_timestamp);
 
