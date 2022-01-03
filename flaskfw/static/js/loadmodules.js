@@ -23,11 +23,15 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     }
     xhr.send()
 } else if (location.pathname.substring(0, 8) == "/uploads") {
-    //getFileUploads()
+    getFileUploads()
     let xhr = xhrGet("/static/views/uploads.html")
     xhr.onload = () => {
         document.title = "File Uploads"
-        document.getElementById("includedHtml").innerHTML = xhr.response;
+        document.getElementById("includedHtml").innerHTML = xhr.response
+        const allfileuploads = JSON.parse(sessionStorage.getItem('allfileuploads'))
+        console.log(allfileuploads)
+        document.getElementById("uploadedfileslist").innerHTML = buildHtmlTable(Object.keys(allfileuploads[0]), allfileuploads, false)
+        
         document.getElementById('fileuploads.upload').addEventListener('click', (event) => {
             event.preventDefault() // prevents the actual form button click to submit to the URL below
             const formid = document.getElementById('uploadedfileform')

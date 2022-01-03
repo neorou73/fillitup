@@ -242,7 +242,19 @@ def purge_user():
 
 @app.route('/api/fileuploads/list')
 def list_fileuploads():
-    return jsonify(pdb.getFileUploads())
+    data = pdb.getFileUploads()
+    print(data)
+    returnObject = []
+    for k in data:
+        row = {}
+        row['id'] = k[0]
+        row['filename'] = k[1]
+        row['fullpath'] = k[2]
+        row['filetype'] = k[3]
+        row['tscreated'] = k[4]
+        row['published'] = k[5]
+        returnObject.append(row)
+    return jsonify(returnObject)
 
 @app.route('/api/fileuploads/create', methods=['POST'])
 def create_fileupload():

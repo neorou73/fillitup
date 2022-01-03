@@ -310,7 +310,7 @@ class psqldb:
     def getFileUploads(self):
         try:
             self.connect()
-            self.cursor.execute("""select * from uploads order by tscreated desc""")
+            self.cursor.execute("""select id, filename, fullpath, filetype, tscreated, published from uploads order by tscreated desc""")
             rows = self.cursor.fetchall()
             self.conn.close()
             return rows
