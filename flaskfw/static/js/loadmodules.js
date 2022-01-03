@@ -30,8 +30,9 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         document.getElementById("includedHtml").innerHTML = xhr.response
         const allfileuploads = JSON.parse(sessionStorage.getItem('allfileuploads'))
         console.log(allfileuploads)
-        document.getElementById("uploadedfileslist").innerHTML = buildHtmlTable(Object.keys(allfileuploads[0]), allfileuploads, false)
-        
+        if (allfileuploads.length > 0) {
+            document.getElementById("uploadedfileslist").innerHTML = buildHtmlTable(Object.keys(allfileuploads[0]), allfileuploads, false)
+        }
         document.getElementById('fileuploads.upload').addEventListener('click', (event) => {
             event.preventDefault() // prevents the actual form button click to submit to the URL below
             const formid = document.getElementById('uploadedfileform')
