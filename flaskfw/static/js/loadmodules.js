@@ -28,7 +28,20 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     xhr.onload = () => {
         document.title = "File Uploads"
         document.getElementById("includedHtml").innerHTML = xhr.response;
-        document.getElementById('fileuploads.upload').addEventListener('click', () => {})
+        document.getElementById('fileuploads.upload').addEventListener('click', (event) => {
+            event.preventDefault() // prevents the actual form button click to submit to the URL below
+            const formid = document.getElementById('uploadedfileform')
+            let xhr2 = new XMLHttpRequest();
+            // Add any event handlers here...
+            let fileInputElement = document.getElementById("userfile")
+            let upFile = fileInputElement.files[0]
+            console.log(upFile)
+            let formData = new FormData();
+            formData.append("file", upFile)
+            formData.append("filetype", upFile.type)
+            xhr2.open('POST', '/api/fileuploads/create', true);
+            xhr2.send(formData);
+        })
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
@@ -116,14 +129,11 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                     if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
                         document.getElementById('htmlcontent.content').innerHTML = xhr2response.content
                     }
-                    document.getElementById('htmlcontent.title').innerText = queriedTitle
-                    
+                    document.getElementById('htmlcontent.title').innerText = queriedTitle                    
                     buildObjectBindings(vjsObjects)
                 }
             }
-            xhr2.send()
-
-            
+            xhr2.send()            
             // buildObjectBindings(vjsObjects)
         }
         xhr.send()

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify, url_for
 from flask.helpers import send_from_directory  
 from markupsafe import escape, Markup
+from datetime import datetime
 
 import os, json, sys  
 
@@ -245,15 +246,24 @@ def list_fileuploads():
 
 @app.route('/api/fileuploads/create', methods=['POST'])
 def create_fileupload():
+    tddt = datetime.now()
+    yyyymm = tddt.strftime("%Y%m")
+    from pathlib import Path
+    ymDir = fileUploadDirectoryPath + '/' + yyyymm
+    ymDirPath = Path(ymDir)
+    ymDirPath.mkdir(parents=True, exist_ok=True) 
+    #print(tddt.strftime("%Y%m"))
     # requires processing of file upload and copy to upload directory
     uploadedFile = request.files['file']
-    localTarget = fileUploadDirectoryPath + '/' + uploadedFile.filename
-    uploadedFile.save(os.path.join(fileUploadDirectoryPath, uploadedFile.filename))
+    #print(dir(uploadedFile))
+    localTarget = ymDir + '/' + uploadedFile.filename
+    uploadedFile.save(os.path.join(ymDir, uploadedFile.filename))
     uploadData = {
         "filename": uploadedFile.filename,
         "fullpath": localTarget,
-        "filetype": request.form('filetype')
+        "filetype": uploadedFile.content_type 
     }
+    # available uploadedFile object keys are lastModified, lastModifiedDate, name, size, type, webkitRelativePath
     return jsonify(pdb.createFileUpload(uploadData))
 
 @app.route('/api/htmlcontents/list')
