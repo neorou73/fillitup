@@ -191,10 +191,18 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     }
     xhr.send()
 } else if (location.pathname.substring(0, 1) == "/") {
+    getHtmlContents()
     let xhr = xhrGet("/static/views/index.html")
     xhr.onload = () => {
         document.title = "Welcome"
         document.getElementById("includedHtml").innerHTML = xhr.response;
+        let contentTitles = ""
+        const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
+        console.log(allhtmlcontents)
+        for (let i=0;i<allhtmlcontents.length;i++) {
+            contentTitles = contentTitles + "&nbsp;<span>" + allhtmlcontents[i]['title'] + "</span>&nbsp;"
+        }
+        document.getElementById("content.titles").innerHTML = contentTitles
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
