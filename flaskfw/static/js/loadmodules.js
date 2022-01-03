@@ -45,7 +45,8 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             formData.append("file", upFile)
             formData.append("filetype", upFile.type)
             xhr2.open('POST', '/api/fileuploads/create', true);
-            xhr2.send(formData);
+            xhr2.send(formData)
+            getFileUploads()
         })
         buildObjectBindings(vjsObjects)
     }
@@ -115,6 +116,8 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             document.getElementById("allhtmlcontentslist").innerHTML = buildHtmlTable(Object.keys(allhtmlcontents[0]), allhtmlcontents, true)
             buildObjectBindings(vjsObjects)
             document.getElementById("content-exists-to-read").setAttribute("display", "none")
+            console.log(hljs)
+            hljs.highlightAll()
         }
         xhr.send()
     } else {
@@ -136,6 +139,8 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                     }
                     document.getElementById('htmlcontent.title').innerText = queriedTitle                    
                     buildObjectBindings(vjsObjects)
+                    console.log(hljs)
+                    hljs.highlightAll()
                 }
             }
             xhr2.send()            
