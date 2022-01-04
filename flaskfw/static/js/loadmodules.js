@@ -55,12 +55,21 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     if (location.pathname == "/editor") {
         window.location.replace(location.origin + "/read")
     } else {
+        getKeywords()
         const queriedTitle = location.pathname.replace("/editor/","")
+        const allkeywords = JSON.parse(sessionStorage.getItem('allkeywords'))
+        console.log(allkeywords)
+        let keywordSpans = ""
+        for (let k=0;k<allkeywords.length;k++) {
+            keywordSpans = keywordSpans + "<span class='keywordClick'>| " + allkeywords[k]['name'] + " |</span>"
+        }
         let xhr = xhrGet("/static/views/editor.html")
         xhr.onload = () => {
             document.title = "Edit Content"
             document.getElementById("includedHtml").innerHTML = xhr.response
             let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
+
+            document.getElementById('keywordSpans').innerHTML = keywordSpans
             xhr2.onload = () => {
                 console.log(xhr2)
                 if (xhr2.readyState == 4 && xhr2.status == 200) {
@@ -68,27 +77,41 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                     console.log(xhr2response)
                     if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('markdownst')) {
                         document.getElementById('htmlcontent.markdownst').value = xhr2response.markdownst
+                        document.getElementById('htmlcontent.keywords').value = xhr2response.meta.keywords.join('; ')
                     }
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
                     document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
                     document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        let keywordsInput = document.getElementById('htmlcontent.keywords').value 
+                        console.log(keywordsInput)
+                        console.log(keywordsInput.split("; "))
                         const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
                         const htmlContentData = {
                             "title": queriedTitle,
                             "markdownst": document.getElementById('htmlcontent.markdownst').value,
-                            "content": mdData
+                            "content": mdData,
+                            "meta": { 
+                                "keywords": keywordsInput.split(";")
+                            }
                         }
                         updateHtmlContentPost(htmlContentData)
                     })
                     buildObjectBindings(vjsObjects)
                 } else {
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
+                    document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
+                    document.getElementById('htmlcontent.keywords').value = "general; test"
                     document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        console.log(keywordsInput)
+                        console.log(keywordsInput.split("; "))
                         const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
                         const htmlContentData = {
                             "title": queriedTitle,
                             "markdownst": document.getElementById('htmlcontent.markdownst').value,
-                            "content": mdData
+                            "content": mdData,
+                            "meta": { 
+                                "keywords": keywordsInput.split(";")
+                            }
                         }
                         addHtmlContentPost(htmlContentData)
                         document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
