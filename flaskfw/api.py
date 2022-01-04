@@ -38,6 +38,7 @@ pdb = psqldb()
 pdb.getCurrentTimestamp()
 
 @app.route("/")
+@app.route("/auth")
 @app.route("/manage")
 @app.route("/manage/<path:text>")
 @app.route("/users")
@@ -103,6 +104,7 @@ def logout():
         session.pop('email', None)
         session.pop('accesstoken', None)
         return jsonify({ 'loggedout': True })
+        
     else:
         errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
         return jsonify(errorObject)

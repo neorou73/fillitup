@@ -4,7 +4,60 @@ import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, b
 console.log(test())
 
 let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
-if (location.pathname.substring(0, 9) == "/keywords") {
+
+let appDomBindings = {
+    'htmlContents': {},
+    'keywords': {},
+    'isLoggedIn': {
+        'state': false
+    }
+}
+
+const destroyAccessScope = () => {
+    localStorage.removeItem('fiuRootScope')
+    localStorage.removeItem('accesstoken')
+    localStorage.removeItem('domBindings')
+    localStorage.removeItem('email')
+    localStorage.removeItem('isLoggedIn')
+    localStorage.clear()
+}
+
+const showLogin = (status) => {
+    if (status) {
+        document.getElementById("loginFormDiv").style.display = 'inline'
+        document.getElementById("logoutDiv").style.display = 'none'
+    } else {
+        document.getElementById("loginFormDiv").style.display = 'none'
+        document.getElementById("logoutDiv").style.display = 'inline'
+    }
+}
+
+const isLoggedIn = () => {
+    console.log(localStorage)
+    const status = localStorage.getItem('isLoggedIn')
+    console.log(status)
+    if (status == null) {
+        return false
+    } else {
+        return true
+    }
+}
+isLoggedIn()
+
+const checkLogout = () => {
+    console.log("logging out")
+    destroyAccessScope()
+    let xhr = xhrGet("/logout")
+    xhr.onload = () => {
+        console.log(xhr.response)
+        window.location.href = '/auth'
+    }
+    xhr.send()
+    
+}
+
+
+if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     getKeywords()
     let xhr = xhrGet("/static/views/keywords.html")
     xhr.onload = () => {
@@ -20,9 +73,20 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             addKeywordPost(keywordData)
         })
         buildObjectBindings(vjsObjects)
+        document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
     }
     xhr.send()
-} else if (location.pathname.substring(0, 8) == "/uploads") {
+    document.getElementById("logoutFormLogoutButton").onclick = (e) => {
+        console.log("logging out")
+        destroyAccessScope()
+        let xhr = xhrGet("/logout")
+        xhr.onload = () => {
+            console.log(xhr.response)
+            window.location.href = '/auth'
+        }
+        xhr.send()
+    }
+} else if (location.pathname.substring(0, 8) == "/uploads" && isLoggedIn()) {
     getFileUploads()
     let xhr = xhrGet("/static/views/uploads.html")
     xhr.onload = () => {
@@ -49,9 +113,10 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             getFileUploads()
         })
         buildObjectBindings(vjsObjects)
+        document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
     }
     xhr.send()
-} else if (location.pathname.substring(0, 7) == "/editor") {
+} else if (location.pathname.substring(0, 7) == "/editor" && isLoggedIn()) {
     if (location.pathname == "/editor") {
         window.location.replace(location.origin + "/read")
     } else {
@@ -97,6 +162,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                         updateHtmlContentPost(htmlContentData)
                     })
                     buildObjectBindings(vjsObjects)
+                    document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
                 } else {
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
                     document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
@@ -117,6 +183,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                         document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
                     })
                     buildObjectBindings(vjsObjects)
+                    document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
                 }
             }
             xhr2.onerror = (e) => {
@@ -127,7 +194,8 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         xhr.send()
     }
     
-} else if (location.pathname.substring(0, 5) == "/read") {
+} else if (location.pathname.substring(0, 5) == "/read" && isLoggedIn()) {
+    console.log(localStorage)
     getHtmlContents()
     if (location.pathname == "/read") {
         let xhr = xhrGet("/static/views/read.html")
@@ -141,8 +209,10 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             document.getElementById("content-exists-to-read").setAttribute("display", "none")
             console.log(hljs)
             hljs.highlightAll()
+            document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
         }
         xhr.send()
+        
     } else {
         const queriedTitle = location.pathname.replace("/read/","")
         let xhr = xhrGet("/static/views/read.html")
@@ -164,26 +234,28 @@ if (location.pathname.substring(0, 9) == "/keywords") {
                     buildObjectBindings(vjsObjects)
                     console.log(hljs)
                     hljs.highlightAll()
+                    document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
                 }
             }
             xhr2.send()            
             // buildObjectBindings(vjsObjects)
         }
         xhr.send()
-
         document.title = "Edit Content"
-            document.getElementById("includedHtml").innerHTML = xhr.response
+        document.getElementById("includedHtml").innerHTML = xhr.response
             
     }
-} else if (location.pathname.substring(0, 7) == "/manage") {
+} else if (location.pathname.substring(0, 7) == "/manage" && isLoggedIn()) {
     let xhr = xhrGet("/static/views/manage.html")
     xhr.onload = () => {
         document.title = "Manage System"
         document.getElementById("includedHtml").innerHTML = xhr.response;
         buildObjectBindings(vjsObjects)
+        document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
     }
     xhr.send()
-} else if (location.pathname.substring(0, 6) == "/users") {
+    
+} else if (location.pathname.substring(0, 6) == "/users" && isLoggedIn()) {
     getUsers()
     let xhr = xhrGet("/static/views/users.html")
     xhr.onload = () => {
@@ -203,17 +275,65 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         //document.getElementById('user.pwreset').addEventListener('click', () => {})
         //document.getElementById('user.toggleactive').addEventListener('click', () => {})
         buildObjectBindings(vjsObjects)
+        document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
     }
     xhr.send()
-} else if (location.pathname.substring(0, 3) == "/me") {
+    
+} else if (location.pathname.substring(0, 5) == "/auth") {
+    console.log('you are screwed')
+    let xhr = xhrGet("/static/views/auth.html")    
+    xhr.onload = () => {
+        document.title = "Login"
+        document.getElementById("includedHtml").innerHTML = xhr.response;
+        document.getElementById('loginFormLoginButton').addEventListener('click', () => {
+            console.log('trying to log in')
+            console.log("login form clicked")
+            const postData = {
+                "email": document.getElementById("loginFormEmail").value,
+                "password": document.getElementById("loginFormPassword").value
+            }
+            console.log(postData)
+            let xhr = xhrPost('/login')
+
+            //Send the proper header information along with the request
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = () => {
+                if (xhr.readyState == 4) {
+                    const xhrresponse = JSON.parse(xhr.response)
+                    console.log(xhrresponse)
+                    console.log(xhrresponse.accesstoken)
+                    localStorage.setItem("email", xhrresponse.email)
+                    localStorage.setItem("accesstoken", xhrresponse.accesstoken)
+                    localStorage.setItem("isLoggedIn", true)
+                    const fiuRootScope = { 
+                        'me.email': xhrresponse.email, 
+                        'me.accesstoken': xhrresponse.accesstoken 
+                    }
+                    console.log(localStorage)
+                    if (xhrresponse.accesstoken != null) {
+                        window.location.href = '/read'
+                    }
+                }
+            }
+            console.log(postData)
+            xhr.send(JSON.stringify(postData))
+        })
+        buildObjectBindings(vjsObjects)
+        document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
+    }
+    xhr.send()
+    
+} else if (location.pathname.substring(0, 3) == "/me" && isLoggedIn()) {
     let xhr = xhrGet("/static/views/me.html")
     xhr.onload = () => {
         document.title = "About Me"
         document.getElementById("includedHtml").innerHTML = xhr.response;
         buildObjectBindings(vjsObjects)
+        document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
     }
     xhr.send()
-} else if (location.pathname.substring(0, 1) == "/" || location.pathname.substring(0, 5) == "/blog") {
+} else if (location.pathname.substring(0, 1) == "/" && isLoggedIn() || location.pathname.substring(0, 5) == "/blog" && isLoggedIn()){
     getKeywords()
     getHtmlContents()
     let xhr = xhrGet("/static/views/index.html")
@@ -241,6 +361,7 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
+            document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
         }
         xhr.send()
     } else {
@@ -268,10 +389,10 @@ if (location.pathname.substring(0, 9) == "/keywords") {
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
+            document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
         }
         xhr.send()
     }
-    
 } else {
     let xhr = xhrGet("/static/views/404.html")
     xhr.onload = () => {
@@ -280,109 +401,21 @@ if (location.pathname.substring(0, 9) == "/keywords") {
     }
     xhr.send()
 }
-
-window.addEventListener("load", () => {
-    // Fully loaded!
-    console.log("Fully loaded!")
-
-    const location = window.location
-    console.log(location) // use pathname 
-
-    let appDomBindings = {
-        'htmlContents': {},
-        'keywords': {},
-        'isLoggedIn': {
-            'state': false
-        }
-    }
-    
-    /* 
-    'isLoggedIn': {
-            'state': True,
-            'objects': {
-                'users': {},
-                'fileUploads': {},
-                'me': {}
-            }
-        }
-    'isLoggedIn': {
-            'state': False
-        }
-    */
-    
-    const setAccessScope = (userData) => {
-        localStorage.setItem('fiuRootScope', JSON.stringify({ 
-            'me.email': userData.email, 
-            'me.accesstoken': userData.accesstoken }))
-        appDomBindings['isLoggedIn']['state'] = true 
-        appDomBindings['isLoggedIn']['objects'] = {
+/* 
+'isLoggedIn': {
+        'state': True,
+        'objects': {
             'users': {},
             'fileUploads': {},
             'me': {}
         }
-        localStorage.setItem('domBindings', appDomBindings)
-        console.log(appDomBindings)
     }
-
-    const destroyAccessScope = () => {
-        localStorage.removeItem('fiuRootScope')
-        localStorage.clear()
-        appDomBindings['isLoggedIn']['state'] = false 
-        delete appDomBindings['isLoggedIn']['objects']
-        localStorage.setItem('domBindings', appDomBindings)
-        console.log(appDomBindings)
+'isLoggedIn': {
+        'state': False
     }
-
-    const showLogin = (status) => {
-        if (status) {
-            document.getElementById("loginFormDiv").style.display = 'inline'
-            document.getElementById("logoutDiv").style.display = 'none'
-        } else {
-            document.getElementById("loginFormDiv").style.display = 'none'
-            document.getElementById("logoutDiv").style.display = 'inline'
-        }
-    }
-
-    const isLoggedIn = () => {
-        //console.log(localStorage)
-        if (localStorage.getItem('fiuRootScope') != null ) {
-            console.log('user is logged in, showing logout')
-            showLogin(false)
-        } else {
-            console.log('showing login screen')
-            showLogin(true)
-        }
-    }
-
-    /* process login event and manage token */
-    document.getElementById("loginFormLoginButton").onclick = (e) => {
-        console.log("login form clicked")
-        const postData = {
-            "email": document.getElementById("loginFormEmail").value,
-            "password": document.getElementById("loginFormPassword").value
-        }
-        console.log(postData)
-        let xhr = xhrPost('/login')
-
-        //Send the proper header information along with the request
-        xhr.setRequestHeader("Accept", "application/json");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = () => {
-            if (xhr.readyState == 4) {
-                console.log(xhr.response)
-                setAccessScope(JSON.parse(xhr.response))
-                isLoggedIn()
-            }
-        }
-        console.log(postData)
-        xhr.send(JSON.stringify(postData))
-    }
-
-    document.getElementById("logoutFormLogoutButton").onclick = (e) => {
-        console.log("logging out")
-        destroyAccessScope()
-        isLoggedIn()
-    }
-
-    isLoggedIn()
+*/
+window.addEventListener("load", () => {
+    // Fully loaded!
+    console.log("Fully loaded!")
+    console.log(isLoggedIn())
 });
