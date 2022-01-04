@@ -333,7 +333,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
         document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
     }
     xhr.send()
-} else if (location.pathname.substring(0, 1) == "/" && isLoggedIn() || location.pathname.substring(0, 5) == "/blog" && isLoggedIn()){
+} else if (location.pathname.substring(0, 1) == "/" || location.pathname.substring(0, 5) == "/blog"){
     getKeywords()
     getHtmlContents()
     let xhr = xhrGet("/static/views/index.html")
