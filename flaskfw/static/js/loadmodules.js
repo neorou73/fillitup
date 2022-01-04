@@ -213,22 +213,65 @@ if (location.pathname.substring(0, 9) == "/keywords") {
         buildObjectBindings(vjsObjects)
     }
     xhr.send()
-} else if (location.pathname.substring(0, 1) == "/") {
+} else if (location.pathname.substring(0, 1) == "/" || location.pathname.substring(0, 5) == "/blog") {
+    getKeywords()
     getHtmlContents()
     let xhr = xhrGet("/static/views/index.html")
-    xhr.onload = () => {
-        document.title = "Welcome"
-        document.getElementById("includedHtml").innerHTML = xhr.response;
-        let contentTitles = ""
-        const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
-        console.log(allhtmlcontents)
-        for (let i=0;i<allhtmlcontents.length;i++) {
-            contentTitles = contentTitles + "&nbsp;<span>" + allhtmlcontents[i]['title'] + "</span>&nbsp;"
+    if (location.pathname.substring(0, 5) == "/blog") {
+        const queriedTitle = location.pathname.replace("/blog", "")
+        xhr.onload = () => {
+            document.title = "Welcome"
+            document.getElementById("indexBlogPublicHtml").innerHTML = xhr.response;
+            let contentTitles = ""
+            const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
+            console.log(allhtmlcontents)
+            let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
+            xhr2.onload = () => {
+                if (xhr2.readyState == 4) {
+                    let xhr2response = JSON.parse(xhr2.response) 
+                    console.log(xhr2response)
+                    document.getElementById('content.selected.selected').innerHTML = xhr2response.content
+                    // console.log(hljs)
+                    hljs.highlightAll()
+                }
+            }
+            xhr2.send()   
+            for (let i=0;i<allhtmlcontents.length;i++) {
+                contentTitles = contentTitles + "&nbsp;<a href='/blog/" + allhtmlcontents[i]['title'] + "' id='select-content-id-" + allhtmlcontents[i]['id'] + "'>" + allhtmlcontents[i]['title'] + "</a>&nbsp;"
+            }
+            document.getElementById("content.titles").innerHTML = contentTitles
+            buildObjectBindings(vjsObjects)
         }
-        document.getElementById("content.titles").innerHTML = contentTitles
-        buildObjectBindings(vjsObjects)
+        xhr.send()
+    } else {
+        xhr.onload = () => {
+            document.title = "Welcome"
+            document.getElementById("indexBlogPublicHtml").innerHTML = xhr.response;
+            let contentTitles = ""
+            const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
+            const selectedContent = allhtmlcontents[(allhtmlcontents.length-1)]
+            // console.log(selectedContent)
+            console.log(allhtmlcontents)
+            let xhr2 = xhrGet(('/api/htmlcontents/get/' + selectedContent.title))
+            xhr2.onload = () => {
+                if (xhr2.readyState == 4) {
+                    let xhr2response = JSON.parse(xhr2.response) 
+                    console.log(xhr2response)
+                    document.getElementById('content.selected.selected').innerHTML = xhr2response.content
+                    // console.log(hljs)
+                    hljs.highlightAll()
+                }
+            }
+            xhr2.send()   
+            for (let i=0;i<allhtmlcontents.length;i++) {
+                contentTitles = contentTitles + "&nbsp;<a href='/blog/" + allhtmlcontents[i]['title'] + "' id='select-content-id-" + allhtmlcontents[i]['id'] + "'>" + allhtmlcontents[i]['title'] + "</a>&nbsp;"
+            }
+            document.getElementById("content.titles").innerHTML = contentTitles
+            buildObjectBindings(vjsObjects)
+        }
+        xhr.send()
     }
-    xhr.send()
+    
 } else {
     let xhr = xhrGet("/static/views/404.html")
     xhr.onload = () => {
@@ -320,7 +363,6 @@ window.addEventListener("load", () => {
         }
         console.log(postData)
         let xhr = xhrPost('/login')
-
 
         //Send the proper header information along with the request
         xhr.setRequestHeader("Accept", "application/json");

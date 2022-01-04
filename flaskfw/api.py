@@ -52,6 +52,7 @@ pdb.getCurrentTimestamp()
 @app.route("/keywords/<path:text>")
 @app.route("/me")
 @app.route("/me/<path:text>")
+@app.route("/blog/<path:text>")
 
 def output_frontend(text=None):
     return send_from_directory('static', 'index.html')
@@ -316,7 +317,7 @@ def update_htmlcontent():
 def list_keywords():
     data = pdb.getKeywords()
     print(data)
-    if data:
+    if len(data) > 0:
         returnObject = []
         for k in data:
             row = {}

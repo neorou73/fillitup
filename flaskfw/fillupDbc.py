@@ -232,7 +232,7 @@ class psqldb:
             if len(rows) > 0:
                 return rows
             else:
-                return False
+                return []
         except Exception as e:
             print(e)
             return e
