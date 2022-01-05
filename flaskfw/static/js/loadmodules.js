@@ -32,17 +32,30 @@ const showLogin = (status) => {
     }
 }
 
+const showPublicNav = () => {
+    // show nav for public because yesOrNo is true
+    //document.getElementById("topnavpublic").style.display = 'inline'
+    document.getElementById("topnavauthd").style.display = 'none'  
+}
+
+const showAuthdNav = () => {
+    // show nav for public because yesOrNo is true
+    document.getElementById("topnavpublic").style.display = 'none'
+}
+
 const isLoggedIn = () => {
     console.log(localStorage)
     const status = localStorage.getItem('isLoggedIn')
     console.log(status)
     if (status == null) {
+        console.log('not logged in')
         return false
     } else {
+        console.log('is logged in')
         return true
     }
 }
-isLoggedIn()
+//isLoggedIn()
 
 const checkLogout = () => {
     console.log("logging out")
@@ -58,6 +71,7 @@ const checkLogout = () => {
 
 
 if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
+    showAuthdNav()
     getKeywords()
     let xhr = xhrGet("/static/views/keywords.html")
     xhr.onload = () => {
@@ -87,6 +101,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
         xhr.send()
     }
 } else if (location.pathname.substring(0, 8) == "/uploads" && isLoggedIn()) {
+    showAuthdNav()
     getFileUploads()
     let xhr = xhrGet("/static/views/uploads.html")
     xhr.onload = () => {
@@ -117,6 +132,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     }
     xhr.send()
 } else if (location.pathname.substring(0, 7) == "/editor" && isLoggedIn()) {
+    showAuthdNav()
     if (location.pathname == "/editor") {
         window.location.replace(location.origin + "/read")
     } else {
@@ -195,6 +211,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     }
     
 } else if (location.pathname.substring(0, 5) == "/read" && isLoggedIn()) {
+    showAuthdNav()
     console.log(localStorage)
     getHtmlContents()
     if (location.pathname == "/read") {
@@ -246,6 +263,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             
     }
 } else if (location.pathname.substring(0, 7) == "/manage" && isLoggedIn()) {
+    showAuthdNav()
     let xhr = xhrGet("/static/views/manage.html")
     xhr.onload = () => {
         document.title = "Manage System"
@@ -256,6 +274,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     xhr.send()
     
 } else if (location.pathname.substring(0, 6) == "/users" && isLoggedIn()) {
+    showAuthdNav()
     getUsers()
     let xhr = xhrGet("/static/views/users.html")
     xhr.onload = () => {
@@ -279,8 +298,12 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     }
     xhr.send()
     
-} else if (location.pathname.substring(0, 5) == "/auth") {
-    console.log('you are screwed')
+} else if (location.pathname.substring(0, 5) == "/auth" && isLoggedIn()) {
+    console.log('you are logged in')
+    window.location.href = '/read'
+} else if (location.pathname.substring(0, 5) == "/auth" && !isLoggedIn()) {
+    showPublicNav()
+    console.log('you are not logged in')
     let xhr = xhrGet("/static/views/auth.html")    
     xhr.onload = () => {
         document.title = "Login"
@@ -325,6 +348,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     xhr.send()
     
 } else if (location.pathname.substring(0, 3) == "/me" && isLoggedIn()) {
+    showAuthdNav()
     let xhr = xhrGet("/static/views/me.html")
     xhr.onload = () => {
         document.title = "About Me"
@@ -334,7 +358,8 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     }
     xhr.send()
 } else if (location.pathname.substring(0, 1) == "/" || location.pathname.substring(0, 5) == "/blog"){
-    getKeywords()
+    showPublicNav()
+    //getKeywords()
     getHtmlContents()
     let xhr = xhrGet("/static/views/index.html")
     if (location.pathname.substring(0, 5) == "/blog") {
@@ -361,7 +386,11 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
-            document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
+            if (isLoggedIn()) {
+                document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { 
+                    checkLogout() 
+                })
+            }
         }
         xhr.send()
     } else {
@@ -389,11 +418,16 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
-            document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
+            if (isLoggedIn()) {
+                document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { 
+                    checkLogout() 
+                })
+            }
         }
         xhr.send()
     }
 } else {
+    showPublicNav()
     let xhr = xhrGet("/static/views/404.html")
     xhr.onload = () => {
         document.title = "Error: Resource Not Found"
