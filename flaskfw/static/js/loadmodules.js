@@ -358,7 +358,11 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
     }
     xhr.send()
 } else if (location.pathname.substring(0, 1) == "/" || location.pathname.substring(0, 5) == "/blog"){
-    showPublicNav()
+    if (isLoggedIn()) {
+        showAuthdNav()
+    } else {
+        showPublicNav()
+    }
     //getKeywords()
     getHtmlContents()
     let xhr = xhrGet("/static/views/index.html")
