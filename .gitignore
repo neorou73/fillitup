@@ -14,3 +14,5 @@ fiu/*.pyc
 */fmvenv
 */static/cached
 */static/fileuploads
+backup
+backup.tar.gz 
