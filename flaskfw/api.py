@@ -297,7 +297,7 @@ def get_htmlcontents():
 @app.route('/api/htmlcontents/get/<title>')
 def get_htmlcontent(title):
     hct = pdb.getHtmlContent(title)
-    print(hct)
+    #print(hct)
     try:
         returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2], 'markdownst': hct[3], 'meta': hct[4] }
         return jsonify(returnObject)
@@ -307,12 +307,12 @@ def get_htmlcontent(title):
 
 @app.route('/api/htmlcontents/save', methods=['POST'])
 def create_htmlcontent():
-    print(request.json)
+    #print(request.json)
     return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content'], request.json['markdownst'], request.json['meta']))
 
 @app.route('/api/htmlcontents/update', methods=['POST'])
 def update_htmlcontent():
-    print(request.json)
+    #print(request.json)
     return jsonify(pdb.updateHtmlContent(request.json['title'], request.json['content'], request.json['markdownst'], request.json['meta']))
 
 @app.route('/api/keywords/list')

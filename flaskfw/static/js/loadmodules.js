@@ -90,7 +90,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
         document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
     }
     xhr.send()
-    document.getElementById("logoutFormLogoutButton").onclick = (e) => {
+    /*document.getElementById("logoutFormLogoutButton").onclick = (e) => {
         console.log("logging out")
         destroyAccessScope()
         let xhr = xhrGet("/logout")
@@ -99,7 +99,7 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             window.location.href = '/auth'
         }
         xhr.send()
-    }
+    }*/
 } else if (location.pathname.substring(0, 8) == "/uploads" && isLoggedIn()) {
     showAuthdNav()
     getFileUploads()
@@ -141,18 +141,19 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
         const allkeywords = JSON.parse(sessionStorage.getItem('allkeywords'))
         console.log(allkeywords)
         let keywordSpans = ""
-        for (let k=0;k<allkeywords.length;k++) {
-            keywordSpans = keywordSpans + "<span class='keywordClick'>| " + allkeywords[k]['name'] + " |</span>"
-        }
         let xhr = xhrGet("/static/views/editor.html")
+        if (allkeywords) {
+            for (let k=0;k<allkeywords.length;k++) {
+                keywordSpans = keywordSpans + "<span class='keywordClick'>| " + allkeywords[k]['name'] + " |</span>"
+            }
+        }
         xhr.onload = () => {
             document.title = "Edit Content"
             document.getElementById("includedHtml").innerHTML = xhr.response
             let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
-
-            document.getElementById('keywordSpans').innerHTML = keywordSpans
             xhr2.onload = () => {
                 console.log(xhr2)
+                document.getElementById('keywordSpans').innerHTML = keywordSpans
                 if (xhr2.readyState == 4 && xhr2.status == 200) {
                     let xhr2response = JSON.parse(xhr2.response) 
                     console.log(xhr2response)
@@ -390,11 +391,6 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
-            if (isLoggedIn()) {
-                document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { 
-                    checkLogout() 
-                })
-            }
         }
         xhr.send()
     } else {
@@ -422,11 +418,6 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
-            if (isLoggedIn()) {
-                document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { 
-                    checkLogout() 
-                })
-            }
         }
         xhr.send()
     }
@@ -455,5 +446,5 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
 window.addEventListener("load", () => {
     // Fully loaded!
     console.log("Fully loaded!")
-    console.log(isLoggedIn())
+    //console.log(isLoggedIn())
 });

@@ -8,7 +8,7 @@ const getXhrList = (urlString, sessionStorageKey) => {
     let xhr = xhrGet(urlString)
     //console.log([urlString, sessionStorageKey])
     xhr.onload = () => {
-        //console.log(xhr.response)
+        // console.log(xhr.response)
         if (xhr.readyState == 4) {
             if (xhr.response.length > 0) {
                 sessionStorage.setItem(sessionStorageKey, JSON.stringify(JSON.parse(xhr.response)))
