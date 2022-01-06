@@ -41,13 +41,30 @@
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     -->
     <!--
-    <script src="/static/js/index.js"></script>
-    -->
+    <script src="/static/js/index.js"></script> -->
+    <script src="/static/js/markdown-it.min.js"></script>
+    <link rel="stylesheet" href="/static/js/highlight/styles/dark.min.css">
+    <script src="/static/js/highlight/highlight.js"></script>
+    <script src="/static/js/highlight/languages/bash.min.js"></script>
+    <script src="/static/js/highlight/languages/dockerfile.min.js"></script>
+    <script src="/static/js/highlight/languages/dos.min.js"></script>
+    <script src="/static/js/highlight/languages/nginx.min.js"></script>
+    <script src="/static/js/highlight/languages/php.min.js"></script>
+    <script src="/static/js/highlight/languages/python.min.js"></script>
+    <script src="/static/js/highlight/languages/r.min.js"></script>
+    <script src="/static/js/highlight/languages/shell.min.js"></script>
+    <script src="/static/js/highlight/languages/sql.min.js"></script>
+    <script src="/static/js/highlight/languages/xquery.min.js"></script>
+    <script src="/static/js/highlight/languages/yaml.min.js"></script>
+    <script src="/static/js/highlight/languages/javascript.min.js"></script>
     <script type="module" src="/static/js/loadmodules.js"></script>
-    
 </head>
 <body>
-    <div class="topnav">
+    <div class="topnav" id="topnavpublic">
+        <a href="/">home</a>
+        <a href="/auth">login</a>
+    </div>
+    <div class="topnav" id="topnavauthd">
         <a href="/">home</a>
         <a href="/read">read</a>
         <a href="/editor">write</a>
@@ -58,15 +75,11 @@
         <a href="/me">me</a>
     </div>
     <div class="content">
-        <div id="logoutDiv" vjs-if="isLoggedIn">
-            <button id="logoutFormLogoutButton">logout</button>
-        </div>
-        <div id="loginFormDiv" vjs-if="!isLoggedIn">
-            <p>email: <input id='loginFormEmail' name="email"/></p>
-            <p>password: <input id='loginFormPassword' name="password" type="password"></p>
-            <button id="loginFormLoginButton">login</button>
-        </div>
+        <div id="indexBlogPublicHtml"></div>
         <div id="includedHtml"></div>
+        <div id="logoutDiv" vjs-if="isLoggedIn">
+            <div id="includedHtml"></div>
+        </div>
     </div>
     <div class="footer">
         &copy; Copyright 2021 by <a href="http://domain.invalid/">neorou73</a>.

@@ -232,7 +232,7 @@ class psqldb:
             if len(rows) > 0:
                 return rows
             else:
-                return False
+                return []
         except Exception as e:
             print(e)
             return e
@@ -259,11 +259,10 @@ class psqldb:
             print(e)
             return False
     
-    def createHtmlContent(self, title, content):
+    def createHtmlContent(self, title, content, markdown, metadata):
         try:
             self.connect()
-            metadata = '{ "keywords": ["general"] }'
-            self.cursor.execute("""insert into htmlcontent (title, content, meta) values (%s, %s, %s);""", (title, content, metadata))
+            self.cursor.execute("""insert into htmlcontent (title, content, markdown, meta) values (%s, %s, %s, %s);""", (title, content, markdown, json.dumps(metadata)))
             self.conn.commit()
             print("new html content saved")
             self.conn.close()
@@ -272,11 +271,11 @@ class psqldb:
             print(e)
             return False
     
-    def updateHtmlContent(self, title, content):
+    def updateHtmlContent(self, title, content, markdown, metadata):
         try:
+            import json
             self.connect()
-            metadata = '{ "keywords": ["general"] }'
-            self.cursor.execute("""update htmlcontent set content = (%s) where title = (%s);""", (content, title))
+            self.cursor.execute("""update htmlcontent set content = (%s), markdown = (%s), meta = (%s) where title = (%s);""", (content, markdown, json.dumps(metadata), title))
             self.conn.commit()
             print("existing html content saved")
             self.conn.close()
@@ -287,8 +286,9 @@ class psqldb:
     
     def getHtmlContent(self, title):
         try:
+            import json
             self.connect()
-            self.cursor.execute("""select id, title, content from htmlcontent where title = (%s);""", (title,))
+            self.cursor.execute("""select id, title, content, markdown, meta from htmlcontent where title = (%s);""", (title,))
             rows = self.cursor.fetchone()
             self.conn.close()
             return rows 
@@ -310,7 +310,7 @@ class psqldb:
     def getFileUploads(self):
         try:
             self.connect()
-            self.cursor.execute("""select * from uploads order by tscreated desc""")
+            self.cursor.execute("""select id, filename, fullpath, filetype, tscreated, published from uploads order by tscreated desc""")
             rows = self.cursor.fetchall()
             self.conn.close()
             return rows

@@ -14,7 +14,7 @@ const evaluateString = (theString) => {
     }
 }
 
-const buildHtmlTable = (columnTitles, rowData) => {
+const buildHtmlTable = (columnTitles, rowData, provideLink) => {
     let htmlString = '<table><thead><tr>'
     for (let ct=0;ct<columnTitles.length;ct++) {
         htmlString = htmlString + '<th>' + columnTitles[ct] + '</th>'
@@ -22,9 +22,18 @@ const buildHtmlTable = (columnTitles, rowData) => {
     htmlString += '</tr></thead><tbody>'
     for (let r=0;r<rowData.length;r++) {
         let row = '<tr>'
+        let titleString = ""
         for (let c=0;c<columnTitles.length;c++) {
             row = row + '<td>' + rowData[r][columnTitles[c]] + '</td>'
+            if (columnTitles[c] == 'title') {
+                titleString = rowData[r][columnTitles[c]]
+            }
         }
+        if (provideLink) {
+            row = row + '<td><a href="/read/' + titleString + '">open</a></td>'
+            row = row + '<td><a href="/editor/' + titleString + '">edit</a></td>'
+        }
+
         row = row + '</tr>'
         htmlString = htmlString + row
     }
@@ -36,6 +45,12 @@ const valuateVjsFors = () => {
     const vjsObjects = JSON.parse(sessionStorage.getItem('vjsObjects'))
     const allusers = sessionStorage.getItem('allusers')
     //console.log(vjsObjects.fors)
+}
+
+const translateMdInput = (mdString) => {
+    const MD = window.markdownit()
+    console.log(MD.render(mdString))
+    return MD.render(mdString)
 }
 
 //let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
@@ -79,4 +94,4 @@ const buildObjectBindings = (vjsObjects) => {
     valuateVjsFors()
 }
 
-export { evaluateString, valuateVjsFors, buildObjectBindings, buildHtmlTable }
+export { evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable }

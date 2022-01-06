@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, make_response, redirect, abort, session, jsonify, url_for
 from flask.helpers import send_from_directory  
 from markupsafe import escape, Markup
+from datetime import datetime
 
 import os, json, sys  
 
@@ -37,6 +38,7 @@ pdb = psqldb()
 pdb.getCurrentTimestamp()
 
 @app.route("/")
+@app.route("/auth")
 @app.route("/manage")
 @app.route("/manage/<path:text>")
 @app.route("/users")
@@ -51,6 +53,7 @@ pdb.getCurrentTimestamp()
 @app.route("/keywords/<path:text>")
 @app.route("/me")
 @app.route("/me/<path:text>")
+@app.route("/blog/<path:text>")
 
 def output_frontend(text=None):
     return send_from_directory('static', 'index.html')
@@ -65,15 +68,15 @@ def hello(name=None):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
-    print(request.form)
+    print(request.json)
     if request.method == 'POST':
-        print(request.form['email'])
-        print(request.form['password'])
-        if pdb.validateUser(request.form['email'], request.form['password']):
+        print(request.json['email'])
+        print(request.json['password'])
+        if pdb.validateUser(request.json['email'], request.json['password']):
             print ('user is valid')
-            tokenString = pdb.loginUser(request.form['email']) 
+            tokenString = pdb.loginUser(request.json['email']) 
             if tokenString is not False:
-                session['email'] = request.form['email']
+                session['email'] = request.json['email']
                 session['accesstoken'] = tokenString
                 return jsonify(session)
             else:
@@ -101,6 +104,7 @@ def logout():
         session.pop('email', None)
         session.pop('accesstoken', None)
         return jsonify({ 'loggedout': True })
+        
     else:
         errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
         return jsonify(errorObject)
@@ -241,19 +245,40 @@ def purge_user():
 
 @app.route('/api/fileuploads/list')
 def list_fileuploads():
-    return jsonify(pdb.getFileUploads())
+    data = pdb.getFileUploads()
+    print(data)
+    returnObject = []
+    for k in data:
+        row = {}
+        row['id'] = k[0]
+        row['filename'] = k[1]
+        row['fullpath'] = k[2]
+        row['filetype'] = k[3]
+        row['tscreated'] = k[4]
+        row['published'] = k[5]
+        returnObject.append(row)
+    return jsonify(returnObject)
 
 @app.route('/api/fileuploads/create', methods=['POST'])
 def create_fileupload():
+    tddt = datetime.now()
+    yyyymm = tddt.strftime("%Y%m")
+    from pathlib import Path
+    ymDir = fileUploadDirectoryPath + '/' + yyyymm
+    ymDirPath = Path(ymDir)
+    ymDirPath.mkdir(parents=True, exist_ok=True) 
+    #print(tddt.strftime("%Y%m"))
     # requires processing of file upload and copy to upload directory
     uploadedFile = request.files['file']
-    localTarget = fileUploadDirectoryPath + '/' + uploadedFile.filename
-    uploadedFile.save(os.path.join(fileUploadDirectoryPath, uploadedFile.filename))
+    #print(dir(uploadedFile))
+    localTarget = ymDir + '/' + uploadedFile.filename
+    uploadedFile.save(os.path.join(ymDir, uploadedFile.filename))
     uploadData = {
         "filename": uploadedFile.filename,
         "fullpath": localTarget,
-        "filetype": request.form('filetype')
+        "filetype": uploadedFile.content_type 
     }
+    # available uploadedFile object keys are lastModified, lastModifiedDate, name, size, type, webkitRelativePath
     return jsonify(pdb.createFileUpload(uploadData))
 
 @app.route('/api/htmlcontents/list')
@@ -272,34 +297,29 @@ def get_htmlcontents():
 @app.route('/api/htmlcontents/get/<title>')
 def get_htmlcontent(title):
     hct = pdb.getHtmlContent(title)
-    print(hct)
-    if len(hct) == 3:
-        returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2] }
+    #print(hct)
+    try:
+        returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2], 'markdownst': hct[3], 'meta': hct[4] }
         return jsonify(returnObject)
-    else:
-        errorObject = { "code": 404, "error": "Not Found", "description": "This HTML Content has not been created yet" }
+    except:
+        errorObject = { "code": 404, "error": "Not Found", "description": "This HTML Content has not been created yet", "object": sys.exc_info() }
         return jsonify(errorObject)
 
 @app.route('/api/htmlcontents/save', methods=['POST'])
 def create_htmlcontent():
-    print(request.json)
-    hct = pdb.getHtmlContent(request.json['title'])
-    print(hct)
-    if len(hct) == 0:
-        return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content']))
-    else:
-        return jsonify(pdb.updateHtmlContent(request.json['title'], request.json['content']))
-
+    #print(request.json)
+    return jsonify(pdb.createHtmlContent(request.json['title'], request.json['content'], request.json['markdownst'], request.json['meta']))
 
 @app.route('/api/htmlcontents/update', methods=['POST'])
 def update_htmlcontent():
-    return jsonify(pdb.updateHtmlContent(request.form('title'), request.form('content')))
+    #print(request.json)
+    return jsonify(pdb.updateHtmlContent(request.json['title'], request.json['content'], request.json['markdownst'], request.json['meta']))
 
 @app.route('/api/keywords/list')
 def list_keywords():
     data = pdb.getKeywords()
     print(data)
-    if data:
+    if len(data) > 0:
         returnObject = []
         for k in data:
             row = {}

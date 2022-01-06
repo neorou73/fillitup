@@ -1,21 +1,23 @@
 <div>
     <h2>Manage File Uploads</h2>
-    <div>list uploads</div>
-
-
+    <div>
+        <button id="logoutFormLogoutButton">logout</button>
+    </div>
+    
     <!-- Uploads Management -->
     <div id="mng-uploads" class="management-div">
-        <h3>Uploads Management</h3>
+        <h3>Upload Files</h3>
         <div id="uploadedfileslist"></div>
+        <h3>Add New File</h3>
         <div>
-            <form method=post enctype=multipart/form-data>
-                <input type=file name=file>
+            <form method=post enctype=multipart/form-data id="uploadedfileform">
+                <input type=file name=userfile id="userfile">
                 <button id="fileuploads.upload">upload</button>
             </form>
         </div>
-        <div>
+        <!--<div>
             <p>file name: <input id="fileuploads.name.remove" name="fileuploads.name.remove"/></p>
             <p><button id="fileuploads.remove">remove keyword</button></p>
-        </div>
+        </div>-->
     </div>
 </div>

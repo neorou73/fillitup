@@ -6,10 +6,14 @@ const xhrGet = (urlString) => {
 
 const getXhrList = (urlString, sessionStorageKey) => {
     let xhr = xhrGet(urlString)
+    //console.log([urlString, sessionStorageKey])
     xhr.onload = () => {
+        // console.log(xhr.response)
         if (xhr.readyState == 4) {
-            sessionStorage.setItem(sessionStorageKey, JSON.stringify(JSON.parse(xhr.response)))
-            // console.log(sessionStorage)
+            if (xhr.response.length > 0) {
+                sessionStorage.setItem(sessionStorageKey, JSON.stringify(JSON.parse(xhr.response)))
+                //console.log(sessionStorage)
+            }
         }
     }
     xhr.send()
@@ -48,7 +52,13 @@ const addFileUploadPost = (fileUploadData) => {
 }
 
 const addHtmlContentPost = (htmlContentData) => {
+    console.log(htmlContentData)
     addJsonPost(htmlContentData, '/api/htmlcontents/save', 'allhtmlcontents')
+}
+
+const updateHtmlContentPost = (htmlContentData) => {
+    console.log(htmlContentData)
+    addJsonPost(htmlContentData, '/api/htmlcontents/update', 'allhtmlcontents')
 }
 
 /*
@@ -72,4 +82,4 @@ const getHtmlContents = () => {
     getXhrList('/api/htmlcontents/list', 'allhtmlcontents')
 }
 
-export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addHtmlContentPost, addFileUploadPost, addKeywordPost };
+export { test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addHtmlContentPost, addFileUploadPost, addKeywordPost, updateHtmlContentPost };

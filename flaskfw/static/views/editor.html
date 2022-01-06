@@ -1,8 +1,20 @@
 <div>
-    <h2>HTML Content Editor</h2>
+    <h2>Edit: <span id="htmlcontent.title"></span></h2>
     <div>
-        <p>title: <span id="htmlcontent.title"></span></p>
-        <textarea id="htmlcontent.content" name="htmlcontent.content"></textarea>
+        <button id="logoutFormLogoutButton">logout</button>
     </div>
-    <div><button id="htmlcontent.save">save</button></div>
+    
+    <div>
+        <!--<p>title: <span id="htmlcontent.title"></span></p>-->
+        <textarea id="htmlcontent.markdownst" name="htmlcontent.markdownst"></textarea>
+    </div>
+    <div>
+        <p>keywords:</p> 
+        <p id="keywordSpans"></p>
+        <p><input id="htmlcontent.keywords" name="htmlcontent.keywords" size="50" maxlength="255"></p>
+    </div>
+    <div>
+        <button id="htmlcontent.save">save</button>
+        <span id="htmlcontent.link"></span>
+    </div>
 </div>
