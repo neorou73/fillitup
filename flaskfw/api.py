@@ -3,7 +3,7 @@ from flask.helpers import send_from_directory
 from markupsafe import escape, Markup
 from datetime import datetime
 
-import os, json, sys  
+import os, json, sys, shutil  
 
 def readConfigurationFile():
     try:
@@ -21,13 +21,39 @@ configurationObject = readConfigurationFile()
 print("read configuration file")
 #print(configurationObject['application']['secret_key'])
 
+fileUploadDirectoryPath = os.path.dirname(os.path.realpath(__file__)) + "/static/fileuploads"
+if not os.path.exists(fileUploadDirectoryPath):
+    print("created new upload directory: ", fileUploadDirectoryPath)
+    os.makedirs(fileUploadDirectoryPath)
+else:
+    print("upload directory already exists: ", fileUploadDirectoryPath)
+
+cachedDirectoryPath = os.path.dirname(os.path.realpath(__file__)) + "/static/cached"
+if not os.path.exists(cachedDirectoryPath):
+    print("created new cached files directory: ", cachedDirectoryPath)
+    os.makedirs(cachedDirectoryPath)
+else:
+    print("cached files directory already exists: ", cachedDirectoryPath)
+
+backupDirectoryPath = os.path.dirname(os.path.realpath(__file__)) + "/backup"
+if not os.path.exists(backupDirectoryPath):
+    print("created new backup directory: ", backupDirectoryPath)
+    os.makedirs(backupDirectoryPath)
+else:
+    print("backup directory already exists: ", backupDirectoryPath)
+
+defaultCssFile = os.path.dirname(os.path.realpath(__file__)) + "/static/style.css"
+cachedCssFile = os.path.dirname(os.path.realpath(__file__)) + "/static/cached/style.css"
+if not os.path.exists(cachedCssFile):
+    print("copied default css file to cached version: ", cachedCssFile)
+    shutil.copyfile(defaultCssFile, cachedCssFile)
+else:
+    print("cached css file already exists: ", cachedCssFile)
+
 app = Flask(__name__)
 app.secret_key = bytes(configurationObject['application']['secret_key'], 'utf-8')
 
 #url_for('static', filename='style.css')
-
-fileUploadDirectoryPath = os.path.dirname(os.path.realpath(__file__)) + "/static/fileuploads"
-print(fileUploadDirectoryPath)
 
 """
 instantiate database interface object
@@ -70,8 +96,8 @@ def login():
     error = None
     print(request.json)
     if request.method == 'POST':
-        print(request.json['email'])
-        print(request.json['password'])
+        #print(request.json['email'])
+        #print(request.json['password'])
         if pdb.validateUser(request.json['email'], request.json['password']):
             print ('user is valid')
             tokenString = pdb.loginUser(request.json['email']) 
@@ -98,8 +124,8 @@ def login():
 @app.route('/logout')
 def logout():
     # remove the username from the session if it's there
-    print(session['email'])
-    print(session['accesstoken'])
+    #print(session['email'])
+    #print(session['accesstoken'])
     if pdb.logoutUser(session['email']):
         session.pop('email', None)
         session.pop('accesstoken', None)
@@ -115,9 +141,9 @@ def upload_file():
     if 'email' in session:
         if request.method == 'POST':
             f = request.files['file1']
-            print(f)
-            print(f.content_type)
-            print(f.filename)
+            #print(f)
+            #print(f.content_type)
+            #print(f.filename)
             #filename = "getname"
             f.save(fileUploadDirectoryPath + '/' + f.filename)
         
@@ -133,10 +159,10 @@ def use_editor(postTitle):
         #if request.method == "POST" and hasattr(request.form, 'title'):
         # get content data based on title 
         htmlContentData = pdb.getContent(postTitle)
-        print(htmlContentData)
+        #print(htmlContentData)
         if request.method == "POST" and htmlContentData is None:
-            print(request.form['title'])
-            print(request.form['content'])
+            #print(request.form['title'])
+            #print(request.form['content'])
             results = pdb.createContent(postTitle, request.form['content'])
             if not(results):
                 print('insert did not happen')
@@ -160,12 +186,12 @@ def use_editor(postTitle):
 def read_content(postTitle=None):
     if postTitle:
         htmlContentData = pdb.getContent(postTitle)
-        print(escape(htmlContentData[2]))
+        #print(escape(htmlContentData[2]))
         if htmlContentData is not None:
             return render_template('read.html', title=postTitle, content=htmlContentData[2])
         return render_template('read.html', title=postTitle)
     listall = pdb.getAllContents()
-    print(len(listall))
+    #print(len(listall))
     return render_template('read.html', listall=listall)
 
 
@@ -181,12 +207,12 @@ def manage_site():
 @app.route('/api/users/add', methods=['POST'])
 def add_user():
     if request.method == "POST":
-        print(request.json)
+        #print(request.json)
         userData = {}
         userData['username'] = request.json['username']
         userData['hashedPassword'] = pdb.hash_password(request.json['password'])
         userData['email'] = request.json['email']
-        print(userData)
+        #print(userData)
         if pdb.createUser(userData):
             return jsonify(userData)
         else:
@@ -196,9 +222,8 @@ def add_user():
 
 @app.route('/api/users/list')
 def list_users():
-    
     data = pdb.getUsers()
-    print(data)
+    #print(data)
     returnObject = []
     for k in data:
         row = {}
@@ -218,7 +243,7 @@ def edit_user():
             'password': pdb.hash_password(request.form['password']),
             'email': request.form['email']
         }
-        print(userData)
+        #print(userData)
         if pdb.editUser(userData):
             return jsonify([userData['username'], userData['email']])
         else:
@@ -246,7 +271,7 @@ def purge_user():
 @app.route('/api/fileuploads/list')
 def list_fileuploads():
     data = pdb.getFileUploads()
-    print(data)
+    #print(data)
     returnObject = []
     for k in data:
         row = {}
@@ -284,7 +309,7 @@ def create_fileupload():
 @app.route('/api/htmlcontents/list')
 def get_htmlcontents():
     data = pdb.getHtmlContents()
-    print(data)
+    #print(data)
     returnObject = []
     for k in data:
         row = {}
@@ -320,7 +345,7 @@ def update_htmlcontent():
 @app.route('/api/keywords/list')
 def list_keywords():
     data = pdb.getKeywords()
-    print(data)
+    #print(data)
     if len(data) > 0:
         returnObject = []
         for k in data:
