@@ -259,10 +259,10 @@ class psqldb:
             print(e)
             return False
     
-    def createHtmlContent(self, title, content, markdown, metadata):
+    def createHtmlContent(self, title, content, markdown, metadata, published):
         try:
             self.connect()
-            self.cursor.execute("""insert into htmlcontent (title, content, markdown, meta) values (%s, %s, %s, %s);""", (title, content, markdown, json.dumps(metadata)))
+            self.cursor.execute("""insert into htmlcontent (title, content, markdown, meta, published) values (%s, %s, %s, %s, %s);""", (title, content, markdown, json.dumps(metadata), published))
             self.conn.commit()
             print("new html content saved")
             self.conn.close()
@@ -271,11 +271,11 @@ class psqldb:
             print(e)
             return False
     
-    def updateHtmlContent(self, title, content, markdown, metadata):
+    def updateHtmlContent(self, title, content, markdown, metadata, published):
         try:
             import json
             self.connect()
-            self.cursor.execute("""update htmlcontent set content = (%s), markdown = (%s), meta = (%s) where title = (%s);""", (content, markdown, json.dumps(metadata), title))
+            self.cursor.execute("""update htmlcontent set content = (%s), markdown = (%s), meta = (%s), published = (%s) where title = (%s);""", (content, markdown, json.dumps(metadata), published, title))
             self.conn.commit()
             print("existing html content saved")
             self.conn.close()
@@ -288,7 +288,7 @@ class psqldb:
         try:
             import json
             self.connect()
-            self.cursor.execute("""select id, title, content, markdown, meta from htmlcontent where title = (%s);""", (title,))
+            self.cursor.execute("""select id, title, content, markdown, meta, published from htmlcontent where title = (%s);""", (title,))
             rows = self.cursor.fetchone()
             self.conn.close()
             return rows 

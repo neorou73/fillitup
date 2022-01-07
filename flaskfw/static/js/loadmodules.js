@@ -161,9 +161,31 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
                         document.getElementById('htmlcontent.markdownst').value = xhr2response.markdownst
                         document.getElementById('htmlcontent.keywords').value = xhr2response.meta.keywords.join('; ')
                     }
+                    if (xhr2response.published) {
+                        document.getElementById('htmlcontent.published.true').checked = true
+                        document.getElementById('htmlcontent.published.false').checked = false
+                    } else {
+                        document.getElementById('htmlcontent.published.true').checked = false
+                        document.getElementById('htmlcontent.published.false').checked = true
+                    }
+                    document.getElementById('htmlcontent.published.true').addEventListener('change', (ele) => {
+                        if (document.getElementById('htmlcontent.published.true').checked) {
+                            document.getElementById('htmlcontent.published.false').checked = false
+                        }
+                    })
+                    document.getElementById('htmlcontent.published.false').addEventListener('change', (ele) => {
+                        if (document.getElementById('htmlcontent.published.false').checked) {
+                            document.getElementById('htmlcontent.published.true').checked = false
+                        }
+                    })
+                    
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
                     document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
                     document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        let publishStatus = false 
+                        if (document.getElementById('htmlcontent.published.true').checked) {
+                            publishStatus = true
+                        }
                         let keywordsInput = document.getElementById('htmlcontent.keywords').value 
                         console.log(keywordsInput)
                         console.log(keywordsInput.split("; "))
@@ -174,17 +196,40 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
                             "content": mdData,
                             "meta": { 
                                 "keywords": keywordsInput.split(";")
-                            }
+                            },
+                            "published": publishStatus
                         }
                         updateHtmlContentPost(htmlContentData)
                     })
                     buildObjectBindings(vjsObjects)
                     document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
                 } else {
+                    
+                    if (xhr2response.published) {
+                        document.getElementById('htmlcontent.published.true').checked = true
+                        document.getElementById('htmlcontent.published.false').checked = false
+                    } else {
+                        document.getElementById('htmlcontent.published.true').checked = false
+                        document.getElementById('htmlcontent.published.false').checked = true
+                    }
+                    document.getElementById('htmlcontent.published.true').addEventListener('change', (ele) => {
+                        if (document.getElementById('htmlcontent.published.true').checked) {
+                            document.getElementById('htmlcontent.published.false').checked = false
+                        }
+                    })
+                    document.getElementById('htmlcontent.published.false').addEventListener('change', (ele) => {
+                        if (document.getElementById('htmlcontent.published.false').checked) {
+                            document.getElementById('htmlcontent.published.true').checked = false
+                        }
+                    })
                     document.getElementById('htmlcontent.title').innerText = queriedTitle
                     document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
                     document.getElementById('htmlcontent.keywords').value = "general; test"
                     document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                        let publishStatus = false 
+                        if (document.getElementById('htmlcontent.published.true').checked) {
+                            publishStatus = true
+                        }
                         console.log(keywordsInput)
                         console.log(keywordsInput.split("; "))
                         const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
@@ -194,7 +239,8 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
                             "content": mdData,
                             "meta": { 
                                 "keywords": keywordsInput.split(";")
-                            }
+                            },
+                            "published": publishStatus
                         }
                         addHtmlContentPost(htmlContentData)
                         document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
@@ -375,6 +421,12 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             let contentTitles = ""
             const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
             console.log(allhtmlcontents)
+            let publishedhtmlcontents = []
+            allhtmlcontents.forEach(element => {
+                if (element.published) {
+                    publishedhtmlcontents.push(element)
+                }
+            });
             let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
             xhr2.onload = () => {
                 if (xhr2.readyState == 4) {
@@ -386,8 +438,8 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
                 }
             }
             xhr2.send()   
-            for (let i=0;i<allhtmlcontents.length;i++) {
-                contentTitles = contentTitles + "&nbsp;<a href='/blog/" + allhtmlcontents[i]['title'] + "' id='select-content-id-" + allhtmlcontents[i]['id'] + "'>" + allhtmlcontents[i]['title'] + "</a>&nbsp;"
+            for (let i=0;i<publishedhtmlcontents.length;i++) {
+                contentTitles = contentTitles + "&nbsp;<a href='/blog/" + publishedhtmlcontents[i]['title'] + "' id='select-content-id-" + publishedhtmlcontents[i]['id'] + "'>" + publishedhtmlcontents[i]['title'] + "</a>&nbsp;"
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
@@ -399,9 +451,15 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
             document.getElementById("indexBlogPublicHtml").innerHTML = xhr.response;
             let contentTitles = ""
             const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
-            const selectedContent = allhtmlcontents[(allhtmlcontents.length-1)]
             // console.log(selectedContent)
             console.log(allhtmlcontents)
+            let publishedhtmlcontents = []
+            allhtmlcontents.forEach(element => {
+                if (element.published) {
+                    publishedhtmlcontents.push(element)
+                }
+            });
+            const selectedContent = publishedhtmlcontents[(publishedhtmlcontents.length-1)]
             let xhr2 = xhrGet(('/api/htmlcontents/get/' + selectedContent.title))
             xhr2.onload = () => {
                 if (xhr2.readyState == 4) {
@@ -413,8 +471,8 @@ if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
                 }
             }
             xhr2.send()   
-            for (let i=0;i<allhtmlcontents.length;i++) {
-                contentTitles = contentTitles + "&nbsp;<a href='/blog/" + allhtmlcontents[i]['title'] + "' id='select-content-id-" + allhtmlcontents[i]['id'] + "'>" + allhtmlcontents[i]['title'] + "</a>&nbsp;"
+            for (let i=0;i<publishedhtmlcontents.length;i++) {
+                contentTitles = contentTitles + "&nbsp;<a href='/blog/" + publishedhtmlcontents[i]['title'] + "' id='select-content-id-" + publishedhtmlcontents[i]['id'] + "'>" + publishedhtmlcontents[i]['title'] + "</a>&nbsp;"
             }
             document.getElementById("content.titles").innerHTML = contentTitles
             buildObjectBindings(vjsObjects)
