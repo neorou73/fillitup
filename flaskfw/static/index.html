@@ -76,26 +76,35 @@
         </script>
 </head>
 <body>
-    <div class="topnav" id="topnavpublic">
+    <div class="topnav">
         <a href="/">home</a>
-        <a href="/auth">login</a>
+        <a class="topnavWhenLoggedIn" id="show_readView">read</a>
+        <a class="topnavWhenLoggedIn" id="show_editorView">write</a>
+        <a class="topnavWhenLoggedIn" id="show_usersView">users</a>
+        <a class="topnavWhenLoggedIn" id="show_uploadsView">uploads</a>
+        <a class="topnavWhenLoggedIn" id="show_keywordsView">keywords</a>
+        <a class="topnavWhenLoggedIn" id="show_manageView">system</a>
+        <a class="topnavWhenLoggedIn" id="show_meView">me</a>
+        <a class="topnavWhenLoggedOut" id="show_loginView">login</a>
+        <a href="/logout">logout</a>
     </div>
-    <div class="topnav" id="topnavauthd">
-        <a href="/">home</a>
-        <a href="/read">read</a>
-        <a href="/editor">write</a>
-        <a href="/users">users</a>
-        <a href="/uploads">uploads</a>
-        <a href="/keywords">keywords</a>
-        <a href="/manage">system</a>
-        <a href="/me">me</a>
-    </div>
+    
     <div class="content">
-        <div id="indexBlogPublicHtml"></div>
-        <div id="includedHtml"></div>
-        <div id="logoutDiv" vjs-if="isLoggedIn">
-            <div id="includedHtml"></div>
-        </div>
+        <div id="listOfKeywords">list of keywords</div>
+        <div id="listOfPublishedHtmlContentUrls">list of published HTML content URLs</div>
+        <div id="listAllUsers">list of all users</div>
+        <div id="homeView" class="mainContent">home view</div>
+        <div id="readView" class="mainContent">read view</div>
+        <div id="editorView" class="mainContent">editor view</div>
+        <div id="uploadsView" class="mainContent">uploads view</div>
+        <div id="keywordsView" class="mainContent">keywords view</div>
+        <div id="manageView" class="mainContent">manage view</div>
+        <div id="meView" class="mainContent">me view</div>
+        <div id="indexBlogPublicHtml" class="mainContent">index blog public view</div>
+        <div id="blogView" class="mainContent">blog view</div>
+        <div id="usersView" class="mainContent">users view</div>
+        <div id="loginView">login form</div>
+        <div id="logoutView">logout button</div>
     </div>
     <div class="footer">
         &copy; Copyright 2021 by <a href="http://domain.invalid/">neorou73</a>.

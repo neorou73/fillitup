@@ -135,7 +135,6 @@ def logout():
         errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
         return jsonify(errorObject)
 
-
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload_file():
     if 'email' in session:
@@ -149,7 +148,6 @@ def upload_file():
         
         return render_template('upload.html')
     return redirect(url_for('hello'))
-
 
 #@app.route('/editor', methods=['GET', 'POST'])
 @app.route('/api/editor/<postTitle>', methods=['GET', 'POST'])
@@ -194,14 +192,12 @@ def read_content(postTitle=None):
     #print(len(listall))
     return render_template('read.html', listall=listall)
 
-
 @app.route('/api/manage')
 def manage_site():
     error = None
     if 'email' in session:
         return render_template('manage.html')
     return redirect(url_for('hello'))
-
 
 ### JSON values returned for these management calls
 @app.route('/api/users/add', methods=['POST'])
@@ -219,20 +215,22 @@ def add_user():
             errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
             return jsonify(errorObject)
 
-
 @app.route('/api/users/list')
 def list_users():
     data = pdb.getUsers()
     #print(data)
-    returnObject = []
-    for k in data:
-        row = {}
-        row['id'] = k[0]
-        row['email'] = k[1]
-        row['name'] = k[2]
-        row['created'] = k[3]
-        returnObject.append(row)
-    return jsonify(returnObject)
+    try:
+        returnObject = []
+        for k in data:
+            row = {}
+            row['id'] = k[0]
+            row['email'] = k[1]
+            row['name'] = k[2]
+            row['created'] = k[3]
+            returnObject.append(row)
+        return jsonify(returnObject)
+    except:
+        return jsonify({ "error": [500, "Internal Server Error", "unable to get keywords"]})
 
 
 @app.route('/api/users/edit', methods=['POST'])
@@ -272,17 +270,20 @@ def purge_user():
 def list_fileuploads():
     data = pdb.getFileUploads()
     #print(data)
-    returnObject = []
-    for k in data:
-        row = {}
-        row['id'] = k[0]
-        row['filename'] = k[1]
-        row['fullpath'] = k[2]
-        row['filetype'] = k[3]
-        row['tscreated'] = k[4]
-        row['published'] = k[5]
-        returnObject.append(row)
-    return jsonify(returnObject)
+    try:
+        returnObject = []
+        for k in data:
+            row = {}
+            row['id'] = k[0]
+            row['filename'] = k[1]
+            row['fullpath'] = k[2]
+            row['filetype'] = k[3]
+            row['tscreated'] = k[4]
+            row['published'] = k[5]
+            returnObject.append(row)
+        return jsonify(returnObject)
+    except:
+        return jsonify({ "error": [500, "Internal Server Error", "unable to get keywords"]})
 
 @app.route('/api/fileuploads/create', methods=['POST'])
 def create_fileupload():
@@ -310,16 +311,19 @@ def create_fileupload():
 def get_htmlcontents():
     data = pdb.getHtmlContents()
     #print(data)
-    returnObject = []
-    for k in data:
-        row = {}
-        row['id'] = k[0]
-        row['title'] = k[1]
-        row['created'] = k[2]
-        row['meta'] = k[3]
-        row['published'] = k[4]
-        returnObject.append(row)
-    return jsonify(returnObject)
+    try:
+        returnObject = []
+        for k in data:
+            row = {}
+            row['id'] = k[0]
+            row['title'] = k[1]
+            row['created'] = k[2]
+            row['meta'] = k[3]
+            row['published'] = k[4]
+            returnObject.append(row)
+        return jsonify(returnObject)
+    except:
+        return jsonify({ "error": [500, "Internal Server Error", "unable to get keywords"]})
 
 @app.route('/api/htmlcontents/get/<title>')
 def get_htmlcontent(title):
@@ -346,7 +350,7 @@ def update_htmlcontent():
 def list_keywords():
     data = pdb.getKeywords()
     #print(data)
-    if len(data) > 0:
+    try:
         returnObject = []
         for k in data:
             row = {}
@@ -356,8 +360,8 @@ def list_keywords():
             row['created'] = k[3]
             returnObject.append(row)
         return jsonify(returnObject)
-    else:
-        return jsonify([{ 'id': 'id', 'name': 'name', 'description': 'description', 'created': 'created' }])
+    except:
+        return jsonify({ "error": [500, "Internal Server Error", "unable to get keywords"]})
 
 @app.route('/api/keywords/create', methods=['POST'])
 def create_keyword():
@@ -371,42 +375,3 @@ def create_keyword():
 def remove_keyword():
     return jsonify(pdb.removeKeyword(request.form('keyword')))
 
-
-# bad request
-@app.errorhandler(400)
-def not_found(error):
-    resp = make_response(render_template('error.html', code=400), 400)
-    #resp.headers['X-Something'] = 'A value'
-    return resp
-
-
-# unauthorized
-@app.errorhandler(401)
-def not_found(error):
-    resp = make_response(render_template('error.html', code=401), 401)
-    #resp.headers['X-Something'] = 'A value'
-    return resp
-
-
-# forbidden
-@app.errorhandler(403)
-def not_found(error):
-    resp = make_response(render_template('error.html', code=403), 403)
-    #resp.headers['X-Something'] = 'A value'
-    return resp
-
-
-# not found
-@app.errorhandler(404)
-def not_found(error):
-    resp = make_response(render_template('error.html', code=404), 404)
-    #resp.headers['X-Something'] = 'A value'
-    return resp
-
-
-# method not allowed
-@app.errorhandler(405)
-def not_found(error):
-    resp = make_response(render_template('error.html', code=405), 405)
-    #resp.headers['X-Something'] = 'A value'
-    return resp
