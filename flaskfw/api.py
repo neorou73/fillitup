@@ -93,11 +93,9 @@ def hello(name=None):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
-    print(request.json)
     if request.method == 'POST':
-        #print(request.json['email'])
-        #print(request.json['password'])
+        print(request.json['email'])
+        print(request.json['password'])
         if pdb.validateUser(request.json['email'], request.json['password']):
             print ('user is valid')
             tokenString = pdb.loginUser(request.json['email']) 
@@ -126,14 +124,19 @@ def logout():
     # remove the username from the session if it's there
     #print(session['email'])
     #print(session['accesstoken'])
-    if pdb.logoutUser(session['email']):
+    if session.get("email") == None and session.get("accesstoken" == None):
+        pdb.logoutUser(session['email'])
         session.pop('email', None)
         session.pop('accesstoken', None)
+    return jsonify({ 'loggedout': True }) 
+
+@app.route('/whoami')
+def whoami():
+    print(session.get("email"))
+    if session.get("email") == None:
         return jsonify({ 'loggedout': True })
-        
-    else:
-        errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
-        return jsonify(errorObject)
+    else: 
+        return jsonify({ 'loggedout': False, "sessionemail": session.get("email"), "sessiontoken": session.get("accesstoken")})
 
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload_file():

@@ -22,29 +22,30 @@ const destroyAccessScope = () => {
     localStorage.clear()
 }
 
+const showLoginView = () => {
+    document.getElementById("loginView").style.display = "inline"
+    document.getElementById("logoutView").style.display = "none"
+}
+
+const showLogoutView = () => {
+    document.getElementById("logoutView").style.display = 'inline'
+    document.getElementById("loginView").style.display = 'none'
+    document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
+}
+
 const isLoggedIn = () => {
     console.log(localStorage)
     const status = localStorage.getItem('isLoggedIn')
     console.log(status)
     if (status == null) {
         console.log('not logged in')
+        showLoginView()
         return false
     } else {
         console.log('is logged in')
+        showLogoutView()   
         return true
     }
-}
-//isLoggedIn()
-
-const checkLogout = () => {
-    console.log("logging out")
-    destroyAccessScope()
-    let xhr = xhrGet("/logout")
-    xhr.onload = () => {
-        console.log(xhr.response)
-        window.location.href = '/auth'
-    }
-    xhr.send()
 }
 
 const showOneMainContent = (divIdName) => {
@@ -58,21 +59,6 @@ const showOneMainContent = (divIdName) => {
     })
 }
 
-const getHtmlView = (viewUrl, cb) => {
-    let xhr = xhrGet(viewUrl)
-    xhr.onload = () => {
-        cb(null, xhr.response)
-    }
-    xhr.send()
-}
-
-/*
-getKeywords()
-getFileUploads()
-getUsers()
-getHtmlContents()
-*/
-
 function makeRequest (method, url, done) {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url);
@@ -83,6 +69,67 @@ function makeRequest (method, url, done) {
         done(xhr.response);
     };
     xhr.send();
+}
+
+// jsonContent specifies if this is a json content type and therefore add it to request header
+function makePostRequest (url, postdata, done) {
+    let xhr = new XMLHttpRequest()
+    xhr.open('POST', url, true)
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+        done(null, xhr.response);
+    }
+    xhr.onerror = function () {
+        done(xhr.response);
+    }
+    xhr.send(JSON.stringify(postdata))
+}
+
+
+// checks to log out user
+const checkLogout = () => {
+    console.log('logging out, will redirect in 3 seconds')
+    makeRequest('GET', "/logout", (err, xhrResponse) => { 
+        if (err) { console.log(err) }
+        console.log(xhrResponse)
+        destroyAccessScope()
+        setTimeout(function() {
+            window.location.href = '/'
+       }, 2500);
+    })
+}
+
+// use this to define which blog to show
+const showSelectedBlog = (selectedBlog) => {
+    document.getElementById("listOfPublishedHtmlContentUrls").style.display = "inline"
+    const url = "/api/htmlcontents/get/" + selectedBlog
+    makeRequest('GET', url, (err, xhrResponse) => {
+        const xr = JSON.parse(xhrResponse)
+        console.log(xr)
+        document.getElementById("selectedBlog").innerHTML = xr.content
+        // get list of published html contents 
+        makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
+            if (err) { throw err; }
+            //const allhtmlcontents = JSON.parse(xhrResponse) 
+            //console.log(xhrResponse)
+            let publishedhtmlcontents = []
+            let contentTitles = ""
+            for (let c=0;c<xhrResponse.length;c++) {
+                if (xhrResponse[c]['published']) {
+                    publishedhtmlcontents.push(xhrResponse[c])
+                    contentTitles = contentTitles + "<span></span>"
+
+                    const tag = document.createElement("span");
+                    const text = document.createTextNode(xhrResponse[c]['title']);
+                    tag.appendChild(text);
+                    const element = document.getElementById("listOfPublishedHtmlContentUrls");
+                    element.appendChild(tag);
+                }
+            }
+        })
+    })
 }
 
 // get list of keywords
@@ -97,29 +144,118 @@ makeRequest('GET', "/api/keywords/list", (err, xhrResponse) => {
     document.getElementById("listOfKeywords").innerHTML = keywords
 })
 
-// get list of published html contents 
-makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
-    if (err) { throw err; }
-    //console.log(xhrResponse)
-    const allhtmlcontents = JSON.parse(xhrResponse) 
-    let publishedhtmlcontents = []
-    let contentTitles = ""
-    allhtmlcontents.forEach(element => {
-        if (element.published) {
-            publishedhtmlcontents.push(element)
-        }
-    })
-    for (let i=0;i<publishedhtmlcontents.length;i++) {
-        contentTitles = contentTitles + "&nbsp;<a href='/blog/" + publishedhtmlcontents[i]['title'] + "' id='select-content-id-" + publishedhtmlcontents[i]['id'] + "'>" + publishedhtmlcontents[i]['title'] + "</a>&nbsp;"
-    }
-    document.getElementById("listOfPublishedHtmlContentUrls").innerHTML = contentTitles
-})
-
 makeRequest('GET', "/static/views/index.html", (err, xhrResponse) => {
     if (err) { throw err; }
     document.title = "Welcome"
     document.getElementById("indexBlogPublicHtml").innerHTML = xhrResponse
-    /*let xhr2 = xhrGet(('/api/htmlcontents/get/' + queriedTitle))
+})
+
+makeRequest('GET', "/static/views/read.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "Read Content"
+    document.getElementById("readView").innerHTML = xhrResponse
+})
+
+makeRequest('GET', "/static/views/editor.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "Edit Conten"
+    document.getElementById("editorView").innerHTML = xhrResponse
+})
+
+makeRequest('GET', "/static/views/uploads.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "File Uploads"
+    document.getElementById("uploadsView").innerHTML = xhrResponse
+    /*const allfileuploads = JSON.parse(sessionStorage.getItem('allfileuploads'))
+    console.log(allfileuploads)
+    if (allfileuploads.length > 0) {
+        document.getElementById("uploadedfileslist").innerHTML = buildHtmlTable(Object.keys(allfileuploads[0]), allfileuploads, false)
+    }
+    document.getElementById('fileuploads.upload').addEventListener('click', (event) => {
+        event.preventDefault() // prevents the actual form button click to submit to the URL below
+        const formid = document.getElementById('uploadedfileform')
+        let xhr2 = new XMLHttpRequest();
+        // Add any event handlers here...
+        let fileInputElement = document.getElementById("userfile")
+        let upFile = fileInputElement.files[0]
+        console.log(upFile)
+        let formData = new FormData();
+        formData.append("file", upFile)
+        formData.append("filetype", upFile.type)
+        xhr2.open('POST', '/api/fileuploads/create', true);
+        xhr2.send(formData)
+        getFileUploads()
+    })
+    buildObjectBindings(vjsObjects)*/
+})
+
+makeRequest('GET', "/static/views/keywords.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "keywords"  
+    document.getElementById("keywordsView").innerHTML = xhrResponse
+    /*const allkeywords = JSON.parse(sessionStorage.getItem('allkeywords'))
+    document.getElementById("allkeywordslist").innerHTML = buildHtmlTable(Object.keys(allkeywords[0]), allkeywords, false)
+    document.getElementById('keyword.add').addEventListener('click', () => {
+        const keywordData = {
+            "name": document.getElementById('keyword.add.keyword').value,
+            "description": document.getElementById('keyword.add.description').value
+        }
+        addKeywordPost(keywordData)
+    })
+    buildObjectBindings(vjsObjects)
+    */
+})
+
+makeRequest('GET', "/static/views/manage.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "Manage System"
+    document.getElementById("manageView").innerHTML = xhrResponse
+})
+
+makeRequest('GET', "/static/views/me.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "About Me"
+    document.getElementById("meView").innerHTML = xhrResponse
+})
+
+makeRequest('GET', "/static/views/users.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "Manage Users"
+    document.getElementById("usersView").innerHTML = xhrResponse
+    /*const allusers = JSON.parse(sessionStorage.getItem('allusers'))
+    document.getElementById("alluserslist").innerHTML = buildHtmlTable(Object.keys(allusers[0]), allusers, true)
+    document.getElementById('user.create').addEventListener('click', () => {
+        const userData = {
+            "username": document.getElementById('user.create.username').value,
+            "email": document.getElementById('user.create.email').value,
+            "password": document.getElementById('user.create.password').value,
+        }
+        addUserPost(userData)
+    })
+    //document.getElementById('user.update').addEventListener('click', () => {})
+    //document.getElementById('user.pwreset').addEventListener('click', () => {})
+    //document.getElementById('user.toggleactive').addEventListener('click', () => {})
+    buildObjectBindings(vjsObjects)
+    */
+})
+
+/*
+makeRequest('GET', "/static/views/blog.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "Welcome"
+    document.getElementById("indexBlogPublicHtml").innerHTML = xhrResponse;
+    let contentTitles = ""
+    const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
+    // console.log(selectedContent)
+    console.log(allhtmlcontents)
+    let publishedhtmlcontents = []
+    allhtmlcontents.forEach(element => {
+        if (element.published) {
+            publishedhtmlcontents.push(element)
+        }
+    });
+    const selectedContent = publishedhtmlcontents[(publishedhtmlcontents.length-1)]
+    let xhr2 = xhrGet(('/api/htmlcontents/get/' + selectedContent.title))
     xhr2.onload = () => {
         if (xhr2.readyState == 4) {
             let xhr2response = JSON.parse(xhr2.response) 
@@ -129,49 +265,122 @@ makeRequest('GET', "/static/views/index.html", (err, xhrResponse) => {
             hljs.highlightAll()
         }
     }
-    xhr2.send()   */
-    
+    xhr2.send()   
+    for (let i=0;i<publishedhtmlcontents.length;i++) {
+        contentTitles = contentTitles + "&nbsp;<a href='/blog/" + publishedhtmlcontents[i]['title'] + "' id='select-content-id-" + publishedhtmlcontents[i]['id'] + "'>" + publishedhtmlcontents[i]['title'] + "</a>&nbsp;"
+    }
+    document.getElementById("content.titles").innerHTML = contentTitles
+    buildObjectBindings(vjsObjects)
+})*/
+
+makeRequest('GET', "/static/views/404.html", (err, xhrResponse) => {
+    if (err) { throw err; }
+    document.title = "Error!"
 })
+
+showOneMainContent("homeView")
+const checkLogin = isLoggedIn()
+
+if (checkLogin) {
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
+        // Do stuff here
+        el.style.display = 'inline'
+        el.addEventListener('click', (event) => {
+            console.log(event.target.id)
+            showOneMainContent(event.target.id.replace("show_",""))
+        })
+    })
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
+        // Do stuff here
+        el.style.display = 'none'
+    })
+    
+} else {
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
+        // Do stuff here
+        el.style.display = 'none'
+    })
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
+        // Do stuff here
+        el.style.display = 'inline'
+        el.addEventListener('click', (event) => {
+            console.log(event.target.id)
+            showOneMainContent(event.target.id.replace("show_",""))
+        })
+    })
+
+    if (document.getElementById("loginView").style.display == 'inline') {
+        console.log('login form is showing')
+        if (document.getElementById('loginFormLoginButton')) {
+            console.log('login button should exist')
+            // listen to login button being clicked 
+            document.getElementById('loginFormLoginButton').addEventListener('click', () => {
+                console.log('trying to log in')
+                console.log("login form clicked")
+                const postData = {
+                    "email": document.getElementById("loginFormEmail").value,
+                    "password": document.getElementById("loginFormPassword").value
+                }
+                console.log(postData)
+                makePostRequest('/login', postData, (err, xhrResponse) => {
+                    if (err) { throw err; }
+                    const xr = JSON.parse(xhrResponse)
+                    console.log(xr)
+                    //console.log(xr.accesstoken)
+                    localStorage.setItem("email", xr.email)
+                    localStorage.setItem("accesstoken", xr.accesstoken)
+                    localStorage.setItem("isLoggedIn", true)
+                    console.log(localStorage)
+                    setTimeout(function() {
+                        window.location.href = '/'
+                   }, 2500);
+                })
+            })
+        }
+    }
+
+
+}
+
+Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow"), (el) => {
+    // Do stuff here
+    el.style.display = 'inline'
+    el.addEventListener('click', (event) => {
+        console.log(event.target.id)
+        showOneMainContent(event.target.id.replace("show_",""))
+    })
+})
+
+showSelectedBlog('curriculum-vitae')
+
+window.addEventListener("load", () => {
+    // Fully loaded!
+    console.log("Fully loaded!")
+    //console.log(isLoggedIn())
+})
+
+
+/*
+function makeRequest (method, url, done) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.onload = function () {
+        done(null, xhr.response);
+    };
+    xhr.onerror = function () {
+        done(xhr.response);
+    };
+    xhr.send();
+}
+// And we'd call it as such:
+makeRequest('GET', 'http://example.com', function (err, datums) {
+    if (err) { throw err; }
+    console.log(datums);
+});
+*/
 
 /**
- * 
- */
-
-makeRequest('GET', "/static/views/read.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    
-    document.title = "Read Content"
-    document.getElementById("readView").innerHTML = xhrResponse;
-    const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
-    console.log(allhtmlcontents)
-    document.getElementById("allhtmlcontentslist").innerHTML = buildHtmlTable(Object.keys(allhtmlcontents[0]), allhtmlcontents, true)
-    
-    /*if (location.pathname == "/read") {
-        buildObjectBindings(vjsObjects)
-        document.getElementById("content-exists-to-read").setAttribute("display", "none")
-        console.log(hljs)
-        hljs.highlightAll()
-        document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
-    } else {
-        const queriedTitle = location.pathname.replace("/read/","")
-        const queriedContentUrl = '/api/htmlcontents/get/' + queriedTitle 
-        makeRequest('GET', queriedContentUrl, (err, xhrResponse2) => {
-            let xhr2response = JSON.parse(xhrResponse2) 
-            console.log(xhr2response)
-            if (xhr2response.hasOwnProperty('title') && xhr2response.hasOwnProperty('content')) {
-                document.getElementById('htmlcontent.content').innerHTML = xhr2response.content
-            }
-            document.getElementById('htmlcontent.title').innerText = queriedTitle                    
-            buildObjectBindings(vjsObjects)
-            console.log(hljs)
-            hljs.highlightAll()
-        })
-    }*/
-})
-
-makeRequest('GET', "/static/views/editor.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    if (location.pathname == "/editor") {
+ * if (location.pathname == "/editor") {
         window.location.replace(location.origin + "/read")
     } else {
         const queriedTitle = location.pathname.replace("/editor/","")
@@ -237,7 +446,6 @@ makeRequest('GET', "/static/views/editor.html", (err, xhrResponse) => {
                     updateHtmlContentPost(htmlContentData)
                 })
                 buildObjectBindings(vjsObjects)
-                document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
             } else {
                 
                 if (xhr2response.published) {
@@ -281,7 +489,6 @@ makeRequest('GET', "/static/views/editor.html", (err, xhrResponse) => {
                     document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + queriedTitle + "'>read</a>"
                 })
                 buildObjectBindings(vjsObjects)
-                document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
             }
         }
         xhr2.onerror = (e) => {
@@ -289,259 +496,4 @@ makeRequest('GET', "/static/views/editor.html", (err, xhrResponse) => {
         }
         xhr2.send()
     }
-})
-
-makeRequest('GET', "/static/views/uploads.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "File Uploads"
-    document.getElementById("uploadsView").innerHTML = xhrResponse
-    const allfileuploads = JSON.parse(sessionStorage.getItem('allfileuploads'))
-    console.log(allfileuploads)
-    if (allfileuploads.length > 0) {
-        document.getElementById("uploadedfileslist").innerHTML = buildHtmlTable(Object.keys(allfileuploads[0]), allfileuploads, false)
-    }
-    document.getElementById('fileuploads.upload').addEventListener('click', (event) => {
-        event.preventDefault() // prevents the actual form button click to submit to the URL below
-        const formid = document.getElementById('uploadedfileform')
-        let xhr2 = new XMLHttpRequest();
-        // Add any event handlers here...
-        let fileInputElement = document.getElementById("userfile")
-        let upFile = fileInputElement.files[0]
-        console.log(upFile)
-        let formData = new FormData();
-        formData.append("file", upFile)
-        formData.append("filetype", upFile.type)
-        xhr2.open('POST', '/api/fileuploads/create', true);
-        xhr2.send(formData)
-        getFileUploads()
-    })
-    buildObjectBindings(vjsObjects)
-    document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }
-})
-
-makeRequest('GET', "/static/views/keywords.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "keywords"  
-    document.getElementById("keywordsView").innerHTML = xhrResponse
-    /*const allkeywords = JSON.parse(sessionStorage.getItem('allkeywords'))
-    document.getElementById("allkeywordslist").innerHTML = buildHtmlTable(Object.keys(allkeywords[0]), allkeywords, false)
-    document.getElementById('keyword.add').addEventListener('click', () => {
-        const keywordData = {
-            "name": document.getElementById('keyword.add.keyword').value,
-            "description": document.getElementById('keyword.add.description').value
-        }
-        addKeywordPost(keywordData)
-    })
-    buildObjectBindings(vjsObjects)
-    document.getElementById("logoutFormLogoutButton").onclick = (e) => { checkLogout() }*/
-})
-
-makeRequest('GET', "/static/views/manage.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "Manage System"
-    document.getElementById("manageView").innerHTML = xhrResponse
-})
-
-makeRequest('GET', "/static/views/me.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "About Me"
-    document.getElementById("meView").innerHTML = xhrResponse
-})
-
-makeRequest('GET', "/static/views/users.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "Manage Users"
-    document.getElementById("usersView").innerHTML = xhrResponse
-    /*const allusers = JSON.parse(sessionStorage.getItem('allusers'))
-    document.getElementById("alluserslist").innerHTML = buildHtmlTable(Object.keys(allusers[0]), allusers, true)
-    document.getElementById('user.create').addEventListener('click', () => {
-        const userData = {
-            "username": document.getElementById('user.create.username').value,
-            "email": document.getElementById('user.create.email').value,
-            "password": document.getElementById('user.create.password').value,
-        }
-        addUserPost(userData)
-    })
-    //document.getElementById('user.update').addEventListener('click', () => {})
-    //document.getElementById('user.pwreset').addEventListener('click', () => {})
-    //document.getElementById('user.toggleactive').addEventListener('click', () => {})
-    buildObjectBindings(vjsObjects)
-    document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })*/
-})
-
-makeRequest('GET', "/static/views/auth.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "Login"
-    document.getElementById("loginView").innerHTML = xhrResponse;
-    document.getElementById('loginFormLoginButton').addEventListener('click', () => {
-        console.log('trying to log in')
-        console.log("login form clicked")
-        const postData = {
-            "email": document.getElementById("loginFormEmail").value,
-            "password": document.getElementById("loginFormPassword").value
-        }
-        console.log(postData)
-        let xhr = xhrPost('/login')
-
-        //Send the proper header information along with the request
-        xhr.setRequestHeader("Accept", "application/json");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = () => {
-            if (xhr.readyState == 4) {
-                const xhrresponse = JSON.parse(xhr.response)
-                console.log(xhrresponse)
-                console.log(xhrresponse.accesstoken)
-                localStorage.setItem("email", xhrresponse.email)
-                localStorage.setItem("accesstoken", xhrresponse.accesstoken)
-                localStorage.setItem("isLoggedIn", true)
-                const fiuRootScope = { 
-                    'me.email': xhrresponse.email, 
-                    'me.accesstoken': xhrresponse.accesstoken 
-                }
-                console.log(localStorage)
-                if (xhrresponse.accesstoken != null) {
-                    window.location.href = '/read'
-                }
-            }
-        }
-        console.log(postData)
-        xhr.send(JSON.stringify(postData))
-    })
-    buildObjectBindings(vjsObjects)
-    document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
-})
-
-/*
-makeRequest('GET', "/static/views/blog.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "Welcome"
-    document.getElementById("indexBlogPublicHtml").innerHTML = xhrResponse;
-    let contentTitles = ""
-    const allhtmlcontents = JSON.parse(sessionStorage.getItem('allhtmlcontents'))
-    // console.log(selectedContent)
-    console.log(allhtmlcontents)
-    let publishedhtmlcontents = []
-    allhtmlcontents.forEach(element => {
-        if (element.published) {
-            publishedhtmlcontents.push(element)
-        }
-    });
-    const selectedContent = publishedhtmlcontents[(publishedhtmlcontents.length-1)]
-    let xhr2 = xhrGet(('/api/htmlcontents/get/' + selectedContent.title))
-    xhr2.onload = () => {
-        if (xhr2.readyState == 4) {
-            let xhr2response = JSON.parse(xhr2.response) 
-            console.log(xhr2response)
-            document.getElementById('content.selected.selected').innerHTML = xhr2response.content
-            // console.log(hljs)
-            hljs.highlightAll()
-        }
-    }
-    xhr2.send()   
-    for (let i=0;i<publishedhtmlcontents.length;i++) {
-        contentTitles = contentTitles + "&nbsp;<a href='/blog/" + publishedhtmlcontents[i]['title'] + "' id='select-content-id-" + publishedhtmlcontents[i]['id'] + "'>" + publishedhtmlcontents[i]['title'] + "</a>&nbsp;"
-    }
-    document.getElementById("content.titles").innerHTML = contentTitles
-    buildObjectBindings(vjsObjects)
-})*/
-
-makeRequest('GET', "/static/views/404.html", (err, xhrResponse) => {
-    if (err) { throw err; }
-    document.title = "Error!"
-})
-
-showOneMainContent("homeView")
-
-if (isLoggedIn()) {
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
-        // Do stuff here
-        el.style.display = 'inline'
-        el.addEventListener('click', (event) => {
-            console.log(event.target.id)
-            showOneMainContent(event.target.id.replace("show_",""))
-        })
-    })
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
-        // Do stuff here
-        el.style.display = 'none'
-    })
-} else {
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
-        // Do stuff here
-        el.style.display = 'none'
-    })
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
-        // Do stuff here
-        el.style.display = 'inline'
-        el.addEventListener('click', (event) => {
-            console.log(event.target.id)
-            showOneMainContent(event.target.id.replace("show_",""))
-        })
-    })
-}
-
-Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow"), (el) => {
-    // Do stuff here
-    el.style.display = 'inline'
-    el.addEventListener('click', (event) => {
-        console.log(event.target.id)
-        showOneMainContent(event.target.id.replace("show_",""))
-    })
-})
-
-/*if (location.pathname.substring(0, 9) == "/keywords" && isLoggedIn()) {
-    showOneMainContent('keywordsView')
-} else if (location.pathname.substring(0, 8) == "/uploads" && isLoggedIn()) {
-    showOneMainContent('uploadsView')
-} else if (location.pathname.substring(0, 7) == "/editor" && isLoggedIn()) {
-    showOneMainContent('editorView')
-} else if (location.pathname.substring(0, 5) == "/read" && isLoggedIn()) {
-    console.log(localStorage)
-    showOneMainContent('readView')
-} else if (location.pathname.substring(0, 7) == "/manage" && isLoggedIn()) {
-    showOneMainContent('manageView')
-} else if (location.pathname.substring(0, 6) == "/users" && isLoggedIn()) {
-    showOneMainContent('usersView')
-} else if (location.pathname.substring(0, 5) == "/auth" && isLoggedIn()) {
-    console.log('you are logged in')
-    window.location.href = '/read'
-} else if (location.pathname.substring(0, 5) == "/auth" && !isLoggedIn()) {
-    console.log('you are not logged in')   
-    showOneMainContent('loginView') 
-} else if (location.pathname.substring(0, 3) == "/me" && isLoggedIn()) {
-    showOneMainContent('meView')
-} else if (location.pathname == "/" || location.pathname.substring(0, 5) == "/blog"){
-    if (isLoggedIn()) {
-        showOneMainContent('homeIndex')
-    } else {
-        showOneMainContent('readView')
-    }
-} else {
-    showPublicNav()
-}*/
-
-window.addEventListener("load", () => {
-    // Fully loaded!
-    console.log("Fully loaded!")
-    //console.log(isLoggedIn())
-})
-
-
-/*
-function makeRequest (method, url, done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.onload = function () {
-        done(null, xhr.response);
-    };
-    xhr.onerror = function () {
-        done(xhr.response);
-    };
-    xhr.send();
-}
-// And we'd call it as such:
-makeRequest('GET', 'http://example.com', function (err, datums) {
-    if (err) { throw err; }
-    console.log(datums);
-});
-*/
+ */
