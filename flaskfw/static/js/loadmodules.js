@@ -105,30 +105,12 @@ const checkLogout = () => {
 const showSelectedBlog = (selectedBlog) => {
     document.getElementById("listOfPublishedHtmlContentUrls").style.display = "inline"
     const url = "/api/htmlcontents/get/" + selectedBlog
+    sessionStorage.setItem('selectedBlogTitle', selectedBlog)
     makeRequest('GET', url, (err, xhrResponse) => {
         const xr = JSON.parse(xhrResponse)
         console.log(xr)
         document.getElementById("selectedBlog").innerHTML = xr.content
-        // get list of published html contents 
-        makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
-            if (err) { throw err; }
-            //const allhtmlcontents = JSON.parse(xhrResponse) 
-            //console.log(xhrResponse)
-            let publishedhtmlcontents = []
-            let contentTitles = ""
-            for (let c=0;c<xhrResponse.length;c++) {
-                if (xhrResponse[c]['published']) {
-                    publishedhtmlcontents.push(xhrResponse[c])
-                    contentTitles = contentTitles + "<span></span>"
-
-                    const tag = document.createElement("span");
-                    const text = document.createTextNode(xhrResponse[c]['title']);
-                    tag.appendChild(text);
-                    const element = document.getElementById("listOfPublishedHtmlContentUrls");
-                    element.appendChild(tag);
-                }
-            }
-        })
+        sessionStorage.setItem('selectedBlogContent', xr.content)
     })
 }
 
@@ -137,11 +119,14 @@ makeRequest('GET', "/api/keywords/list", (err, xhrResponse) => {
     if (err) { throw err; }
     //console.log(xhrResponse)
     const allkeywords = JSON.parse(xhrResponse) 
-    let keywords = ""
-    for (let i=0;i<allkeywords.length;i++) {
-        keywords = keywords + "&nbsp;<a href='#'>" + allkeywords[i]['name'] + "</a>&nbsp;"
-    }
-    document.getElementById("listOfKeywords").innerHTML = keywords
+    sessionStorage.setItem('allKeywords', allkeywords)
+})
+
+// get list of published html contents 
+makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
+    if (err) { throw err; }
+    const allhtmlcontents = JSON.parse(xhrResponse) 
+    sessionStorage.setItem('allHtmlContents', allhtmlcontents)
 })
 
 makeRequest('GET', "/static/views/index.html", (err, xhrResponse) => {
@@ -256,6 +241,27 @@ Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow")
 })
 
 showSelectedBlog('curriculum-vitae')
+
+const buildMainContentNav = () => {
+    const allKeywords = sessionStorage.getItem('allKeywords')
+    const allHtmlContents = sessionStorage.getItem('allHtmlContents')
+    const selectedBlogTitle = sessionStorage.getItem('selectedBlogTitle')
+    const selectedBlogContent = sessionStorage.getItem('selectedBlogContent')
+    
+    document.getElementById("listOfPublishedHtmlContentUrls").innerHTML = ""
+    let publishedHtmlContents = []
+    for (let c=0;c<allHtmlContents.length;c++) {
+        if (allHtmlContents[c]['published']) {
+            publishedHtmlContents.push(allHtmlContents[c])
+
+            const tag = document.createElement("span");
+            const text = document.createTextNode((" " + allHtmlContents[c]['title'] + " "))
+            tag.appendChild(text);
+            const element = document.getElementById("listOfPublishedHtmlContentUrls");
+            element.appendChild(tag);
+        }
+    }
+}
 
 window.addEventListener("load", () => {
     // Fully loaded!

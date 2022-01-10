@@ -62,6 +62,7 @@ sys.path.append(".")
 from fillupDbc import psqldb 
 pdb = psqldb()
 pdb.getCurrentTimestamp()
+pdb.connect()
 
 @app.route("/")
 @app.route("/auth")
