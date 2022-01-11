@@ -150,38 +150,36 @@ const showSelectedBlog = (selectedBlog) => {
     document.getElementById("usersView").innerHTML = xhrResponse
 })*/
 
-const getHtmlContentTitles = () => {
+// divId would be either publishedHtmlContentUrls1 or publishedHtmlContentUrls2
+const showHtmlContentTitlesList = (divId) => {
     // get list of published html contents 
     makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
         sessionStorage.removeItem('allHtmlContents')
         if (err) { throw err; }
-        return JSON.parse(xhrResponse)
-    })
-}
-
-const showHtmlContentTitlesList = (allHtmlContents) => {
-    if (allHtmlContents.length > 0) {
-        let publishedHtmlContents = []
-        document.getElementById("listOfPublishedHtmlContentUrls").innerHTML = ""
-        for (let c=0;c<allHtmlContents.length;c++) {
-            if (allHtmlContents[c]['published']) {
-                publishedHtmlContents.push(allHtmlContents[c])
-
-                const tag = document.createElement("span")
-                tag.classList.add("html-content-selector")
-                const text = document.createTextNode((". " + allHtmlContents[c]['title'] + " ."))
-                tag.appendChild(text)
-                const element = document.getElementById("listOfPublishedHtmlContentUrls")
-                element.appendChild(tag)
-                tag.addEventListener('click', (buttonElement) => {
-                    const selectedHtmlContentTitle = (buttonElement.target.innerText).replace(". ","").replace(" .","")
-                    console.log(selectedHtmlContentTitle)
-                    location.href = "/blog/" + selectedHtmlContentTitle
-                })
+        const allHtmlContents = JSON.parse(xhrResponse)
+        if (allHtmlContents.length > 0) {
+            let publishedHtmlContents = []
+            document.getElementById(divId).innerHTML = ""
+            for (let c=0;c<allHtmlContents.length;c++) {
+                if (allHtmlContents[c]['published']) {
+                    publishedHtmlContents.push(allHtmlContents[c])
+    
+                    const tag = document.createElement("span")
+                    tag.classList.add("html-content-selector")
+                    const text = document.createTextNode((". " + allHtmlContents[c]['title'] + " ."))
+                    tag.appendChild(text)
+                    const element = document.getElementById(divId)
+                    element.appendChild(tag)
+                    tag.addEventListener('click', (buttonElement) => {
+                        const selectedHtmlContentTitle = (buttonElement.target.innerText).replace(". ","").replace(" .","")
+                        console.log(selectedHtmlContentTitle)
+                        location.href = "/blog/" + selectedHtmlContentTitle
+                    })
+                }
             }
+            console.log(publishedHtmlContents)
         }
-        console.log(publishedHtmlContents)
-    }
+    })
 }
 
 
@@ -241,8 +239,6 @@ if (locPath == "/auth") {
     }
 }
 else if (locPath.substring(0, 6) == "/blog/") {
-    const allHtmlContents = getHtmlContentTitles()
-    showHtmlContentTitlesList(allHtmlContents)
     // show the blog 
     document.getElementById("readView").style.display = 'block'
     const selectedBlogTitle = locPath.substring(6, locPath.length)
@@ -253,7 +249,12 @@ else if (locPath.substring(0, 6) == "/blog/") {
         console.log(xr)
         document.getElementById("selectedBlogTitle").innerHTML = selectedBlogTitle
         document.getElementById("selectedBlogContent").innerHTML = xr.content
-        showLoggedOutNavigation()
+        showHtmlContentTitlesList("publishedHtmlContentUrls2")
+        if (checkLogin) {
+            showLoggedInNavigation()
+        } else {
+            showLoggedOutNavigation()
+        }
     })
 } 
 else if (locPath.substring(0, 8) == "/editor/") {
@@ -322,7 +323,7 @@ else if (locPath.substring(0, 7) == "/manage") {
 else {
     // show front page
     document.getElementById("homeView").style.display = "block"
-    
+    showHtmlContentTitlesList("publishedHtmlContentUrls1")    
     if (checkLogin) {
         showLoggedInNavigation()
     } else {
