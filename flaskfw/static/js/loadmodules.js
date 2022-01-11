@@ -1,19 +1,9 @@
-import {test, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
+import { test, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
 //import {test, getUsers, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
 //import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
-import {translateMdInput} from './modules/dataBindings.js'
+import { translateMdInput, buildHtmlTable } from './modules/dataBindings.js'
 
 console.log(test())
-
-let vjsObjects = { "ifs": [], "fors": [], "models": [], "identifiers": [] }
-
-let appDomBindings = {
-    'htmlContents': {},
-    'keywords': {},
-    'isLoggedIn': {
-        'state': false
-    }
-}
 
 const destroyAccessScope = () => {
     localStorage.removeItem('fiuRootScope')
@@ -351,7 +341,6 @@ else if (locPath.substring(0, 9) == "/keywords") {
             document.getElementById("listKeywordsView").innerHTML = ""
             for (let k=0;k<allKeywords.length;k++) {
                 keywords.push(allKeywords[k])
-
                 const tag = document.createElement("span")
                 tag.classList.add("keyword-selector")
                 const text = document.createTextNode(allKeywords[k]['name'])
@@ -378,7 +367,36 @@ else if (locPath.substring(0, 8) == "/uploads") {
     if (checkLogin) {
         // show upload
         document.getElementById("uploadsView").style.display = "block"
-        showLoggedInNavigation()
+        makeRequest('GET', "/api/fileuploads/list", (err, xhrResponse) => {
+            const allfileuploads = JSON.parse(xhrResponse)
+            console.log(allfileuploads)
+            if (allfileuploads.length > 0) {
+                const ulElement = document.createElement("ul")
+                for (let l=0;l<allfileuploads.length;l++) {
+                    const liElement = document.createElement("li")
+                    const insideText = document.createTextNode(allfileuploads[l].filename)
+                    liElement.appendChild(insideText)
+                    ulElement.appendChild(liElement)
+                }
+                document.getElementById("uploadedfileslist").appendChild(ulElement)
+            }
+            document.getElementById('fileuploads.upload').addEventListener('click', (event) => {
+                event.preventDefault() // prevents the actual form button click to submit to the URL below
+                const formid = document.getElementById('uploadedfileform')
+                let xhr2 = new XMLHttpRequest();
+                // Add any event handlers here...
+                let fileInputElement = document.getElementById("userfile")
+                let upFile = fileInputElement.files[0]
+                console.log(upFile)
+                let formData = new FormData();
+                formData.append("file", upFile)
+                formData.append("filetype", upFile.type)
+                xhr2.open('POST', '/api/fileuploads/create', true);
+                xhr2.send(formData)
+                getFileUploads()
+            })
+            showLoggedInNavigation()
+        })
     } else {
         window.location.href = "/auth"
     }
