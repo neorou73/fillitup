@@ -1,5 +1,6 @@
-import {test, getUsers, getKeywords, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
-import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
+import {test } from './modules/apiCalls.js'
+//import {test, getUsers, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
+//import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 
 console.log(test())
 
@@ -22,33 +23,58 @@ const destroyAccessScope = () => {
     localStorage.clear()
 }
 
-const showLoginView = () => {
-    document.getElementById("loginView").style.display = "block"
-    document.getElementById("logoutView").style.display = "none"
-}
-
-const showLogoutView = () => {
-    document.getElementById("logoutView").style.display = 'block'
-    document.getElementById("loginView").style.display = 'none'
-    document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
-}
-
 const isLoggedIn = () => {
     console.log(localStorage)
     const status = localStorage.getItem('isLoggedIn')
     console.log(status)
     if (status == null) {
         console.log('not logged in')
-        showLoginView()
         return false
     } else {
-        console.log('is logged in')
-        showLogoutView()   
+        console.log('is logged in')   
         return true
     }
 }
 
-const showOneMainContent = (divIdName) => {
+const showLoggedInNavigation = () => {
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
+        // Do stuff here
+        el.style.display = 'inline'
+    })
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
+        // Do stuff here
+        el.style.display = 'none'
+    })
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow"), (el) => {
+        // Do stuff here
+        el.style.display = 'inline'
+        /*el.addEventListener('click', (event) => {
+            console.log(event.target.id)
+            showOneMainContent(event.target.id.replace("show_",""))
+        })*/
+    })
+}
+
+const showLoggedOutNavigation = () => {
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
+        // Do stuff here
+        el.style.display = 'none'
+    })
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
+        // Do stuff here
+        el.style.display = 'inline'
+    })
+    Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow"), (el) => {
+        // Do stuff here
+        el.style.display = 'inline'
+        /*el.addEventListener('click', (event) => {
+            console.log(event.target.id)
+            showOneMainContent(event.target.id.replace("show_",""))
+        })*/
+    })
+}
+
+/*const showOneMainContent = (divIdName) => {
     document.getElementById("selectedBlog").style.display = 'none'
     Array.prototype.forEach.call(document.getElementsByClassName("mainContent"), (el) => {        
         if (el.id == divIdName) {
@@ -58,7 +84,7 @@ const showOneMainContent = (divIdName) => {
             document.getElementById(el.id).style.display = 'none'
         }
     })
-}
+}*/
 
 const makeRequest = (method, url, done) => {
     let xhr = new XMLHttpRequest();
@@ -101,6 +127,7 @@ const checkLogout = () => {
     })
 }
 
+/*
 // determine which view to load 
 const setView = (viewTitle) => {
     if (viewTitle.substring(0, 3) == 'hc-') {
@@ -110,7 +137,9 @@ const setView = (viewTitle) => {
         // look for other views for login 
     }
 }
+*/
 
+/*
 // use this to define which blog to show
 const showSelectedBlog = (selectedBlog) => {
     const url = "/api/htmlcontents/get/" + selectedBlog
@@ -122,49 +151,25 @@ const showSelectedBlog = (selectedBlog) => {
         sessionStorage.setItem('selectedBlogContent', xr.content)
     })
 }
-
-// get list of keywords
-makeRequest('GET', "/api/keywords/list", (err, xhrResponse) => {
-    sessionStorage.removeItem('allKeywords')
-    if (err) { throw err; }
-    const allKeywords = JSON.parse(xhrResponse)
-    let keywords = []
-    if (allKeywords.length > 0) {
-        document.getElementById("listOfKeywords").innerHTML = ""
-        sessionStorage.setItem('allKeywords', JSON.parse(xhrResponse))
-        for (let k=0;k<allKeywords.length;k++) {
-            keywords.push(allKeywords[k])
-
-            const tag = document.createElement("span")
-            tag.classList.add("keyword-selector")
-            const text = document.createTextNode((". " + allKeywords[k]['name'] + " ."))
-            tag.appendChild(text)
-            const element = document.getElementById("listOfKeywords")
-            element.appendChild(tag)
-            tag.addEventListener('click', (buttonElement) => {
-                const selectedKeyword = (buttonElement.target.innerText).replace(". ","").replace(" .","")
-                console.log(selectedKeyword)
-            })
-        }
-        console.log(keywords)
-    }
-})
-
-
-
+*/
 
 /*makeRequest('GET', "/static/views/users.html", (err, xhrResponse) => {
     if (err) { throw err; }
     document.getElementById("usersView").innerHTML = xhrResponse
 })*/
 
-// get list of published html contents 
-makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
-    sessionStorage.removeItem('allHtmlContents')
-    if (err) { throw err; }
-    const allHtmlContents = JSON.parse(xhrResponse)
-    let publishedHtmlContents = []
+const getHtmlContentTitles = () => {
+    // get list of published html contents 
+    makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
+        sessionStorage.removeItem('allHtmlContents')
+        if (err) { throw err; }
+        return JSON.parse(xhrResponse)
+    })
+}
+
+const showHtmlContentTitlesList = (allHtmlContents) => {
     if (allHtmlContents.length > 0) {
+        let publishedHtmlContents = []
         document.getElementById("listOfPublishedHtmlContentUrls").innerHTML = ""
         for (let c=0;c<allHtmlContents.length;c++) {
             if (allHtmlContents[c]['published']) {
@@ -185,11 +190,8 @@ makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
         }
         console.log(publishedHtmlContents)
     }
+}
 
-    if (JSON.parse(xhrResponse).length > 0) {
-        sessionStorage.setItem('allHtmlContents', JSON.parse(xhrResponse))
-    }
-})
 
 const locPath = location.pathname 
 console.log(locPath)
@@ -198,12 +200,57 @@ for (const mc of document.getElementsByClassName("mainContent")) {
     mc.style.display = "none"
 }
 
+const checkLogin = isLoggedIn()
+
+document.getElementById("logoutView").style.display = "none"
+document.getElementById("loginView").style.display = 'none'
+
 if (locPath == "/auth") {
     // determine if logged in or not, if yes show login if no show show logout
     // show me profile if logged in, along with change password
     document.getElementById("meView").style.display = "block"   
+
+    if (checkLogin) {
+        document.getElementById("logoutView").style.display = 'block'
+        document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
+        showLoggedInNavigation()
+    } else {
+        document.getElementById("loginView").style.display = "block"
+        showLoggedOutNavigation()
+        if (document.getElementById("loginView").style.display == 'block') {
+            console.log('login form is showing')
+            if (document.getElementById('loginFormLoginButton')) {
+                console.log('login button should exist')
+                // listen to login button being clicked 
+                document.getElementById('loginFormLoginButton').addEventListener('click', () => {
+                    console.log('trying to log in')
+                    console.log("login form clicked")
+                    const postData = {
+                        "email": document.getElementById("loginFormEmail").value,
+                        "password": document.getElementById("loginFormPassword").value
+                    }
+                    console.log(postData)
+                    makePostRequest('/login', postData, (err, xhrResponse) => {
+                        if (err) { throw err; }
+                        const xr = JSON.parse(xhrResponse)
+                        console.log(xr)
+                        //console.log(xr.accesstoken)
+                        localStorage.setItem("email", xr.email)
+                        localStorage.setItem("accesstoken", xr.accesstoken)
+                        localStorage.setItem("isLoggedIn", true)
+                        console.log(localStorage)
+                        setTimeout(function() {
+                            window.location.href = "/manage"
+                       }, 2500);
+                    })
+                })
+            }
+        }
+    }
 }
 else if (locPath.substring(0, 6) == "/blog/") {
+    const allHtmlContents = getHtmlContentTitles()
+    showHtmlContentTitlesList(allHtmlContents)
     // show the blog 
     document.getElementById("readView").style.display = 'block'
     const selectedBlogTitle = locPath.substring(6, locPath.length)
@@ -214,111 +261,79 @@ else if (locPath.substring(0, 6) == "/blog/") {
         console.log(xr)
         document.getElementById("selectedBlogTitle").innerHTML = selectedBlogTitle
         document.getElementById("selectedBlogContent").innerHTML = xr.content
+        showLoggedOutNavigation()
     })
 } 
 else if (locPath.substring(0, 8) == "/editor/") {
-    // show editor
-    document.getElementById("editorView").style.display = "block"
+    if (checkLogin) {
+        // show editor
+        document.getElementById("editorView").style.display = "block"
+        showLoggedInNavigation()
+    } else {
+        window.location.href = "/auth"
+    }
 } 
-else if (locPath.substring(0, 7) == "/upload") {
-    // show upload
-    makeRequest('GET', "/static/views/uploads.html", (err, xhrResponse) => {
+else if (locPath.substring(0, 9) == "/keywords") {
+    makeRequest('GET', "/api/keywords/list", (err, xhrResponse) => {
         if (err) { throw err; }
-        document.getElementById("uploadsView").innerHTML = xhrResponse
+        const allKeywords = JSON.parse(xhrResponse)
+        console.log(allKeywords) 
+        console.log(allKeywords.length) 
+        if (allKeywords.length > 0) {
+            // get list of keywords
+            let keywords = []
+            document.getElementById("listKeywordsView").innerHTML = ""
+            for (let k=0;k<allKeywords.length;k++) {
+                keywords.push(allKeywords[k])
+
+                const tag = document.createElement("span")
+                tag.classList.add("keyword-selector")
+                const text = document.createTextNode(allKeywords[k]['name'])
+                tag.appendChild(text)
+                const element = document.getElementById("listKeywordsView")
+                element.appendChild(tag)
+                tag.addEventListener('click', (buttonElement) => {
+                    const selectedKeyword = (buttonElement.target.innerText)
+                    console.log(selectedKeyword)
+                })
+            }
+            // show upload
+            document.getElementById("listKeywordsView").style.display = "block"
+        }
+        if (checkLogin) {
+            showLoggedInNavigation()
+        } else {
+            showLoggedOutNavigation()
+        }
     })
+} 
+else if (locPath.substring(0, 8) == "/uploads") {
+    if (checkLogin) {
+        // show upload
+        document.getElementById("uploadsView").style.display = "block"
+        showLoggedInNavigation()
+    } else {
+        window.location.href = "/auth"
+    }
 } 
 else if (locPath.substring(0, 7) == "/manage") {
-    // show manage css and keywords
-    makeRequest('GET', "/static/views/keywords.html", (err, xhrResponse) => {
-        if (err) { throw err; }
-        document.getElementById("keywordsView").innerHTML = xhrResponse
-        document.getElementById("keywordsView").style.display = "block"
-    })
-    
-    makeRequest('GET', "/static/views/manage.html", (err, xhrResponse) => {
-        if (err) { throw err; }
-        document.getElementById("manageView").innerHTML = xhrResponse
-        document.getElementById("manageView").style.display = "block"
-    })
+    if (checkLogin) {
+        // show manage css and keywords
+        document.getElementById("manageKeywordsView").style.display = "block"
+        document.getElementById("manageView").style.display = "block" 
+        showLoggedInNavigation()
+    }
+    else {
+        window.location.href = "/auth"
+    }
 } 
 else {
     // show front page
-    makeRequest('GET', "/static/views/home.html", (err, xhrResponse) => {
-        if (err) { throw err; }
-        document.getElementById("homeView").innerHTML = xhrResponse
-    })
-}
-const checkLogin = isLoggedIn()
-
-if (checkLogin) {
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
-        // Do stuff here
-        el.style.display = 'inline'
-        /*el.addEventListener('click', (event) => {
-            console.log(event.target.id)
-            showOneMainContent(event.target.id.replace("show_",""))
-        })*/
-    })
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
-        // Do stuff here
-        el.style.display = 'none'
-    })
-    
-} else {
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedIn"), (el) => {
-        // Do stuff here
-        el.style.display = 'none'
-    })
-    Array.prototype.forEach.call(document.getElementsByClassName("topnavWhenLoggedOut"), (el) => {
-        // Do stuff here
-        el.style.display = 'inline'
-        /*el.addEventListener('click', (event) => {
-            console.log(event.target.id)
-            showOneMainContent(event.target.id.replace("show_",""))
-        })*/
-    })
-
-    if (document.getElementById("loginView").style.display == 'block') {
-        console.log('login form is showing')
-        if (document.getElementById('loginFormLoginButton')) {
-            console.log('login button should exist')
-            // listen to login button being clicked 
-            document.getElementById('loginFormLoginButton').addEventListener('click', () => {
-                console.log('trying to log in')
-                console.log("login form clicked")
-                const postData = {
-                    "email": document.getElementById("loginFormEmail").value,
-                    "password": document.getElementById("loginFormPassword").value
-                }
-                console.log(postData)
-                makePostRequest('/login', postData, (err, xhrResponse) => {
-                    if (err) { throw err; }
-                    const xr = JSON.parse(xhrResponse)
-                    console.log(xr)
-                    //console.log(xr.accesstoken)
-                    localStorage.setItem("email", xr.email)
-                    localStorage.setItem("accesstoken", xr.accesstoken)
-                    localStorage.setItem("isLoggedIn", true)
-                    console.log(localStorage)
-                    setTimeout(function() {
-                        window.location.href = locPath
-                   }, 2500);
-                })
-            })
-        }
-    }
+    document.getElementById("homeView").style.display = "block"
+    showLoggedOutNavigation()
 }
 
-Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow"), (el) => {
-    // Do stuff here
-    el.style.display = 'inline'
-    /*el.addEventListener('click', (event) => {
-        console.log(event.target.id)
-        showOneMainContent(event.target.id.replace("show_",""))
-    })*/
-})
 
-// showSelectedBlog('curriculum-vitae')
 
 
 window.addEventListener("load", () => {
