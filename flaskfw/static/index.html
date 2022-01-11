@@ -78,30 +78,62 @@
 
 <body>
     <div class="topnav">
-        <a href="/">home</a>
-        <a class="topnavWhenLoggedIn" id="show_readView">read</a>
-        <a class="topnavWhenLoggedIn" id="show_editorView">write</a>
-        <a class="topnavWhenLoggedIn" id="show_usersView">users</a>
-        <a class="topnavWhenLoggedIn" id="show_uploadsView">uploads</a>
-        <a class="topnavWhenLoggedIn" id="show_keywordsView">keywords</a>
-        <a class="topnavWhenLoggedIn" id="show_manageView">system</a>
-        <a class="topnavWhenLoggedIn" id="show_meView">me</a>
-        <!-- <a class="topnavWhenLoggedOut" id="show_loginView">login</a> -->
+        <a href="/" class="topnavAlwaysShow" id="show_indexView">home</a>
+        <!--<a class="topnavWhenLoggedIn" id="show_readView">read</a> -->
+        <a href="/editor/a-new-title" class="topnavWhenLoggedIn" id="show_editorView">editor</a>
+        <!--<a class="topnavWhenLoggedIn" id="show_usersView">users</a>-->
+        <a href="/upload" class="topnavWhenLoggedIn" id="show_uploadsView">uploads</a>
+        <!--<a class="topnavWhenLoggedIn" id="show_keywordsView">keywords</a>-->
+        <a href="/manage" class="topnavWhenLoggedIn" id="show_manageView">manage</a>
+        <a href="/auth" class="topnavWhenLoggedIn" id="show_loginView">me/logout</a>
+        <a href="/auth" class="topnavWhenLoggedOut" id="show_loginView">login</a>
     </div>
     
     <div class="content">
         <div id="listOfKeywords">list of keywords</div>
+        <div class="mainContentFiller"></div>
         <div id="listOfPublishedHtmlContentUrls">list of published HTML content URLs</div>
-        <div id="selectedBlog">show selected blog</div>
+        <div class="mainContentFiller"></div>
+        
 
         <div class="mainContentFiller"></div>
-        <div id="homeView" class="mainContent">home view</div>
-        <div id="readView" class="mainContent">read view</div>
-        <div id="editorView" class="mainContent">editor view</div>
+        
+        <div id="homeView" class="mainContent">H O M E</div>
+
+        <div id="readView" class="mainContent">
+            <h2>Read: <span id="selectedBlogTitle"></span></h2>
+            <div id="selectedBlogContent">show selected blog</div>
+            <div id="allhtmlcontentslist"></div>
+        </div>
+        <div class="mainContentFiller"><br/</div>
+
+        <div id="editorView" class="mainContent">
+            <h2>Edit: <span id="htmlcontent.title"></span></h2>
+            <div>
+                <!--<p>title: <span id="htmlcontent.title"></span></p>-->
+                <textarea id="htmlcontent.markdownst" name="htmlcontent.markdownst"></textarea>
+            </div>
+            <div>
+                <p>keywords:
+                <span id="keywordSpans"></span></p>
+                <p><input id="htmlcontent.keywords" name="htmlcontent.keywords" size="50" maxlength="255"></p>
+            </div>
+            <div>
+                <p>published:&nbsp;
+                    <input type="radio" id="htmlcontent.published.true" value="true"/>yes&nbsp;||&nbsp;
+                    <input type="radio" id="htmlcontent.published.false" value="false"/>no
+                </p>
+            </div>
+            <div>
+                <button id="htmlcontent.save">save</button>
+                <span id="htmlcontent.link"></span>
+            </div>
+        </div>
+        <div class="mainContentFiller"><br/</div>
+
         <div id="uploadsView" class="mainContent">uploads view</div>
         <div id="keywordsView" class="mainContent">keywords view</div>
         <div id="manageView" class="mainContent">manage view</div>
-        <div id="meView" class="mainContent">me view</div>
         <div id="indexBlogPublicHtml" class="mainContent">index blog public view</div>
         <div id="blogView" class="mainContent">blog view</div>
         <div id="usersView" class="mainContent">users view</div>
@@ -109,16 +141,25 @@
         <!-- for management only -->
         <!--
         <div id="listAllUsers">list of all users</div>-->
-        <div class="mainContentFiller"></div>
 
-        <div class="mainContentFiller"></div>
-        <div id="loginView">
+        <div id="meView" class="mainContent">
+            <h2>Me</h2>
+    
+            <div>list my account particulars</div>
+            <div>update my email</div>
+            <div>update my name</div>
+            <div>reset password</div>
+        </div>
+        <div class="mainContentFiller"><br/</div>
+
+        <div id="loginView" class="authContent">
             <p>email: <input id='loginFormEmail' name="email"/></p>
             <p>password: <input id='loginFormPassword' name="password" type="password"></p>
             <button id="loginFormLoginButton">login</button>
         </div>
-        <div class="mainContentFiller"></div>
-        <div id="logoutView">
+        <div class="mainContentFiller"><br/</div>
+
+        <div id="logoutView" class="authContent">
             <button id="logoutFormLogoutButton">log out</button>
         </div>
     </div>
