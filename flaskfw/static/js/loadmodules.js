@@ -48,10 +48,6 @@ const showLoggedInNavigation = () => {
     Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow"), (el) => {
         // Do stuff here
         el.style.display = 'inline'
-        /*el.addEventListener('click', (event) => {
-            console.log(event.target.id)
-            showOneMainContent(event.target.id.replace("show_",""))
-        })*/
     })
 }
 
@@ -67,10 +63,6 @@ const showLoggedOutNavigation = () => {
     Array.prototype.forEach.call(document.getElementsByClassName("topnavAlwaysShow"), (el) => {
         // Do stuff here
         el.style.display = 'inline'
-        /*el.addEventListener('click', (event) => {
-            console.log(event.target.id)
-            showOneMainContent(event.target.id.replace("show_",""))
-        })*/
     })
 }
 
@@ -330,12 +322,15 @@ else if (locPath.substring(0, 7) == "/manage") {
 else {
     // show front page
     document.getElementById("homeView").style.display = "block"
-    showLoggedOutNavigation()
+    
+    if (checkLogin) {
+        showLoggedInNavigation()
+    } else {
+        showLoggedOutNavigation()
+    }
 }
 
-
-
-
+// check window loading status
 window.addEventListener("load", () => {
     // Fully loaded!
     console.log("Fully loaded!")
