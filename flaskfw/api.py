@@ -331,14 +331,13 @@ def get_htmlcontents():
 
 @app.route('/api/htmlcontents/get/<title>')
 def get_htmlcontent(title):
-    hct = pdb.getHtmlContent(title)
-    #print(hct)
     try:
+        hct = pdb.getHtmlContent(title)
+        print(hct)
         returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2], 'markdownst': hct[3], 'meta': hct[4], 'published': hct[5] }
         return jsonify(returnObject)
     except:
-        errorObject = { "code": 404, "error": "Not Found", "description": "This HTML Content has not been created yet", "object": sys.exc_info() }
-        return jsonify(errorObject)
+        return jsonify({ "code": 404, "error": "Not Found", "description": "This HTML Content has not been created yet" })
 
 @app.route('/api/htmlcontents/save', methods=['POST'])
 def create_htmlcontent():

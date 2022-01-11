@@ -1,6 +1,7 @@
-import {test } from './modules/apiCalls.js'
+import {test, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
 //import {test, getUsers, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
 //import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
+import {translateMdInput} from './modules/dataBindings.js'
 
 console.log(test())
 
@@ -251,6 +252,13 @@ else if (locPath.substring(0, 6) == "/blog/") {
         document.getElementById("selectedBlogContent").innerHTML = xr.content
         showHtmlContentTitlesList("publishedHtmlContentUrls2")
         if (checkLogin) {
+            const editButtonElement = document.createElement("button")
+            const text = document.createTextNode("edit")
+            editButtonElement.appendChild(text)
+            document.getElementById("selectedBlogEdit").appendChild(editButtonElement)
+            editButtonElement.addEventListener('click', () => {
+                window.location.href = '/editor/' + selectedBlogTitle
+            })
             showLoggedInNavigation()
         } else {
             showLoggedOutNavigation()
@@ -261,7 +269,72 @@ else if (locPath.substring(0, 8) == "/editor/") {
     if (checkLogin) {
         // show editor
         document.getElementById("editorView").style.display = "block"
-        showLoggedInNavigation()
+        const selectedBlogTitle = locPath.substring(8, locPath.length)
+        console.log(selectedBlogTitle)
+        const url = "/api/htmlcontents/get/" + selectedBlogTitle
+        makeRequest('GET', url, (err, xhrResponse) => {
+            const xr = JSON.parse(xhrResponse)
+            console.log(xr)
+            if (xr.hasOwnProperty('code') && xr.code == '404') {
+                // new form 
+                document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                    let publishStatus = false 
+                    if (document.getElementById('htmlcontent.published.true').checked) {
+                        publishStatus = true
+                    }
+                    console.log(keywordsInput)
+                    console.log(keywordsInput.split("; "))
+                    const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
+                    const htmlContentData = {
+                        "title": selectedBlogTitle,
+                        "markdownst": document.getElementById('htmlcontent.markdownst').value,
+                        "content": mdData,
+                        "meta": { 
+                            "keywords": keywordsInput.split(";")
+                        },
+                        "published": publishStatus
+                    }
+                    addHtmlContentPost(htmlContentData)
+                    document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + selectedBlogTitle + "'>read</a>"
+                })
+            } else {
+                document.getElementById("htmlcontent.title").innerHTML = selectedBlogTitle
+                document.getElementById("htmlcontent.markdownst").value = xr.markdownst
+                const keywordsArray = xr.meta.keywords
+                const publishedStatus = xr.published
+                if (publishedStatus) {
+                    document.getElementById('htmlcontent.published.true').checked = true
+                    document.getElementById('htmlcontent.published.false').checked = false
+                } else {
+                    document.getElementById('htmlcontent.published.true').checked = false
+                    document.getElementById('htmlcontent.published.false').checked = true
+                }
+                document.getElementById("htmlcontent.keywords").value = keywordsArray.join("; ")
+                showHtmlContentTitlesList("publishedHtmlContentUrls2")
+                showLoggedInNavigation()
+                // listen to save click event 
+                document.getElementById('htmlcontent.save').addEventListener('click', () => {
+                    let publishStatus = false 
+                    if (document.getElementById('htmlcontent.published.true').checked) {
+                        publishStatus = true
+                    }
+                    let keywordsInput = document.getElementById('htmlcontent.keywords').value 
+                    console.log(keywordsInput)
+                    console.log(keywordsInput.split("; "))
+                    const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
+                    const htmlContentData = {
+                        "title": selectedBlogTitle,
+                        "markdownst": document.getElementById('htmlcontent.markdownst').value,
+                        "content": mdData,
+                        "meta": { 
+                            "keywords": keywordsInput.split("; ")
+                        },
+                        "published": publishStatus
+                    }
+                    updateHtmlContentPost(htmlContentData)
+                })
+            }            
+        })
     } else {
         window.location.href = "/auth"
     }
@@ -294,6 +367,7 @@ else if (locPath.substring(0, 9) == "/keywords") {
             document.getElementById("listKeywordsView").style.display = "block"
         }
         if (checkLogin) {
+            document.getElementById("manageKeywordsView").style.display = "block"
             showLoggedInNavigation()
         } else {
             showLoggedOutNavigation()
@@ -312,7 +386,6 @@ else if (locPath.substring(0, 8) == "/uploads") {
 else if (locPath.substring(0, 7) == "/manage") {
     if (checkLogin) {
         // show manage css and keywords
-        document.getElementById("manageKeywordsView").style.display = "block"
         document.getElementById("manageView").style.display = "block" 
         showLoggedInNavigation()
     }
