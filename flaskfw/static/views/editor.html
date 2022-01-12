@@ -1,17 +1,20 @@
 <div>
     <h2>Edit: <span id="htmlcontent.title"></span></h2>
-    <div>
-        <button id="logoutFormLogoutButton">logout</button>
-    </div>
     
     <div>
         <!--<p>title: <span id="htmlcontent.title"></span></p>-->
         <textarea id="htmlcontent.markdownst" name="htmlcontent.markdownst"></textarea>
     </div>
     <div>
-        <p>keywords:</p> 
-        <p id="keywordSpans"></p>
+        <p>keywords:
+        <span id="keywordSpans"></span></p>
         <p><input id="htmlcontent.keywords" name="htmlcontent.keywords" size="50" maxlength="255"></p>
+    </div>
+    <div>
+        <p>published:&nbsp;
+            <input type="radio" id="htmlcontent.published.true" value="true"/>yes&nbsp;||&nbsp;
+            <input type="radio" id="htmlcontent.published.false" value="false"/>no
+        </p>
     </div>
     <div>
         <button id="htmlcontent.save">save</button>

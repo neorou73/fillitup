@@ -23,10 +23,14 @@ const buildHtmlTable = (columnTitles, rowData, provideLink) => {
     for (let r=0;r<rowData.length;r++) {
         let row = '<tr>'
         let titleString = ""
-        for (let c=0;c<columnTitles.length;c++) {
-            row = row + '<td>' + rowData[r][columnTitles[c]] + '</td>'
+        for (let c=0;c<columnTitles.length;c++) {   
             if (columnTitles[c] == 'title') {
                 titleString = rowData[r][columnTitles[c]]
+            }
+            if (columnTitles[c] == 'meta') {
+                row = row + '<td>' + JSON.stringify(rowData[r][columnTitles[c]]) + '</td>'
+            } else {
+                row = row + '<td>' + rowData[r][columnTitles[c]] + '</td>'
             }
         }
         if (provideLink) {

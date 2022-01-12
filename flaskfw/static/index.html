@@ -75,28 +75,148 @@
         //]]>
         </script>
 </head>
+
 <body>
-    <div class="topnav" id="topnavpublic">
-        <a href="/">home</a>
-        <a href="/auth">login</a>
+    <div class="topnav">
+        <a href="/" class="topnavAlwaysShow" id="show_indexView">home</a>
+
+        <a href="/keywords" class="topnavAlwaysShow" id="show_keywordsView">keywords</a>
+        <!--<a class="topnavWhenLoggedIn" id="show_readView">read</a> -->
+        <a href="/editor/a-new-title" class="topnavWhenLoggedIn" id="show_editorView">editor</a>
+        <!--<a class="topnavWhenLoggedIn" id="show_usersView">users</a>-->
+        <a href="/uploads" class="topnavWhenLoggedIn" id="show_uploadsView">uploads</a>
+        <a href="/manage" class="topnavWhenLoggedIn" id="show_manageView">manage</a>
+        <a href="/auth" class="topnavWhenLoggedIn" id="show_loginView">me</a>
+        <a href="/auth" class="topnavWhenLoggedOut" id="show_loginView">login</a>
     </div>
-    <div class="topnav" id="topnavauthd">
-        <a href="/">home</a>
-        <a href="/read">read</a>
-        <a href="/editor">write</a>
-        <a href="/users">users</a>
-        <a href="/uploads">uploads</a>
-        <a href="/keywords">keywords</a>
-        <a href="/manage">system</a>
-        <a href="/me">me</a>
-    </div>
+    
     <div class="content">
-        <div id="indexBlogPublicHtml"></div>
-        <div id="includedHtml"></div>
-        <div id="logoutDiv" vjs-if="isLoggedIn">
-            <div id="includedHtml"></div>
+        <!--
+        <div class="mainContentFiller"></div>-->
+
+        <div id="listKeywordsView" class="mainContent">list of keywords</div>
+        <div class="mainContentFiller"></div>
+        
+        <div id="homeView" class="mainContent">
+            <h2>Welcome to the Home Page</h2>
+            <div id="publishedHtmlContentUrls1">list of published HTML content URLs</div>
+            <div>
+                <p>
+                    <em>Notes:</em> 
+                    <ul>
+                        <li>instead of the "the Front Page" above, we should have the site title.</li>
+                        <li>most recent published post is shown</li>
+                        <li>show list of published posts</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <div id="readView" class="mainContent">
+            <h2>Read: <span id="selectedBlogTitle"></span></h2>
+            <div id="publishedHtmlContentUrls2">list of published HTML content URLs</div>
+            <div id="selectedBlogContent">show selected blog</div>
+            <div id="selectedBlogEdit"></div>
+        </div>
+        <div class="mainContentFiller"><br/</div>
+
+        <div id="editorView" class="mainContent">
+            <h2>Edit: <span id="htmlcontent.title"></span></h2>
+            <div>
+                <!--<p>title: <span id="htmlcontent.title"></span></p>-->
+                <textarea id="htmlcontent.markdownst" name="htmlcontent.markdownst"></textarea>
+            </div>
+            <div>
+                <p>keywords:
+                <span id="keywordSpans"></span></p>
+                <p><input id="htmlcontent.keywords" name="htmlcontent.keywords" size="50" maxlength="255"></p>
+            </div>
+            <div>
+                <p>published:&nbsp;
+                    <input type="radio" id="htmlcontent.published.true" value="true"/>yes&nbsp;||&nbsp;
+                    <input type="radio" id="htmlcontent.published.false" value="false"/>no
+                </p>
+            </div>
+            <div>
+                <button id="htmlcontent.save">save</button>
+                <span id="htmlcontent.link"></span>
+            </div>
+        </div>
+        <div class="mainContentFiller"><br/</div>
+
+        <div id="uploadsView" class="mainContent">
+            <h2>Manage File Uploads</h2>
+    
+            <div id="mng-uploads" class="management-div">
+                <h3>Uploaded Files</h3>
+                <div id="uploadedfileslist"></div>
+                <h3>Add New File</h3>
+                <div>
+                    <form method=post enctype=multipart/form-data id="uploadedfileform">
+                        <input type=file name=userfile id="userfile">
+                        <button id="fileuploads.upload">upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="mainContentFiller"></div>
+
+        <div id="manageKeywordsView" class="mainContent">
+            <h2>Manage Keywords</h2>
+            <div id="mng-keywords" class="management-div">
+                <h3>Keywords Management</h3>
+                <div id="keywordslist"></div>
+                <div>
+                    <p>keyword: <input id="keyword.add.keyword" name="keyword.add.keyword"/></p>
+                    <p>description: <textarea id="keyword.add.description" name="keyword.add.description"></textarea></p>
+                    <p><button id="keyword.add">add keyword</button></p>
+                </div>                
+            </div>
+        </div>
+        <div class="mainContentFiller"></div>
+
+        <div id="manageView" class="mainContent">
+            <h3>Manage View and Presentation</h3>
+            <div id="configure-css-scheme">
+                <p>dark-background</p>
+                <p>light-background</p>
+                <p>text-color</p>
+                <p>link-color</p>
+                <div class="sample-element" id="sampleImage"></div>
+                <div class="sample-element" id="sampleTable"></div>
+                <div class="sample-element" id="sampleScrollBox"></div>
+            </div>
+        </div>
+        <div id="indexBlogPublicHtml" class="mainContent">index blog public view</div>
+        <div id="blogView" class="mainContent">blog view</div>
+        <div id="usersView" class="mainContent">users view</div>
+
+        <!-- for management only -->
+        <!--
+        <div id="listAllUsers">list of all users</div>-->
+
+        <div id="meView" class="mainContent">
+            <h2>Me</h2>
+    
+            <div>list my account particulars</div>
+            <div>update my email</div>
+            <div>update my name</div>
+            <div>reset password</div>
+        </div>
+        <div class="mainContentFiller"><br/</div>
+
+        <div id="loginView" class="authContent">
+            <p>email: <input id='loginFormEmail' name="email"/></p>
+            <p>password: <input id='loginFormPassword' name="password" type="password"></p>
+            <button id="loginFormLoginButton">login</button>
+        </div>
+        <div class="mainContentFiller"><br/</div>
+
+        <div id="logoutView" class="authContent">
+            <button id="logoutFormLogoutButton">log out</button>
         </div>
     </div>
+
     <div class="footer">
         &copy; Copyright 2021 by <a href="http://domain.invalid/">neorou73</a>.
     </div>
