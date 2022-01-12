@@ -173,7 +173,6 @@ const showHtmlContentTitlesList = (divId) => {
     })
 }
 
-
 const locPath = location.pathname 
 console.log(locPath)
 
@@ -189,9 +188,8 @@ document.getElementById("loginView").style.display = 'none'
 if (locPath == "/auth") {
     // determine if logged in or not, if yes show login if no show show logout
     // show me profile if logged in, along with change password
-    document.getElementById("meView").style.display = "block"   
-
     if (checkLogin) {
+        document.getElementById("meView").style.display = "block" 
         document.getElementById("logoutView").style.display = 'block'
         document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
         showLoggedInNavigation()
@@ -221,7 +219,7 @@ if (locPath == "/auth") {
                         localStorage.setItem("isLoggedIn", true)
                         console.log(localStorage)
                         setTimeout(function() {
-                            window.location.href = "/manage"
+                            window.location.href = "/auth"
                        }, 2500);
                     })
                 })
