@@ -140,6 +140,47 @@ const showSelectedBlog = (selectedBlog) => {
     if (err) { throw err; }
     document.getElementById("usersView").innerHTML = xhrResponse
 })*/
+const showHtmlContentList = (publishStatus, divId) => {
+    // get list of published html contents 
+    makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
+        sessionStorage.removeItem('allHtmlContents')
+        if (err) { throw err; }
+        const allHtmlContents = JSON.parse(xhrResponse)
+        console.log(allHtmlContents)
+        if (publishStatus) {
+            for (let c=0;c<allHtmlContents.length;c++) {
+                if (allHtmlContents[c]['published']) {
+                    const link = document.createElement("a")
+                    link.setAttribute("href", ("/blog/" + allHtmlContents[c]['title']))
+                    link.innerText = allHtmlContents[c]['title']                             
+                    const span = document.createElement("span")
+                    span.classList.add("html-content-selector")
+                    span.appendChild(link)
+                    const element = document.getElementById(divId)
+                    element.appendChild(span)
+                }
+            }
+        } else {
+            // show all
+            for (let c=0;c<allHtmlContents.length;c++) {
+                const link = document.createElement("a")
+                link.setAttribute("href", ("/editor/" + allHtmlContents[c]['title']))
+                if (allHtmlContents[c]['published']) {
+                    link.innerText = allHtmlContents[c]['title'] + "; created: " + allHtmlContents[c]['created'] + " (published)"
+                } else {
+                    link.innerText = allHtmlContents[c]['title'] + "; created: " + allHtmlContents[c]['created'] 
+                }                
+                const div = document.createElement("div")
+                //div.appendChild(innerSpan)
+                div.appendChild(link)
+                const element = document.getElementById(divId)
+                element.appendChild(div)
+            } 
+            //console.log(htmlContentsList)
+            // document.getElementById(divId).innerHTML = htmlContentsList
+        }
+    })
+}
 
 // divId would be either publishedHtmlContentUrls1 or publishedHtmlContentUrls2
 const showHtmlContentTitlesList = (divId) => {
@@ -192,6 +233,45 @@ if (locPath == "/auth") {
         document.getElementById("meView").style.display = "block" 
         document.getElementById("logoutView").style.display = 'block'
         document.getElementById("logoutFormLogoutButton").addEventListener('click', (e) => { checkLogout() })
+        makeRequest('GET', "/api/me", (err, xhrResponse) => {
+            if (err) { console.log(err); }
+            const ud = JSON.parse(xhrResponse)
+            document.getElementById("me.email").value = ud.email
+            document.getElementById("me.username").value = ud.username
+            
+            const postUrl = "/api/users/edit"
+            const postIt = (what) => {
+                const postData = { "what": what }
+                if (what == "email") {
+                    console.log("email address updated")
+                    postData['email'] = document.getElementById("me.email").value
+                } else if (what == "username") {
+                    console.log("user name updated")
+                    postData["username"] = document.getElementById("me.username").value
+                } else if (what == "password") {
+                    console.log("login password updated")
+                    postData["oldpassword"] = document.getElementById("me.password.now").value,
+                    postData["newpassword1"] = document.getElementById("me.password.new1").value,
+                    postData["newpassword2"] = document.getElementById("me.password.new2").value
+                }
+                makePostRequest(postUrl, postData, (err, xhrResponse2) => {
+                    if (err) { console.log(err); }
+                    console.log(xhrResponse2)
+                })
+            }
+            document.getElementById("me.email.save").addEventListener("click", () => {
+                // attempt to save the new email address
+                postIt("email")
+            })
+            document.getElementById("me.username.save").addEventListener("click", () => {
+                // attempt to save the new username
+                postIt("username")
+            })
+            document.getElementById("me.password.save").addEventListener("click", () => {
+                // attempt to save the new password
+                postIt("password")
+            })
+        })
         showLoggedInNavigation()
     } else {
         document.getElementById("loginView").style.display = "block"
@@ -238,7 +318,7 @@ else if (locPath.substring(0, 6) == "/blog/") {
         console.log(xr)
         document.getElementById("selectedBlogTitle").innerHTML = selectedBlogTitle
         document.getElementById("selectedBlogContent").innerHTML = xr.content
-        showHtmlContentTitlesList("publishedHtmlContentUrls2")
+        showHtmlContentList(true, "publishedHtmlContentUrls2")
         if (checkLogin) {
             const editButtonElement = document.createElement("button")
             const text = document.createTextNode("edit")
@@ -260,6 +340,7 @@ else if (locPath.substring(0, 8) == "/editor/") {
         const selectedBlogTitle = locPath.substring(8, locPath.length)
         console.log(selectedBlogTitle)
         const url = "/api/htmlcontents/get/" + selectedBlogTitle
+        showHtmlContentList(false, "listHtmlContents")
         makeRequest('GET', url, (err, xhrResponse) => {
             const xr = JSON.parse(xhrResponse)
             console.log(xr)
@@ -298,7 +379,7 @@ else if (locPath.substring(0, 8) == "/editor/") {
                     document.getElementById('htmlcontent.published.false').checked = true
                 }
                 document.getElementById("htmlcontent.keywords").value = keywordsArray.join("; ")
-                showHtmlContentTitlesList("publishedHtmlContentUrls2")
+                showHtmlContentList(true, "publishedHtmlContentUrls2")
                 showLoggedInNavigation()
                 // listen to save click event 
                 document.getElementById('htmlcontent.save').addEventListener('click', () => {
@@ -412,7 +493,8 @@ else if (locPath.substring(0, 7) == "/manage") {
 else {
     // show front page
     document.getElementById("homeView").style.display = "block"
-    showHtmlContentTitlesList("publishedHtmlContentUrls1")    
+    // showHtmlContentTitlesList("publishedHtmlContentUrls1")    
+    showHtmlContentList(true, "publishedHtmlContentUrls1")
     if (checkLogin) {
         showLoggedInNavigation()
     } else {

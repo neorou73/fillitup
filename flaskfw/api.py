@@ -139,6 +139,17 @@ def whoami():
     else: 
         return jsonify({ 'loggedout': False, "sessionemail": session.get("email"), "sessiontoken": session.get("accesstoken")})
 
+@app.route('/api/me')
+def user_login_info():
+    if session.get("email") == None:
+        return jsonify({ "code": 404, "error": "Not Found", "description": "User session does not exist" })
+    else:
+        userData = pdb.getUsers(session.get("email"))
+        if len(userData) > 0:
+            return jsonify({ "id": userData[0][0], "email" : userData[0][1], "username": userData[0][2], "created": userData[0][3] })
+        else:
+            return jsonify({ "code": 404, "error": "Not Found", "description": "User query returns zero results" })
+
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload_file():
     if 'email' in session:
@@ -247,7 +258,7 @@ def edit_user():
         }
         #print(userData)
         if pdb.editUser(userData):
-            return jsonify([userData['username'], userData['email']])
+            return jsonify({ "username": userData['username'], "email": userData['email'] })
         else:
             errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
             return jsonify(errorObject)

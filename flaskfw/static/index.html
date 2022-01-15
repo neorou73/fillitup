@@ -99,7 +99,8 @@
         
         <div id="homeView" class="mainContent">
             <h2>Welcome to the Home Page</h2>
-            <div id="publishedHtmlContentUrls1">list of published HTML content URLs</div>
+            <div id="publishedHtmlContentUrls1">
+                <span class="list-title">list of published HTML content URLs: </span></div>
             <div>
                 <p>
                     <em>Notes:</em> 
@@ -114,7 +115,9 @@
 
         <div id="readView" class="mainContent">
             <h2>Read: <span id="selectedBlogTitle"></span></h2>
-            <div id="publishedHtmlContentUrls2">list of published HTML content URLs</div>
+            <div id="publishedHtmlContentUrls2">
+                <span class="list-title">list of published HTML content URLs: </span>
+            </div>
             <div id="selectedBlogContent">show selected blog</div>
             <div id="selectedBlogEdit"></div>
         </div>
@@ -141,6 +144,7 @@
                 <button id="htmlcontent.save">save</button>
                 <span id="htmlcontent.link"></span>
             </div>
+            <div id="listHtmlContents"></div>
         </div>
         <div class="mainContentFiller"><br/</div>
 
@@ -196,12 +200,21 @@
         <div id="listAllUsers">list of all users</div>-->
 
         <div id="meView" class="mainContent">
-            <h2>Me</h2>
-    
-            <div>list my account particulars</div>
-            <div>update my email</div>
-            <div>update my name</div>
-            <div>reset password</div>
+            <h2>Me</h2>    
+            <div>
+                <p>update my email address: <input id="me.email" maxlength="255"/></p>
+                <p><button id="me.email.save">update email address</button></p>
+            </div>
+            <div>
+                <p>update my user name: <input id="me.username" maxlength="255"/></p>
+                <p><button id="me.username.save">update username</button></p>
+            </div>
+            <div>
+                <p>current password: <input id="me.password.now" type="password" maxlength="255"/></p>
+                <p>new password: <input id="me.password.new1" type="password" maxlength="255"/></p>
+                <p>new password again: <input id="me.password.new2" type="password" maxlength="255"/></p>
+                <p><button id="me.password.save">reset password</button></p>
+            </div>
         </div>
         <div class="mainContentFiller"><br/</div>
 
