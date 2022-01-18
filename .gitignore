@@ -16,3 +16,4 @@ fiu/*.pyc
 */static/fileuploads
 backup
 backup.tar.gz 
+*/*.gunicorn.log
