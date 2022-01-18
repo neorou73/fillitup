@@ -103,7 +103,8 @@ def login():
             if tokenString is not False:
                 session['email'] = request.json['email']
                 session['accesstoken'] = tokenString
-                return jsonify(session)
+                print(session)
+                return jsonify({ "email": request.json['email'], "password": tokenString })
             else:
                 session.pop('email', None)
                 session.pop('accesstoken', None)
