@@ -42,7 +42,7 @@ class psqldb:
             #self.connect()
             self.cursor.execute("""SELECT now();""")
             rows = self.cursor.fetchall()
-            print(rows)
+            #print(rows)
             #self.conn.close()
         except Exception as e:
             print("Uh oh, can't connect. Invalid dbname, user or password?")
@@ -55,7 +55,7 @@ class psqldb:
         h = hashlib.new('sha512_256')
         h.update(passwordString.encode('utf-8')) # mystring.encode('utf-8')
         hpw = h.hexdigest()
-        print (json.dumps([passwordString, hpw]))
+        #print (json.dumps([passwordString, hpw]))
         return hpw
 
 
@@ -64,7 +64,7 @@ class psqldb:
             #self.connect()
             self.cursor.execute("""SELECT * FROM people WHERE email = %s and password = %s;""", (email, self.hash_password(passwordString)))
             rows = self.cursor.fetchall()
-            print(rows)
+            #print(rows)
             #self.conn.close()
             
             if len(rows) > 0:
@@ -86,10 +86,10 @@ class psqldb:
             #self.connect()
             import uuid 
             tokenString = uuid.uuid4().hex
-            print(tokenString)
+            #print(tokenString)
             self.cursor.execute("""INSERT INTO accesstokens (person, token) values (%s, %s);""", (email, tokenString))
             self.conn.commit()
-            print("user " + email + " has been logged in.")
+            #print("user " + email + " has been logged in.")
             #self.conn.close()
             return tokenString
         except Exception as e:
@@ -101,7 +101,7 @@ class psqldb:
             #self.connect()
             self.cursor.execute("""UPDATE accesstokens SET loggedout = 'true' WHERE person = %s;""", (email,))
             self.conn.commit()
-            print("user " + email + " has been logged out.")
+            #print("user " + email + " has been logged out.")
             #self.conn.close()
             return True
         except Exception as e:
@@ -147,7 +147,7 @@ class psqldb:
             else:
                 self.cursor.execute("""SELECT id, email, username, tscreated FROM people order by email;""")
             rows = self.cursor.fetchall()
-            print(rows)
+            #print(rows)
             #self.conn.close()
             
             if len(rows) > 0:
@@ -178,7 +178,7 @@ class psqldb:
             else:
                 self.cursor.execute("""SELECT * FROM sections order by id;""")
             rows = self.cursor.fetchall()
-            print(rows)
+            #print(rows)
             #self.conn.close()
             
             if len(rows) > 0:

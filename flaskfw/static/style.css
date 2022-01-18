@@ -149,4 +149,31 @@
     width: 100%;
     min-height: 75px;
   }
+
+  div#listOfKeywords {
+    width: 100%;
+    min-height: 25px;
+    background-color: darkslategray;
+  }
   
+  span.keyword-selector {
+    cursor: pointer;
+    font-weight: bold;
+    color: darkslategray;
+    padding: 10px;
+    margin: 10px;
+    line-height: 1.6;
+  }
+
+  div#listOfPublishedHtmlContentUrls {
+    vertical-align: middle;
+    width: 100%;
+    min-height: 25px;
+  }
+
+  span.html-content-selector {
+    cursor: pointer;
+    font-weight: bold;
+    color: darkslategray;
+    padding-right: 10px;
+  }
