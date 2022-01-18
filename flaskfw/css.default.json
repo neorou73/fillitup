@@ -1,0 +1,154 @@
+{  
+    "*": {
+    "box-sizing": "border-box",
+    "font-family": "Montserrat, Arial, Helvetica, sans-serif"
+  },
+  "body": {
+    "margin": 10,
+    "font-family": "Montserrat, Arial, Helvetica, sans-serif",
+    "height": "100%"
+  },
+  ".topnav": {
+    "overflow": "hidden",
+    "background-color": "#333"
+  },
+  ".topnav a": {
+    "float": "left",
+    "display": "block",
+    "color": "#f2f2f2",
+    "text-align": "center",
+    "padding": "14px 16px",
+    "text-decoration": "none"
+  },
+  ".topnav a:hover": {
+    "background-color": "#ddd",
+    "color": "black"
+  },
+  ".content": {
+    "background-color": "#ddd",
+    "padding": "10px"
+  },
+  ".sub-content": {
+    "margin-top": "5px",
+    "margin-left": "20px",
+    "padding": "10px"
+  },
+  ".non-ubiquitous": {
+    "border": "solid #999 0.1em"
+  },
+  ".formelements": {
+    "overflow": "auto",
+    "padding": "20px",
+    "margin": "10px",
+    "border": "dotted #abc 0.1em",
+    "clear": "both"
+  },
+  ".formelementstitle": {
+    "clear": "both"
+  },
+  ".formelementsrow": {
+    "clear": "both",
+    "margin": "10px",
+    "padding": "10px"
+  },
+  ".formelementsrow > :first-child": {
+    "width": "50%", 
+    "text-align": "right",
+    "float": "left"
+  },
+  ".formelementsrow > :first-child > textarea": {
+    "width": "100%",
+    "height": "100%",
+    "box-sizing": "border-box"
+  },
+  ".formelementsrow > :last-child": {
+    "width": "50%", 
+    "float": "right",
+    "padding-left": "20px"
+  },
+  ".formelementsbutton": {
+    "width": "150px",
+    "clear": "both"
+  },
+  ".db-table-group": {
+    "background-color": "navy",
+    "padding": "5px",
+    "margin": "5px"
+  },
+  ".db-table-member": {
+    "background-color": "lightblue",
+    "padding": "5px",
+    "margin": "5px"
+  },
+  "pre": {
+    "white-space": "pre-wrap",
+    "overflow-x": "auto",
+    "font-family": "'Courier New', Courier, monospace",
+    "margin": "20px",
+    "color": "black",
+    "background-color": "#ccc",
+    "padding": "10px"
+  },
+  ".footer": {
+    "background-color": "#f1f1f1",
+    "padding": "10px"
+  },
+  "div.metaTagMenuHolder": {
+    "background-color": "#333",
+    "padding": "5px",
+    "text-align": "center"
+  },
+  "span.metaTagSelector": {
+    "cursor": "pointer",
+    "background-color": "#333",
+    "color": "wheat",
+    "padding": "5px",
+    "line-height": "1.6"
+  },
+  "span.metaTagSelector.keywordTagged": {
+    "cursor": "pointer",
+    "background-color": "rgb(195, 245, 179)",
+    "color": "rgb(68, 22, 22)",
+    "padding": "5px",
+    "line-height": "1.6"
+  },
+  "span.metaTagSelector:hover": {
+    "cursor": "pointer",
+    "color": "#333",
+    "background-color": "wheat",
+    "padding": "5px",
+    "line-height": "1.6"
+  },
+  "img": {
+    "max-width": "80%",
+    "height": "auto"
+  },
+  "textarea": {
+    "width": "100%",
+    "min-height": "75px"
+  },
+  "div#listOfKeywords": {
+    "width": "100%",
+    "min-height": "25px",
+    "background-color": "darkslategray"
+  },
+  "span.keyword-selector": {
+    "cursor": "pointer",
+    "font-weight": "bold",
+    "color": "darkslategray",
+    "padding": "10px",
+    "margin": "10px",
+    "line-height": "1.6"
+  },
+  "div#listOfPublishedHtmlContentUrls": {
+    "vertical-align": "middle",
+    "width": "100%",
+    "min-height": "25px"
+  },
+  "span.html-content-selector": {
+    "cursor": "pointer",
+    "font-weight": "bold",
+    "color": "darkslategray",
+    "padding-right": "10px"
+  }
+}
