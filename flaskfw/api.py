@@ -95,15 +95,15 @@ def hello(name=None):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        print(request.json['email'])
-        print(request.json['password'])
+        #print(request.json['email'])
+        #print(request.json['password'])
         if pdb.validateUser(request.json['email'], request.json['password']):
-            print ('user is valid')
+            #print ('user is valid')
             tokenString = pdb.loginUser(request.json['email']) 
             if tokenString is not False:
                 session['email'] = request.json['email']
                 session['accesstoken'] = tokenString
-                print(session)
+                #print(session)
                 return jsonify({ "email": request.json['email'], "password": tokenString })
             else:
                 session.pop('email', None)
@@ -111,9 +111,9 @@ def login():
             errorObject = { "code": 401, "error": "Unauthorized", "description": "This user is not valid" }
             return jsonify(errorObject)
         else:
-            enotice = "user is not valid"
-            print (enotice)
-            error=enotice
+            #enotice = "user is not valid"
+            #print (enotice)
+            #error=enotice
             session.pop('email', None)
             session.pop('accesstoken', None)
             errorObject = { "code": 401, "error": "Unauthorized", "description": "This user is not valid" }
@@ -179,13 +179,13 @@ def use_editor(postTitle):
             #print(request.form['content'])
             results = pdb.createContent(postTitle, request.form['content'])
             if not(results):
-                print('insert did not happen')
+                #print('insert did not happen')
                 return render_template('editor.html', title=postTitle)
             return render_template('editor.html', title=postTitle, content=request.form['content'])
         elif request.method == "POST" and htmlContentData is not None:
             results = pdb.updateContent(postTitle, request.form['content'])
             if not(results):
-                print('insert did not happen')
+                #print('insert did not happen')
                 return render_template('editor.html', title=postTitle)
             return render_template('editor.html', title=postTitle, content=request.form['content'])
         elif request.method == "GET" and htmlContentData is not None:
@@ -345,7 +345,7 @@ def get_htmlcontents():
 def get_htmlcontent(title):
     try:
         hct = pdb.getHtmlContent(title)
-        print(hct)
+        #print(hct)
         returnObject = { 'id': hct[0], 'title': hct[1], 'content': hct[2], 'markdownst': hct[3], 'meta': hct[4], 'published': hct[5] }
         return jsonify(returnObject)
     except:
