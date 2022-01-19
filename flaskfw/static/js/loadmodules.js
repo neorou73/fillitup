@@ -293,14 +293,30 @@ if (locPath == "/auth") {
                         if (err) { throw err; }
                         const xr = JSON.parse(xhrResponse)
                         console.log(xr)
-                        //console.log(xr.accesstoken)
-                        localStorage.setItem("email", xr.email)
-                        localStorage.setItem("accesstoken", xr.accesstoken)
-                        localStorage.setItem("isLoggedIn", true)
-                        console.log(localStorage)
-                        setTimeout(function() {
-                            window.location.href = "/auth"
-                       }, 2500);
+                        if (xr.hasOwnProperty('accesstoken') && xr.hasOwnProperty('email')) {
+                            console.log(xr.accesstoken)
+                            localStorage.setItem("email", xr.email)
+                            localStorage.setItem("accesstoken", xr.accesstoken)
+                            localStorage.setItem("isLoggedIn", true)
+                            console.log(localStorage)
+                            setTimeout(function() {
+                                window.location.href = "/auth"
+                            }, 2500);
+                        } else {
+                            if (xr.hasOwnProperty('error')) {
+                                const errorElement = document.createElement('div')
+                                errorElement.setAttribute("class", "error-message")
+                                errorElement.innerText = xr.error
+                                document.getElementById('loginView').appendChild(errorElement)
+                            }
+                            if (xr.hasOwnProperty('description')) {
+                                const errorElement = document.createElement('div')
+                                errorElement.setAttribute("class", "error-message")
+                                errorElement.innerText = xr.description
+                                document.getElementById('loginView').appendChild(errorElement)
+                            }
+                        }
+                        
                     })
                 })
             }

@@ -110,21 +110,21 @@ def hello(name=None):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        #print(request.json['email'])
-        #print(request.json['password'])
+        print(request.json['email'])
+        print(request.json['password'])
         if pdb.validateUser(request.json['email'], request.json['password']):
-            #print ('user is valid')
+            print ('user is valid')
             tokenString = pdb.loginUser(request.json['email']) 
             if tokenString is not False:
                 session['email'] = request.json['email']
                 session['accesstoken'] = tokenString
                 #print(session)
-                return jsonify({ "email": request.json['email'], "password": tokenString })
+                return jsonify({ "email": request.json['email'], "accesstoken": tokenString })
             else:
                 session.pop('email', None)
                 session.pop('accesstoken', None)
-            errorObject = { "code": 401, "error": "Unauthorized", "description": "This user is not valid" }
-            return jsonify(errorObject)
+                errorObject = { "code": 401, "error": "Unauthorized", "description": "This user is not valid" }
+                return jsonify(errorObject)
         else:
             #enotice = "user is not valid"
             #print (enotice)
