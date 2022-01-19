@@ -5,9 +5,24 @@ from datetime import datetime
 
 import os, json, sys, shutil  
 
+def readDefaultCss():
+    try:
+        print("attempting to read css configuration...")
+        jsonFilePath = os.getcwd() + "/css.default.json"
+        f = open(jsonFilePath, 'r')
+        jsonData = json.load(f)
+        f.close()
+        return jsonData
+    except Exception as e:
+        print('unable to read default css file - please ensure file exists and properly formatted.')
+        sys.exit()
+
+defaultCssObject = readDefaultCss()
+print("read default css")
+
 def readConfigurationFile():
     try:
-        print("attempting to read configuration...")
+        print("attempting to read system configuration...")
         jsonFilePath = os.getcwd() + "/api.config.default.json"
         f = open(jsonFilePath, 'r')
         jsonData = json.load(f)
@@ -389,4 +404,8 @@ def create_keyword():
 @app.route('/api/keywords/remove', methods=['POST'])
 def remove_keyword():
     return jsonify(pdb.removeKeyword(request.form('keyword')))
+
+@app.route('/api/default/css')
+def get_default_css():
+    return jsonify(readDefaultCss())
 

@@ -485,6 +485,27 @@ else if (locPath.substring(0, 7) == "/manage") {
         // show manage css and keywords
         document.getElementById("manageView").style.display = "block" 
         showLoggedInNavigation()
+        const url = "/api/default/css"
+        makeRequest('GET', url, (err, xhrResponse) => {
+            if (err) { console.log(err) }
+            const defaultCssObject = JSON.parse(xhrResponse)
+            for (let el in defaultCssObject) {
+                const labelElement = document.createElement('label')
+                labelElement.innerText = el + ": "
+                const inputValue = document.createElement('textarea')
+                inputValue.value = JSON.stringify(defaultCssObject[el])
+                inputValue.setAttribute("id", ("key_" + el.replace(" ","_")))
+                //console.log(el)
+                const elDiv = document.createElement('div')
+                elDiv.appendChild(labelElement)
+                elDiv.appendChild(inputValue)
+                document.getElementById("edit-css-form").appendChild(elDiv)
+            }
+            document.getElementById("edit-css-save").addEventListener("click", (event) => {
+                event.preventDefault()
+                console.log("click")
+            })
+        })
     }
     else {
         window.location.href = "/auth"
@@ -508,6 +529,7 @@ window.addEventListener("load", () => {
     console.log("Fully loaded!")
     //console.log(isLoggedIn())
     document.title = "Fill It Up!"
+    hljs.highlightAll() // call highlight js only after everything has loaded
 })
 
 /**
