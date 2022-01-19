@@ -529,6 +529,7 @@ window.addEventListener("load", () => {
     console.log("Fully loaded!")
     //console.log(isLoggedIn())
     document.title = "Fill It Up!"
+    hljs.highlightAll() // call highlight js only after everything has loaded
 })
 
 /**
