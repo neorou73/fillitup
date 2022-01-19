@@ -240,36 +240,102 @@ if (locPath == "/auth") {
             document.getElementById("me.username").value = ud.username
             
             const postUrl = "/api/users/edit"
-            const postIt = (what) => {
-                const postData = { "what": what }
-                if (what == "email") {
-                    console.log("email address updated")
-                    postData['email'] = document.getElementById("me.email").value
-                } else if (what == "username") {
-                    console.log("user name updated")
-                    postData["username"] = document.getElementById("me.username").value
-                } else if (what == "password") {
-                    console.log("login password updated")
-                    postData["oldpassword"] = document.getElementById("me.password.now").value,
-                    postData["newpassword1"] = document.getElementById("me.password.new1").value,
-                    postData["newpassword2"] = document.getElementById("me.password.new2").value
+            document.getElementById("me.email.save").addEventListener("click", () => {
+                // attempt to save the new email address
+                console.log("updating email address")
+                const postData = { 
+                    "what": "change_email", 
+                    "newemail": (document.getElementById("me.email").value), 
+                    "oldemail": ud.email
                 }
                 makePostRequest(postUrl, postData, (err, xhrResponse2) => {
                     if (err) { console.log(err); }
-                    console.log(xhrResponse2)
+                    const xr = JSON.parse(xhrResponse2)
+                    console.log(xr)
+                    const parentElement = document.getElementById('me.email.save').parentNode
+                    if (xr.hasOwnProperty("email")) {
+                        sessionStorage.setItem("email", xr.email)
+                    } else {
+                        if (xr.hasOwnProperty('error')) {
+                            const errorElement = document.createElement('div')
+                            errorElement.setAttribute("class", "error-message")
+                            errorElement.innerText = xr.error
+                            parentElement.appendChild(errorElement)
+                        }
+                        if (xr.hasOwnProperty('description')) {
+                            const errorElement = document.createElement('div')
+                            errorElement.setAttribute("class", "error-message")
+                            errorElement.innerText = xr.description
+                            parentElement.appendChild(errorElement)
+                        }
+                    }
                 })
-            }
-            document.getElementById("me.email.save").addEventListener("click", () => {
-                // attempt to save the new email address
-                postIt("email")
             })
             document.getElementById("me.username.save").addEventListener("click", () => {
                 // attempt to save the new username
-                postIt("username")
+                console.log("updating username")
+                const postData = { 
+                    "what": "change_username", 
+                    "email": ud.email,
+                    "newusername": (document.getElementById("me.username").value), 
+                    "oldusername": ud.username
+                }
+                makePostRequest(postUrl, postData, (err, xhrResponse2) => {
+                    if (err) { console.log(err); }
+                    const xr = JSON.parse(xhrResponse2)
+                    console.log(xr)
+                    const parentElement = document.getElementById('me.username.save').parentNode
+                    if (xr.hasOwnProperty("username")) {
+                        sessionStorage.setItem("email", xr.email)
+                        sessionStorage.setItem("username", xr.username)
+                    } else {
+                        if (xr.hasOwnProperty('error')) {
+                            const errorElement = document.createElement('div')
+                            errorElement.setAttribute("class", "error-message")
+                            errorElement.innerText = xr.error
+                            parentElement.appendChild(errorElement)
+                        }
+                        if (xr.hasOwnProperty('description')) {
+                            const errorElement = document.createElement('div')
+                            errorElement.setAttribute("class", "error-message")
+                            errorElement.innerText = xr.description
+                            parentElement.appendChild(errorElement)
+                        }
+                    }
+                })
             })
             document.getElementById("me.password.save").addEventListener("click", () => {
                 // attempt to save the new password
-                postIt("password")
+                console.log("updating password address")
+                const postData = { 
+                    "what": "change_password", 
+                    "oldpassword": (document.getElementById("me.password.now").value), 
+                    "newpassword1": (document.getElementById("me.password.new1").value), 
+                    "newpassword2": (document.getElementById("me.password.new2").value), 
+                    "email": ud.email
+                }
+                makePostRequest(postUrl, postData, (err, xhrResponse2) => {
+                    if (err) { console.log(err); }
+                    const xr = JSON.parse(xhrResponse2)
+                    console.log(xr)
+                    const parentElement = document.getElementById('me.password.save').parentNode
+                    if (xr.hasOwnProperty("email")) {
+                        sessionStorage.setItem("email", xr.email)
+                    } else {                        
+                        if (xr.hasOwnProperty('error')) {
+                            const errorElement = document.createElement('div')
+                            errorElement.setAttribute("class", "error-message")
+                            errorElement.innerText = xr.error
+                            parentElement.appendChild(errorElement)
+                        }
+                        if (xr.hasOwnProperty('description')) {
+                            const errorElement = document.createElement('div')
+                            errorElement.setAttribute("class", "error-message")
+                            errorElement.innerText = xr.description
+                            parentElement.appendChild(errorElement)
+                        }
+                    }
+                })
             })
         })
         showLoggedInNavigation()

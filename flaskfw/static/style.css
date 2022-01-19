@@ -10,13 +10,13 @@
   }
   
   /* Style the top navigation bar */
-  .topnav {
+  div.topnav {
     overflow: hidden;
     background-color: #333;
   }
   
   /* Style the topnav links */
-  .topnav a {
+  div.topnav a {
     float: left;
     display: block;
     color: #f2f2f2;
@@ -26,69 +26,99 @@
   }
   
   /* Change color on hover */
-  .topnav a:hover {
+  div.topnav a:hover {
     background-color: #ddd;
     color: black;
   }
   
   /* Style the content */
-  .content {
+  div.content {
     background-color: #ddd;
     padding: 10px;
     /*height: 200px;*/ /* Should be removed. Only for demonstration */
   }
   
-  .sub-content {
+  div.sub-content {
     margin-top: 5px;
     margin-left: 20px;
     padding: 10px;
   }
   
-  .non-ubiquitous {
+  div.non-ubiquitous {
     border: solid #999 0.1em;
   }
   
-  .formelements {
+  div.formelements {
     overflow: auto;
     padding: 20px;
     margin: 10px;
     border: dotted #abc 0.1em;
     clear: both;
   }
-  .formelementstitle {
+
+  div.formelementstitle {
     clear: both;
   }
-  .formelementsrow {
+
+  div.formelementsrow {
     clear: both;
     margin: 10px;
     padding: 10px;
   }
-  .formelementsrow > :first-child {
+
+  div.formelementsrow > :first-child {
     width: 50%; 
     text-align: right;
     float: left; 
   }
-  .formelementsrow > :first-child > textarea {
+
+  div.formelementsrow > :first-child > textarea {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
   }
-  .formelementsrow > :last-child {
+
+  div.formelementsrow > :last-child {
     width: 50%; 
     float: right;
     padding-left: 20px;
   }
-  .formelementsbutton {
+  
+  div.formelementsbutton {
     width: 150px;
     clear: both;
   }
   
-  .db-table-group {
+  /* Style the footer */
+  div.footer {
+    background-color: #f1f1f1;
+    padding: 10px;
+  }
+  
+  div.metaTagMenuHolder {
+    background-color: #333;
+    padding: 5px;
+    text-align: center;
+  }
+
+  div#listOfKeywords {
+    width: 100%;
+    min-height: 25px;
+    background-color: darkslategray;
+  }
+
+  div#listOfPublishedHtmlContentUrls {
+    vertical-align: middle;
+    width: 100%;
+    min-height: 25px;
+  }
+  
+  table.db-table-group {
     background-color: navy;
     padding: 5px;
     margin: 5px;
   }
-  .db-table-member {
+  table.db-table-member {
     background-color: lightblue;
     padding: 5px;
     margin: 5px;
@@ -102,18 +132,6 @@
     color: black;
     background-color: #ccc;
     padding: 10px;
-  }
-  
-  /* Style the footer */
-  .footer {
-    background-color: #f1f1f1;
-    padding: 10px;
-  }
-  
-  div.metaTagMenuHolder {
-    background-color: #333;
-    padding: 5px;
-    text-align: center;
   }
   
   span.metaTagSelector {
@@ -149,12 +167,6 @@
     width: 100%;
     min-height: 75px;
   }
-
-  div#listOfKeywords {
-    width: 100%;
-    min-height: 25px;
-    background-color: darkslategray;
-  }
   
   span.keyword-selector {
     cursor: pointer;
@@ -163,12 +175,6 @@
     padding: 10px;
     margin: 10px;
     line-height: 1.6;
-  }
-
-  div#listOfPublishedHtmlContentUrls {
-    vertical-align: middle;
-    width: 100%;
-    min-height: 25px;
   }
 
   span.html-content-selector {

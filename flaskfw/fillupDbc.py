@@ -124,7 +124,13 @@ class psqldb:
         # clause indicates whether it is for deactivation, password change, or any change - default is change all with email as indicator
         try:
             #self.connect()
-            if clause == 'passwordReset':
+            if clause == 'change_email':
+                self.cursor.execute("""UPDATE people SET email = %s WHERE email = %s;""", (userData['newemail'], userData['oldemail']))
+            elif clause == 'change_username':
+                self.cursor.execute("""UPDATE people SET username = %s WHERE email = %s;""", (userData['newusername'], userData['email']))
+            elif clause == 'change_password':
+                self.cursor.execute("""UPDATE people SET password = %s WHERE email = %s and password = %s;""", (userData['newpassword1'], userData['email'], userData['oldpassword']))
+            elif clause == 'passwordReset':
                 self.cursor.execute("""UPDATE people SET password = %s WHERE email = %s;""", (userData['hashedPassword'], userData['email']))
             elif clause == 'deactivation':
                 self.cursor.execute("""UPDATE people SET deactivated = 'true' WHERE email = %s;""", (userData['email']))

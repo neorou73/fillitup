@@ -59,11 +59,9 @@ else:
 
 defaultCssFile = os.path.dirname(os.path.realpath(__file__)) + "/static/style.css"
 cachedCssFile = os.path.dirname(os.path.realpath(__file__)) + "/static/cached/style.css"
-if not os.path.exists(cachedCssFile):
-    print("copied default css file to cached version: ", cachedCssFile)
-    shutil.copyfile(defaultCssFile, cachedCssFile)
-else:
-    print("cached css file already exists: ", cachedCssFile)
+print("copied default css file to cached version: ", cachedCssFile)
+shutil.copyfile(defaultCssFile, cachedCssFile)
+
 
 app = Flask(__name__)
 app.secret_key = bytes(configurationObject['application']['secret_key'], 'utf-8')
@@ -266,18 +264,47 @@ def list_users():
 
 @app.route('/api/users/edit', methods=['POST'])
 def edit_user():
-    if request.method == "POST":
+    if request.method == "POST" and request.json['what'] == 'change_email':
         userData = {
-            'username': request.form['username'],
-            'password': pdb.hash_password(request.form['password']),
-            'email': request.form['email']
+            'oldemail': request.json['oldemail'],
+            'newemail': request.json['newemail']
         }
-        #print(userData)
-        if pdb.editUser(userData):
-            return jsonify({ "username": userData['username'], "email": userData['email'] })
+        if pdb.editUser(userData, "change_email"):
+            session["email"] = userData["newemail"]
+            return jsonify({ "email": userData['newemail'] })
         else:
-            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to change email address" }
             return jsonify(errorObject)
+    elif request.method == "POST" and request.json['what'] == 'change_username':
+        userData = {
+            'oldusername': request.json['oldusername'],
+            'newusername': request.json['newusername'],
+            'email': request.json['email']
+        }
+        if pdb.editUser(userData, "change_username"):
+            return jsonify({ "username": userData['newusername'], "email": userData['email'] })
+        else:
+            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to change user name" }
+            return jsonify(errorObject)
+    elif request.method == "POST" and request.json['what'] == 'change_password':
+        userData = {
+            'oldpassword': pdb.hash_password(request.json['oldpassword']),
+            'newpassword1': pdb.hash_password(request.json['newpassword1']),
+            'newpassword2': pdb.hash_password(request.json['newpassword2']),
+            'email': request.json['email']
+        }
+        if userData['newpassword1'] == userData['newpassword2']:
+            if pdb.editUser(userData, "change_password"):
+                return jsonify({ "email": userData['email'] })
+            else:
+                errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to change password" }
+                return jsonify(errorObject)
+        else:
+            errorObject = { "code": 400, "error": "Bad Request", "description": "new passwords do not match" }
+            return jsonify(errorObject)
+    else:
+        errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+        return jsonify(errorObject)
 
 @app.route('/api/users/deactivate', methods=['POST'])
 def deactivate_user():
