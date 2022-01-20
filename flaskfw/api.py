@@ -185,41 +185,30 @@ def use_editor(postTitle):
     if 'email' in session:
         #if request.method == "POST" and hasattr(request.form, 'title'):
         # get content data based on title 
-        htmlContentData = pdb.getContent(postTitle)
-        #print(htmlContentData)
+        print(postTitle)
+        htmlContentData = pdb.getHtmlContent(postTitle)
+        print(htmlContentData)
         if request.method == "POST" and htmlContentData is None:
-            #print(request.form['title'])
-            #print(request.form['content'])
-            results = pdb.createContent(postTitle, request.form['content'])
-            if not(results):
-                #print('insert did not happen')
-                return render_template('editor.html', title=postTitle)
-            return render_template('editor.html', title=postTitle, content=request.form['content'])
+            results = pdb.createHtmlContent(request.json['title'], request.json['content'], request.json['markdownst'], request.json['meta'], request.json['published'])
+            return jsonify(results)
         elif request.method == "POST" and htmlContentData is not None:
-            results = pdb.updateContent(postTitle, request.form['content'])
-            if not(results):
-                #print('insert did not happen')
-                return render_template('editor.html', title=postTitle)
-            return render_template('editor.html', title=postTitle, content=request.form['content'])
+            results = pdb.updateHtmlContent(request.json['title'], request.json['content'], request.json['markdownst'], request.json['meta'], request.json['published'])
+            return jsonify(results)
         elif request.method == "GET" and htmlContentData is not None:
-            return render_template('editor.html', title=postTitle, content=htmlContentData[2])
+            return jsonify(htmlContentData)
         else:
-            return render_template('editor.html', title=postTitle)
-
-    return redirect(url_for('hello'))
+            errorObject = { "code": 400, "error": "Bad Request", "description": "Unable to process HTTP Request" }
+            return jsonify(errorObject)
+    else:
+        errorObject = { "code": 400, "error": "Bad Request", "description": "User Session Error" }
+        return jsonify(errorObject)
 
 @app.route('/api/read')
 @app.route('/api/read/<postTitle>')
 def read_content(postTitle=None):
     if postTitle:
-        htmlContentData = pdb.getContent(postTitle)
-        #print(escape(htmlContentData[2]))
-        if htmlContentData is not None:
-            return render_template('read.html', title=postTitle, content=htmlContentData[2])
-        return render_template('read.html', title=postTitle)
-    listall = pdb.getAllContents()
-    #print(len(listall))
-    return render_template('read.html', listall=listall)
+        htmlContentData = pdb.getHtmlContent(postTitle)
+        return jsonify(htmlContentData)
 
 @app.route('/api/manage')
 def manage_site():

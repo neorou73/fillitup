@@ -267,6 +267,7 @@ class psqldb:
     
     def createHtmlContent(self, title, content, markdown, metadata, published):
         try:
+            import json
             #self.connect()
             self.cursor.execute("""insert into htmlcontent (title, content, markdown, meta, published) values (%s, %s, %s, %s, %s);""", (title, content, markdown, json.dumps(metadata), published))
             self.conn.commit()
