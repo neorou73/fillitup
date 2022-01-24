@@ -144,38 +144,6 @@ const showHtmlContentList = (publishStatus, divId) => {
     })
 }
 
-// divId would be either publishedHtmlContentUrls1 or publishedHtmlContentUrls2
-const showHtmlContentTitlesList = (divId) => {
-    // get list of published html contents 
-    makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
-        sessionStorage.removeItem('allHtmlContents')
-        if (err) { throw err; }
-        const allHtmlContents = JSON.parse(xhrResponse)
-        if (allHtmlContents.length > 0) {
-            let publishedHtmlContents = []
-            document.getElementById(divId).innerHTML = ""
-            for (let c=0;c<allHtmlContents.length;c++) {
-                if (allHtmlContents[c]['published']) {
-                    publishedHtmlContents.push(allHtmlContents[c])
-    
-                    const tag = document.createElement("span")
-                    tag.classList.add("html-content-selector")
-                    const text = document.createTextNode((". " + allHtmlContents[c]['title'] + " ."))
-                    tag.appendChild(text)
-                    const element = document.getElementById(divId)
-                    element.appendChild(tag)
-                    tag.addEventListener('click', (buttonElement) => {
-                        const selectedHtmlContentTitle = (buttonElement.target.innerText).replace(". ","").replace(" .","")
-                        console.log(selectedHtmlContentTitle)
-                        location.href = "/blog/" + selectedHtmlContentTitle
-                    })
-                }
-            }
-            console.log(publishedHtmlContents)
-        }
-    })
-}
-
 const locPath = location.pathname 
 console.log(locPath)
 
@@ -411,7 +379,7 @@ else if (locPath.substring(0, 8) == "/editor/") {
                     makePostRequest(postUrl, htmlContentData, (err2, xhrResponse2) => {
                         if (err2) { console.log(err2) }
                         console.log(xhrResponse2)
-                        document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + selectedBlogTitle + "'>read</a>"
+                        document.getElementById('htmlcontent.link').innerHTML = "<a href='/blog/" + selectedBlogTitle + "'>read</a>"
                     })
                 })
             } else {
@@ -451,51 +419,13 @@ else if (locPath.substring(0, 8) == "/editor/") {
                     makePostRequest(postUrl, htmlContentData, (err2, xhrResponse2) => {
                         if (err2) { console.log(err2) }
                         console.log(xhrResponse2)
-                        document.getElementById('htmlcontent.link').innerHTML = "<a href='/read/" + selectedBlogTitle + "'>read</a>"
+                        document.getElementById('htmlcontent.link').innerHTML = "<a href='/blog/" + selectedBlogTitle + "'>read</a>"
                     })
                 })
             }            
         })
     } else {
         window.location.href = "/auth"
-    }
-} 
-else if (locPath.substring(0, 9) == "/keywords") {
-    if (checkLogin) {
-        makeRequest('GET', "/api/keywords/list", (err, xhrResponse) => {
-            if (err) { throw err; }
-            const allKeywords = JSON.parse(xhrResponse)
-            console.log(allKeywords) 
-            console.log(allKeywords.length) 
-            if (allKeywords.length > 0) {
-                // get list of keywords
-                let keywords = []
-                document.getElementById("listKeywordsView").innerHTML = ""
-                for (let k=0;k<allKeywords.length;k++) {
-                    keywords.push(allKeywords[k])
-                    const tag = document.createElement("span")
-                    tag.classList.add("keyword-selector")
-                    const text = document.createTextNode(allKeywords[k]['name'])
-                    tag.appendChild(text)
-                    const element = document.getElementById("listKeywordsView")
-                    element.appendChild(tag)
-                    tag.addEventListener('click', (buttonElement) => {
-                        const selectedKeyword = (buttonElement.target.innerText)
-                        console.log(selectedKeyword)
-                    })
-                }
-                // show upload
-                document.getElementById("listKeywordsView").style.display = "block"
-            }
-            if (checkLogin) {
-                document.getElementById("manageKeywordsView").style.display = "block"
-                showLoggedInNavigation()
-            } else {
-                showLoggedOutNavigation()
-            }
-        })
-    } else {
-        window.location.jref = "/auth"
     }
 } 
 else if (locPath.substring(0, 8) == "/uploads") {
