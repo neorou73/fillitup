@@ -354,6 +354,7 @@ else if (locPath.substring(0, 8) == "/editor/") {
         const url = "/api/htmlcontents/get/" + selectedBlogTitle
         const postUrl = "/api/editor/" + selectedBlogTitle
         showHtmlContentList(false, "listHtmlContents")
+        showLoggedInNavigation()
         makeRequest('GET', url, (err, xhrResponse) => {
             const xr = JSON.parse(xhrResponse)
             console.log(xr)
@@ -396,7 +397,6 @@ else if (locPath.substring(0, 8) == "/editor/") {
                 }
                 document.getElementById("htmlcontent.keywords").value = keywordsArray.join("; ")
                 showHtmlContentList(true, "publishedHtmlContentUrls2")
-                showLoggedInNavigation()
                 // listen to save click event 
                 document.getElementById('htmlcontent.save').addEventListener('click', () => {
                     let publishStatus = false 
