@@ -353,18 +353,25 @@ else if (locPath.substring(0, 8) == "/editor/") {
         console.log(selectedBlogTitle)
         const url = "/api/htmlcontents/get/" + selectedBlogTitle
         const postUrl = "/api/editor/" + selectedBlogTitle
-        showHtmlContentList(false, "listHtmlContents")
+        //showHtmlContentList(false, "listHtmlContents")
         showLoggedInNavigation()
         makeRequest('GET', url, (err, xhrResponse) => {
             const xr = JSON.parse(xhrResponse)
             console.log(xr)
+            let publishedStatus = false
+            document.getElementById('htmlcontent.published.false').checked = true 
+            document.getElementById('htmlcontent.published.true').addEventListener("click", (ele) => {
+                document.getElementById('htmlcontent.published.false').checked = false 
+                publishedStatus = true 
+            })
+            document.getElementById('htmlcontent.published.false').addEventListener("click", (ele) => {
+                document.getElementById('htmlcontent.published.true').checked = false 
+                publishedStatus = false 
+            })
+            
             if (xr.hasOwnProperty('code') && xr.code == '404') {
                 // new form 
                 document.getElementById('htmlcontent.save').addEventListener('click', () => {
-                    let publishStatus = false 
-                    if (document.getElementById('htmlcontent.published.true').checked) {
-                        publishStatus = true
-                    }
                     const keywordsInput = (document.getElementById("htmlcontent.keywords").value).split("; ")
                     console.log(keywordsInput)
                     const mdData = translateMdInput(document.getElementById('htmlcontent.markdownst').value)
@@ -375,7 +382,7 @@ else if (locPath.substring(0, 8) == "/editor/") {
                         "meta": { 
                             "keywords": keywordsInput
                         },
-                        "published": publishStatus
+                        "published": publishedStatus
                     }
                     makePostRequest(postUrl, htmlContentData, (err2, xhrResponse2) => {
                         if (err2) { console.log(err2) }
@@ -387,22 +394,18 @@ else if (locPath.substring(0, 8) == "/editor/") {
                 document.getElementById("htmlcontent.title").innerHTML = selectedBlogTitle
                 document.getElementById("htmlcontent.markdownst").value = xr.markdownst
                 const keywordsArray = xr.meta.keywords
-                const publishedStatus = xr.published
+                let publishedStatus = xr.published
                 if (publishedStatus) {
-                    document.getElementById('htmlcontent.published.true').checked = true
-                    document.getElementById('htmlcontent.published.false').checked = false
+                    document.getElementById('htmlcontent.published.false').checked = false 
+                    document.getElementById('htmlcontent.published.true').checked = true 
                 } else {
-                    document.getElementById('htmlcontent.published.true').checked = false
-                    document.getElementById('htmlcontent.published.false').checked = true
+                    document.getElementById('htmlcontent.published.false').checked = true 
+                    document.getElementById('htmlcontent.published.true').checked = false 
                 }
                 document.getElementById("htmlcontent.keywords").value = keywordsArray.join("; ")
-                showHtmlContentList(true, "publishedHtmlContentUrls2")
+                //showHtmlContentList(true, "publishedHtmlContentUrls2")
                 // listen to save click event 
                 document.getElementById('htmlcontent.save').addEventListener('click', () => {
-                    let publishStatus = false 
-                    if (document.getElementById('htmlcontent.published.true').checked) {
-                        publishStatus = true
-                    }
                     let keywordsInput = document.getElementById('htmlcontent.keywords').value 
                     console.log(keywordsInput)
                     console.log(keywordsInput.split("; "))
@@ -414,7 +417,7 @@ else if (locPath.substring(0, 8) == "/editor/") {
                         "meta": { 
                             "keywords": keywordsInput.split("; ")
                         },
-                        "published": publishStatus
+                        "published": publishedStatus
                     }
                     makePostRequest(postUrl, htmlContentData, (err2, xhrResponse2) => {
                         if (err2) { console.log(err2) }
@@ -422,7 +425,22 @@ else if (locPath.substring(0, 8) == "/editor/") {
                         document.getElementById('htmlcontent.link').innerHTML = "<a href='/blog/" + selectedBlogTitle + "'>read</a>"
                     })
                 })
-            }            
+            }  
+            
+            document.getElementById('listHtmlContents').addEventListener('click', (ele) => {
+                
+                makeRequest('GET', "/api/htmlcontents/list", (err, xhrResponse) => {
+                    if (err) { throw err; }
+                    const allHtmlContents = JSON.parse(xhrResponse)
+                    console.log(allHtmlContents)
+                    for (let i=0;i<allHtmlContents.length;i++) {
+                        let hcDiv = document.createElement('div')
+                        const hcTitle = allHtmlContents[i]['title']
+                        hcDiv.innerHTML = "<a href='/editor/" + hcTitle + "'>" + hcTitle + "</a>"
+                        document.getElementById(ele.target.id).appendChild(hcDiv)
+                    }
+                })
+            })
         })
     } else {
         window.location.href = "/auth"
@@ -499,14 +517,7 @@ else if (locPath.substring(0, 7) == "/manage") {
 } 
 else {
     // show front page
-    document.getElementById("homeView").style.display = "block"
-    // showHtmlContentTitlesList("publishedHtmlContentUrls1")    
-    showHtmlContentList(true, "publishedHtmlContentUrls1")
-    if (checkLogin) {
-        showLoggedInNavigation()
-    } else {
-        showLoggedOutNavigation()
-    }
+    window.location.href = "/blog/welcome"
 }
 
 // check window loading status
