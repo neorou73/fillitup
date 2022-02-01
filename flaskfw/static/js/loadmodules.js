@@ -1,4 +1,4 @@
-import { test, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
+import { test, makeRequest, makePostRequest } from './modules/apiCalls.js'
 //import {test, getUsers, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
 //import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
 import { translateMdInput, buildHtmlTable } from './modules/dataBindings.js'
@@ -57,7 +57,7 @@ const showLoggedOutNavigation = () => {
     })
 }
 
-const makeRequest = (method, url, done) => {
+/*const makeRequest = (method, url, done) => {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url);
     xhr.onload = function () {
@@ -83,7 +83,7 @@ const makePostRequest = (url, postdata, done) => {
         done(xhr.response);
     }
     xhr.send(JSON.stringify(postdata))
-}
+}*/
 
 // checks to log out user
 const checkLogout = () => {
