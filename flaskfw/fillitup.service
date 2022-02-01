@@ -1,0 +1,12 @@
+[Unit]
+Description=FillItUp
+After=network.target
+
+[Service]
+User=krispy
+WorkingDirectory=/home/krispy/linode/fillitup/flaskfw
+ExecStart=/home/krispy/linode/fillitup/flaskfw/fmvenv/bin/gunicorn -b 0.0.0.0:9321 -w 4 api:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
