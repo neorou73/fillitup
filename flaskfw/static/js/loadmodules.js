@@ -1,5 +1,4 @@
 import { test, makeRequest, makePostRequest, translateMdInput } from './modules/apiCalls.js'
-// import { translateMdInput, buildHtmlTable } from './modules/dataBindings.js'
 
 console.log(test())
 
