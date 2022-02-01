@@ -1,7 +1,5 @@
-import { test, makeRequest, makePostRequest } from './modules/apiCalls.js'
-//import {test, getUsers, getFileUploads, getHtmlContents, xhrGet, xhrPost, addUserPost, addKeywordPost, addHtmlContentPost, addFileUploadPost, updateHtmlContentPost } from './modules/apiCalls.js'
-//import {evaluateString, valuateVjsFors, translateMdInput, buildObjectBindings, buildHtmlTable} from './modules/dataBindings.js'
-import { translateMdInput, buildHtmlTable } from './modules/dataBindings.js'
+import { test, makeRequest, makePostRequest, translateMdInput } from './modules/apiCalls.js'
+// import { translateMdInput, buildHtmlTable } from './modules/dataBindings.js'
 
 console.log(test())
 

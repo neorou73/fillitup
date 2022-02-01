@@ -34,4 +34,10 @@ const makePostRequest = (url, postdata, done) => {
     xhr.send(JSON.stringify(postdata))
 }
 
-export { test, makeRequest, makePostRequest };
+const translateMdInput = (mdString) => {
+    const MD = window.markdownit()
+    console.log(MD.render(mdString))
+    return MD.render(mdString)
+}
+
+export { test, makeRequest, makePostRequest, translateMdInput };
